@@ -21,12 +21,11 @@ const Scene: React.FC = () => {
   const { theme, scale } = useTheme();
   const ink = useColor("ink");
   const accent = useColor("accent");
-  const muted = useColor("muted");
-  const structure = useColor("structure");
+    const structure = useColor("structure");
   const s = (i: number) => theme.space[i]! * scale;
 
   const margin = s(7);
-  const chainY = height * 0.66;
+  const chainY = height * 0.575;
   const xs = [0.14, 0.5, 0.86].map((f) => margin + f * (width - 2 * margin));
   const r = 11 * scale;
 
@@ -35,7 +34,7 @@ const Scene: React.FC = () => {
       <AbsoluteFill>
         <Chrome chapter="II" title="The commodity connecting three worlds" />
 
-        <div style={{ position: "absolute", left: margin, top: 205 * scale }}>
+        <div style={{ position: "absolute", left: margin, top: 190 * scale }}>
           <Label style={{ marginBottom: s(2) }}>The commodity</Label>
           <div style={{ display: "flex", alignItems: "flex-end", gap: s(6) }}>
             <Display size="hero">Trepang</Display>
@@ -102,7 +101,6 @@ const Scene: React.FC = () => {
           width={470}
           style={{ right: s(7), bottom: s(7) }}
         />
-        <div style={{ position: "absolute", left: margin, top: height * 0.5 + s(2), width: 560 * scale, height: theme.stroke.hair * scale, backgroundColor: withAlpha(muted, 0.5) }} />
       </AbsoluteFill>
     </Paper>
   );

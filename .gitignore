@@ -4,3 +4,8 @@ out/
 *.log
 videos/*/audio/*.wav
 .env
+
+# voice: generated audio and model caches
+voice/out/
+voice/.venv/
+voice/reference/raw/

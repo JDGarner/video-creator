@@ -1,9 +1,9 @@
 import React from "react";
-import { Still } from "remotion";
+import { Composition, Still } from "remotion";
 import { contactHeight, DirectionsContact } from "./dev/DirectionsContact";
 import { MapSpikeContact, MapSpikePanel, mapSpikeContactSize, PANELS } from "./dev/mapspike/MapSpike";
 import { MapSpike2Contact, MapSpike2Panel, mapSpike2ContactSize, SPIKE2_NAMES } from "./dev/mapspike2/MapSpike2";
-import { Scene1 } from "./dev/makassan/Scene1";
+import { Scene1, SCENE1_DURATION_SEC } from "./dev/makassan/Scene1";
 import { Scene2 } from "./dev/makassan/Scene2";
 import { ThemeSheet } from "./dev/ThemeSheet";
 import { ROUNDS, THEMES } from "./theme/themes";
@@ -42,7 +42,7 @@ export const Root: React.FC = () => (
       <Still key={palette} id={`spike2-map-${palette}`} component={MapSpike2Panel} width={1920} height={1080} defaultProps={{ palette }} />
     ))}
     <Still id="spike2-map-contact" component={MapSpike2Contact} {...mapSpike2ContactSize()} />
-    <Still id="makassan-s1" component={Scene1} width={1920} height={1080} />
+    <Composition id="makassan-s1" component={Scene1} width={1920} height={1080} fps={30} durationInFrames={SCENE1_DURATION_SEC * 30} />
     <Still id="makassan-s2" component={Scene2} width={1920} height={1080} />
   </>
 );

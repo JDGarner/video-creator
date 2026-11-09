@@ -1,14 +1,13 @@
-# Video Production Handoff
+# The Makassan Trade Route to Australia Before Europeans Arrived
 
-## The Makassan Trade Route to Australia Before Europeans Arrived
+## Overview
 
-**Deliverable:** Voice-over-led historical explainer\
-**Target runtime:** 7--8 minutes (flexible range: 3--10 minutes)\
+**Deliverable:** Voice-over-led historical explainer
+**Target runtime:** 7--8 minutes (flexible range: 3--10 minutes)
 **Format:** 2D animated maps, layered route and wind animations, simple
 diagrams, historical illustrations, selected archival/archaeological
-imagery, and voice-over narration\
-**Working title:** *The Makassan Trade Route: Australia's Forgotten
-Connection to Asia*
+imagery, and voice-over narration
+**Title:** The first to contact Aboriginal Australians wasn't who you think
 
 ------------------------------------------------------------------------
 
