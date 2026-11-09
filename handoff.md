@@ -31,7 +31,7 @@ Hard rule: **no CSS transitions or animations, no Tailwind animation classes.** 
 ## 3. Repository layout
 
 ```
-explainer-video/
+video-creator/
 ├── src/
 │   ├── Root.tsx                 # registers compositions discovered in /videos
 │   ├── theme/
@@ -352,7 +352,7 @@ Work in this order. Each step has a check; don't move on until it passes.
 - **Globe render cost**: DOM-heavy SVG with 50m land on every frame can be slow. Mitigate: 110m by default, memoised path strings, consider rendering land to a `<canvas>` layer if needed; only the projection params change per frame.
 - **Cue matching brittleness**: TTS may change word boundaries. Mitigate: fuzzy match on normalised tokens, prefer 2–4 word cues, report nearest matches on failure.
 - **Font licensing**: use Google Fonts or fonts you own for both themes.
-- **Zod version pinning**: Remotion requires a specific Zod 3.x; pin exactly.
+- **Zod version pinning**: Remotion requires an exact Zod version (4.0.541 wants 4.6.7, no longer 3.x); pin exactly and re-check on Remotion upgrades.
 - **Remotion licensing**: source-available; free for individuals/small teams, check terms if the channel incorporates.
 - **Over-copying the reference**: enforced by §10's last bullet and by the second theme.
 

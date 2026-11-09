@@ -1,0 +1,45 @@
+{
+  "name": "video-creator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Programmatic explainer videos: script + data in, MP4 out",
+  "scripts": {
+    "dev": "remotion studio",
+    "still": "remotion still",
+    "typecheck": "tsc --noEmit",
+    "lint:theme": "node scripts/check-hex.mjs",
+    "test": "vitest run"
+  },
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@types/d3-geo": "^3.1.1",
+    "@types/geojson": "^7946.0.16",
+    "@types/node": "^26.6.6",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@types/three": "^0.187.0",
+    "@types/topojson-client": "^3.1.5",
+    "@types/topojson-specification": "^1.0.5",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.1.0"
+  },
+  "dependencies": {
+    "@react-three/fiber": "8.18.0",
+    "@remotion/cli": "4.0.541",
+    "@remotion/google-fonts": "4.0.541",
+    "@remotion/three": "4.0.541",
+    "@remotion/zod-types": "4.0.541",
+    "d3-geo": "3.1.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "4.0.541",
+    "three": "0.187.0",
+    "topojson-client": "3.1.0",
+    "world-atlas": "2.0.2",
+    "zod": "4.6.7"
+  }
+}
