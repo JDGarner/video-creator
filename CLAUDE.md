@@ -1,6 +1,6 @@
 # video-creator
 
-Programmatic explainer videos with Remotion. Read `context.md` (why, visual target) and `handoff.md` (what, how, build order) before changing anything.
+Programmatic explainer videos with Remotion. Read `context.md` (why, visual target) and `handoff.md` (what, how, build order) before changing anything. Anything under `voice/` follows `voice/CLAUDE.md` instead.
 
 ## Hard rules
 
@@ -29,3 +29,14 @@ Node 22 via nvm (`.nvmrc`). Remotion packages and zod are pinned exactly; Remoti
 - `src/dev/` showcase compositions used as visual checks (`sheet-<theme>-<variant>`)
 - `src/lib/` pure helpers with Vitest tests next to them
 - `docs/design/` chosen reference renders and why; `spikes/` rejected explorations kept for reference
+- `stories/<video>/` storyboard plus `scenes/<n>/direction.md` (visuals, narration, production notes) and rendered stills
+- `voice/` narration pipeline, see below
+
+## Voice
+
+Narration is my own voice, cloned locally with Chatterbox and run on CPU. `voice/` is a separate
+`uv` Python project; never mix it with the Node toolchain. Workflow: record takes with
+`voice/scripts/record.sh`, cut candidates with `prepare_ref.py`, compare with `clone_test.py`, then
+`--pick` one as `voice/reference/reference.wav`, the only tracked voice file. Raw takes, clips and
+generated audio are gitignored. The Remotion side consumes only `voice/out/<video>/narration.wav`
+and `alignment.json`. Status and decisions are in `voice/PLAN.md`.

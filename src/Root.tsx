@@ -5,6 +5,7 @@ import { MapSpikeContact, MapSpikePanel, mapSpikeContactSize, PANELS } from "./d
 import { MapSpike2Contact, MapSpike2Panel, mapSpike2ContactSize, SPIKE2_NAMES } from "./dev/mapspike2/MapSpike2";
 import { Scene1, SCENE1_DURATION_SEC } from "./dev/makassan/Scene1";
 import { Scene2 } from "./dev/makassan/Scene2";
+import { MakassanShort, SHORT } from "./dev/shorts/MakassanShort";
 import { ThemeSheet } from "./dev/ThemeSheet";
 import { ROUNDS, THEMES } from "./theme/themes";
 
@@ -44,5 +45,6 @@ export const Root: React.FC = () => (
     <Still id="spike2-map-contact" component={MapSpike2Contact} {...mapSpike2ContactSize()} />
     <Composition id="makassan-s1" component={Scene1} width={1920} height={1080} fps={30} durationInFrames={SCENE1_DURATION_SEC * 30} />
     <Still id="makassan-s2" component={Scene2} width={1920} height={1080} />
+    <Composition id="makassan-short" component={MakassanShort} width={SHORT.width} height={SHORT.height} fps={SHORT.fps} durationInFrames={SHORT.durationSec * SHORT.fps} />
   </>
 );

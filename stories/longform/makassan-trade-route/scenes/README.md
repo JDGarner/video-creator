@@ -6,9 +6,9 @@ verbatim from the storyboard; `still.png` is the current design still, where one
 Render a still into its folder:
 
 ```
-pnpm still makassan-s1 stories/makassan-trade-route/scenes/1/still.png --frame=599
-pnpm exec remotion render makassan-s1 stories/makassan-trade-route/scenes/1/preview.mp4
-pnpm still makassan-s2 stories/makassan-trade-route/scenes/2/still.png
+pnpm still makassan-s1 stories/longform/makassan-trade-route/scenes/1/still.png --frame=599
+pnpm exec remotion render makassan-s1 stories/longform/makassan-trade-route/scenes/1/preview.mp4
+pnpm still makassan-s2 stories/longform/makassan-trade-route/scenes/2/still.png
 ```
 
 | Scene | Composition | Status |
