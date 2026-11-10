@@ -8,13 +8,17 @@
     "still": "remotion still",
     "typecheck": "tsc --noEmit",
     "lint:theme": "node scripts/check-hex.mjs",
-    "test": "vitest run"
+    "test": "vitest run",
+    "voice:narrate": "cd voice && uv run scripts/narrate.py",
+    "voice:align": "tsx voice/scripts/align.ts"
   },
   "packageManager": "pnpm@11.9.0",
   "engines": {
     "node": ">=22"
   },
   "devDependencies": {
+    "@remotion/captions": "4.0.541",
+    "@remotion/install-whisper-cpp": "4.0.541",
     "@types/d3-geo": "^3.1.1",
     "@types/geojson": "^7946.0.16",
     "@types/node": "^26.6.6",

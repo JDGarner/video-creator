@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
-import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, useCurrentFrame, useVideoConfig, type CalculateMetadataFunction } from "remotion";
 import { geoGraticule, geoPath } from "d3-geo";
+import { Captions } from "../../primitives/Captions";
 import { Display } from "../../primitives/Display";
 import { DrawPath } from "../../primitives/DrawPath";
 import { Grain } from "../../primitives/Grain";
@@ -13,13 +14,42 @@ import { MAP_PALETTE } from "../../theme/themes/map";
 import { getTheme } from "../../theme/themes";
 import { withAlpha } from "../../lib/color";
 import { greatCircleKm, type LonLat } from "../../lib/geo";
+import { beat, loadNarration, narrationFile, wordTime, type Narration } from "../../lib/narration";
 import { fade, progress, staggerFrames, useSec } from "../../motion/timeline";
 import { landFeatures } from "../../viz/globe/data";
 import { cameraForBox, lerpCamera, projectionFor } from "../../viz/map/camera";
 import { GlMapBase } from "../../viz/map/GlMapBase";
 import { PRAU_PATH } from "../../viz/map/icons";
 
-export const SHORT = { width: 1080, height: 1920, fps: 30, durationSec: 14 };
+export const SHORT = { width: 1080, height: 1920, fps: 30, durationSec: 14, kind: "shorts", video: "makassan-trade-route" };
+
+export type MakassanShortProps = { narration: Narration | null };
+
+/** Pull beat timing, words and length from the narration files so the animation follows the voice. */
+export const makassanShortMetadata: CalculateMetadataFunction<MakassanShortProps> = async ({ props }) => {
+  const narration = await loadNarration(SHORT.kind, SHORT.video);
+  return { props: { ...props, narration }, durationInFrames: Math.ceil((narration.duration + 1) * SHORT.fps) };
+};
+
+/** Scene times in seconds. Without narration these are the hand-set values the preview was built with. */
+function timings(narration: Narration | null) {
+  const b2 = narration ? beat(narration.beats, 2) : undefined;
+  if (!narration || !b2) {
+    return { title: 1, titleOut: 4.6, cameraStart: 0.5, cameraDur: 6.5, labels: 6.2, makassar: 6.6, routeStart: 7.4, routeDur: 5.6, arafura: 10 };
+  }
+  const routeStart = b2.start + 1.4;
+  return {
+    title: 1,
+    titleOut: b2.start - 1.4,
+    cameraStart: 0.5,
+    cameraDur: b2.start + 0.5 - 0.5,
+    labels: b2.start + 0.2,
+    makassar: wordTime(narration.words, "Makassar", b2.start + 0.6) - 0.15,
+    routeStart,
+    routeDur: b2.end - 0.1 - routeStart,
+    arafura: wordTime(narration.words, "Arafura", b2.start + 2.6) - 0.3,
+  };
+}
 
 const MAKASSAR: LonLat = [119.42, -5.14];
 const ARNHEM: LonLat = [135.6, -11.55];
@@ -34,9 +64,8 @@ const LAND_LABELS: { name: string; coord: LonLat }[] = [
 ];
 
 
-const T = { title: 1, titleOut: 4.6, cameraStart: 0.5, cameraDur: 6.5, labels: 6.2, makassar: 6.6, routeStart: 7.4, routeDur: 5.6, arafura: 10 };
-
-const Short: React.FC = () => {
+const Short: React.FC<MakassanShortProps> = ({ narration }) => {
+  const T = useMemo(() => timings(narration), [narration]);
   const { width, height, fps } = useVideoConfig();
   const frame = useCurrentFrame();
   const { theme, scale } = useTheme();
@@ -50,7 +79,7 @@ const Short: React.FC = () => {
     const wide = cameraForBox({ west: 96, south: -40, east: 160, north: 22 }, width, height);
     const tight = cameraForBox({ west: 113, south: -19.5, east: 143, north: 3 }, width, height);
     return lerpCamera(wide, tight, progress(frame, sec(T.cameraStart), sec(T.cameraDur), "easeInOutSine"));
-  }, [frame, width, height, sec]);
+  }, [frame, width, height, sec, T]);
 
   const geo = useMemo(() => {
     const projection = projectionFor(camera, width, height);
@@ -87,7 +116,7 @@ const Short: React.FC = () => {
       arafura: pt([133.6, -8.9]),
       labels: LAND_LABELS.map((l) => ({ ...l, xy: pt(l.coord) })),
     };
-  }, [camera, frame, width, height, sec]);
+  }, [camera, frame, width, height, sec, T]);
 
   const hair = theme.stroke.hair * scale;
   const shipA = fade(frame, sec(T.routeStart) - 6, 8);
@@ -96,6 +125,7 @@ const Short: React.FC = () => {
 
   return (
     <Paper variant="light">
+      {narration ? <Audio src={narrationFile(SHORT.kind, SHORT.video)} /> : null}
       <AbsoluteFill style={{ backgroundColor: p.sea }}>
         <GlMapBase camera={camera} palette={p} width={width} height={height} />
         <svg width={width} height={height} style={{ position: "absolute", inset: 0 }}>
@@ -200,13 +230,14 @@ const Short: React.FC = () => {
           </Label>
         </div>
 
+        {narration ? <Captions words={narration.words} top={0.78} /> : null}
       </AbsoluteFill>
     </Paper>
   );
 };
 
-export const MakassanShort: React.FC = () => (
+export const MakassanShort: React.FC<MakassanShortProps> = (props) => (
   <ThemeProvider theme={getTheme("fieldguide")} scale={1}>
-    <Short />
+    <Short {...props} />
   </ThemeProvider>
 );

@@ -1,0 +1,205 @@
+{
+  "video": "makassan-trade-route",
+  "source": "narration.wav",
+  "whisper": "medium.en@1.5.5",
+  "words": [
+    {
+      "text": "Long",
+      "start": 0.08,
+      "end": 0.24,
+      "beat": 1
+    },
+    {
+      "text": "before",
+      "start": 0.24,
+      "end": 0.61,
+      "beat": 1
+    },
+    {
+      "text": "the",
+      "start": 0.61,
+      "end": 0.79,
+      "beat": 1
+    },
+    {
+      "text": "British",
+      "start": 0.79,
+      "end": 1.21,
+      "beat": 1
+    },
+    {
+      "text": "arrived,",
+      "start": 1.21,
+      "end": 1.8,
+      "beat": 1
+    },
+    {
+      "text": "northern",
+      "start": 1.8,
+      "end": 2.16,
+      "beat": 1
+    },
+    {
+      "text": "Australia",
+      "start": 2.16,
+      "end": 2.58,
+      "beat": 1
+    },
+    {
+      "text": "was",
+      "start": 2.58,
+      "end": 2.74,
+      "beat": 1
+    },
+    {
+      "text": "already",
+      "start": 2.74,
+      "end": 3.11,
+      "beat": 1
+    },
+    {
+      "text": "part",
+      "start": 3.11,
+      "end": 3.32,
+      "beat": 1
+    },
+    {
+      "text": "of",
+      "start": 3.32,
+      "end": 3.43,
+      "beat": 1
+    },
+    {
+      "text": "an",
+      "start": 3.44,
+      "end": 3.53,
+      "beat": 1
+    },
+    {
+      "text": "international",
+      "start": 3.56,
+      "end": 4.24,
+      "beat": 1
+    },
+    {
+      "text": "trade",
+      "start": 4.24,
+      "end": 5,
+      "beat": 1
+    },
+    {
+      "text": "network.",
+      "start": 5,
+      "end": 5.48,
+      "beat": 1
+    },
+    {
+      "text": "Every",
+      "start": 6.13,
+      "end": 6.41,
+      "beat": 2
+    },
+    {
+      "text": "year,",
+      "start": 6.41,
+      "end": 6.75,
+      "beat": 2
+    },
+    {
+      "text": "fleets",
+      "start": 6.88,
+      "end": 7.1,
+      "beat": 2
+    },
+    {
+      "text": "from",
+      "start": 7.24,
+      "end": 7.45,
+      "beat": 2
+    },
+    {
+      "text": "Makassar,",
+      "start": 7.45,
+      "end": 7.96,
+      "beat": 2
+    },
+    {
+      "text": "in",
+      "start": 7.96,
+      "end": 8.08,
+      "beat": 2
+    },
+    {
+      "text": "today's",
+      "start": 8.09,
+      "end": 8.55,
+      "beat": 2
+    },
+    {
+      "text": "Indonesia,",
+      "start": 8.55,
+      "end": 9.13,
+      "beat": 2
+    },
+    {
+      "text": "sailed",
+      "start": 9.13,
+      "end": 9.38,
+      "beat": 2
+    },
+    {
+      "text": "over",
+      "start": 9.53,
+      "end": 9.66,
+      "beat": 2
+    },
+    {
+      "text": "a",
+      "start": 9.66,
+      "end": 9.71,
+      "beat": 2
+    },
+    {
+      "text": "thousand",
+      "start": 9.71,
+      "end": 10.24,
+      "beat": 2
+    },
+    {
+      "text": "kilometres",
+      "start": 10.24,
+      "end": 10.98,
+      "beat": 2
+    },
+    {
+      "text": "south",
+      "start": 10.98,
+      "end": 11.37,
+      "beat": 2
+    },
+    {
+      "text": "across",
+      "start": 11.37,
+      "end": 11.83,
+      "beat": 2
+    },
+    {
+      "text": "the",
+      "start": 11.85,
+      "end": 12.07,
+      "beat": 2
+    },
+    {
+      "text": "Arafura",
+      "start": 12.07,
+      "end": 12.6,
+      "beat": 2
+    },
+    {
+      "text": "Sea.",
+      "start": 12.6,
+      "end": 12.91,
+      "beat": 2
+    }
+  ]
+}

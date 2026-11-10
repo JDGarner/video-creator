@@ -1,0 +1,28 @@
+{
+  "video": "makassan-trade-route",
+  "story": "stories/shorts/makassan-trade-route/makassan_trade_route_short.md",
+  "model": "turbo",
+  "device": "cpu",
+  "reference": "reference.wav",
+  "reference_sha256": "719d16d0db6b",
+  "seed": 0,
+  "gap_ms": 500,
+  "sample_rate": 24000,
+  "duration": 13.09,
+  "beats": [
+    {
+      "n": 1,
+      "text": "Long before the British arrived, northern Australia was already part of an international trade network.",
+      "file": "beat-1.wav",
+      "start": 0.0,
+      "end": 5.48
+    },
+    {
+      "n": 2,
+      "text": "Every year, fleets from Makassar, in today's Indonesia, sailed over a thousand kilometres south across the Arafura Sea.",
+      "file": "beat-2.wav",
+      "start": 5.98,
+      "end": 13.09
+    }
+  ]
+}

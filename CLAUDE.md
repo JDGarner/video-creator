@@ -18,6 +18,8 @@ pnpm still <id> out/<id>.png
 pnpm typecheck
 pnpm test
 pnpm lint:theme
+pnpm voice:narrate --story stories/shorts/<video>/<story>.md --beats 1,2
+pnpm voice:align shorts/<video>
 ```
 
 Node 22 via nvm (`.nvmrc`). Remotion packages and zod are pinned exactly; Remotion 4.0.541 requires zod 4.6.7.

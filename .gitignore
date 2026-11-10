@@ -10,3 +10,5 @@ voice/out/
 voice/.venv/
 voice/reference/raw/
 voice/reference/clips/
+voice/.whisper/
+public/audio/**/*.wav

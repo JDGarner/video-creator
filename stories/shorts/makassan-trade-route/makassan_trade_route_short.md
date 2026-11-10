@@ -46,4 +46,4 @@ One map, one camera, nine beats. Hypsometric atlas style. Overlays appear on the
 - Beat 3's trepang image is the only photographic element. If no licensed image is available, use a line-drawn glyph.
 - Beat 6's glyphs for goods are schematic. Do not invent a dramatic encounter.
 - Beat 7's language example needs a verified word before it can be shown. Until then the pin reads *loanwords*.
-- Captions are added in post, not rendered. Keep the lower third clear for them.
+- Captions are rendered in the composition from the narration alignment (see `voice/PLAN.md` step 7), two to four words at a time, centred at about 72 percent of frame height. Keep that band clear of other overlays.

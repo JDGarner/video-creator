@@ -103,7 +103,7 @@ each cut at a real pause. Clips are gitignored with the raws; the chosen one is 
   `reference/reference.wav`. Model is Turbo on CPU with defaults. The original-model parameter
   sweep is deferred until Turbo has been heard across a full beat sequence in step 8.
 
-### 5. Narration generator (half a day)
+### 5. Narration generator (done 2026-11-10)
 - `narrate.py --story stories/shorts/makassan-trade-route/makassan_trade_route_short.md --beats 1,2`
   reads the `## Narration` section, parses the numbered list into beats, and synthesises each beat
   as its own WAV: `out/shorts/makassan-trade-route/beat-1.wav`, `beat-2.wav`. One call per beat
@@ -123,7 +123,23 @@ each cut at a real pause. Clips are gitignored with the raws; the chosen one is 
 - **Check:** `narration.wav` for beats 1 to 2 is listenable, and the manifest's beat boundaries sit
   in the gap between the two sentences.
 
-### 6. Word alignment (2 h)
+Result: `scripts/narrate.py` as specified, plus `voice/lexicon.json` (empty for now) and a
+reference hash in the manifest so stale narration is detectable after a voice swap. Beats 1 and 2
+on Turbo/CPU with the `take-2-full` reference:
+
+| beat | words | length | pace | gen time |
+|---|---|---|---|---|
+| 1 | 15 | 5.5 s | 164 wpm | 3.6 s |
+| 2 | 18 | 7.1 s | 152 wpm | 3.6 s |
+
+`narration.wav` is 13.1 s at -16.4 LUFS with beat 2 starting at 5.98 s. That is within a second of
+the 14 s the composition already runs, so no re-pacing is needed for the trial. The pace is brisk
+for documentary narration (the reference reads at about 140 wpm); if it grates in context the
+levers are a slower reference clip or the original model's `cfg_weight`, not post-stretching.
+ffmpeg 9 prints loudnorm's measurement keys in lower case (`input_i`, not `input_I`), which cost
+two runs.
+
+### 6. Word alignment (done 2026-11-10)
 - `align.ts` (run with `pnpm voice:align <video>`) uses `@remotion/install-whisper-cpp` to download
   whisper.cpp and the `medium.en` model, transcribes `narration.wav` with word timestamps, and
   writes `alignment.json` as `{ words: [{ text, start, end }] }` in seconds, the handoff's shape.
@@ -134,7 +150,17 @@ each cut at a real pause. Clips are gitignored with the raws; the chosen one is 
 - **Check:** the first word lands within 0.1 s of the manifest's beat 1 start, `Makassar` lands
   inside the beat 2 span, and every script word is present exactly once in `alignment.json`.
 
-### 7. Captions in the short (half a day)
+Result: `scripts/align.ts`, run as `pnpm voice:align shorts/makassan-trade-route`. whisper.cpp
+1.5.5 built with `make` into `voice/.whisper/` (gitignored; 1.7.3+ would need cmake, which is not
+installed), model `medium.en`, DTW token timestamps. Beats 1 to 2: 33 script words, 32 heard
+exactly, "sailed" heard as "sail" and matched by prefix. First word at 0.08 s, `Makassar` at
+7.45 to 7.96 s inside beat 2 (5.98 to 13.09 s), every word present once. Two lessons: passing the
+whole transcript as whisper's prompt made it stop after the first sentence and stretch those words
+over the full 13 s, so the prompt is now proper nouns only; and the helper's model download does
+not create its folder. Word times are clamped to their beat's manifest span so the last word of a
+beat does not bleed into the gap. Raw whisper output is kept beside the alignment as `whisper.json`.
+
+### 7. Captions in the short (done 2026-11-10)
 - Shorts-style captions: one to three words on screen, the group changing on the spoken word, not
   whole sentences. Mechanic: `createTikTokStyleCaptions` from `@remotion/captions` over the word
   list, `combineTokensWithinMilliseconds` around 900 ms to start; lower it for single words.
@@ -151,7 +177,18 @@ each cut at a real pause. Clips are gitignored with the raws; the chosen one is 
 - **Check:** scrubbing the Remotion studio frame by frame, each word appears on its onset frame,
   never before the voice says it, and no page is wider than the frame minus the side margins.
 
-### 8. Wire voice and captions into the short (2 h)
+Result: `src/lib/captions.ts` (pure: `captionPages`, `pageAt`, `activeToken`, tested) and
+`src/primitives/Captions.tsx`. Pages come from `createTikTokStyleCaptions` with an 800 ms window,
+giving two to four words per page; a sentence end always closes a page; a page lingers at most
+400 ms past its last word so captions clear in the beat gap. Styling: display serif at 1.3x `h2`
+(about 100 px in the 1080x1920 frame), surface card at 94 percent with the theme's card rules,
+centred at 72 percent of height. Two highlight modes, `accent` (spoken word in the accent colour,
+default) and `underline` (ink text, accent rule under the spoken word). Check composition
+`captions-check` loads `public/audio/shorts/<video>/alignment.json` through `calculateMetadata`
+and draws thirds guides; frames at 0.5, 2, 5.7, 7.6 and 12.7 s rendered correctly, including the
+gap hold. Judgement call still open: accent vs underline, to be made on the map, not on blank paper.
+
+### 8. Wire voice and captions into the short (done 2026-11-10)
 - `pnpm voice:narrate <video>` and `pnpm voice:align <video>` scripts at the repo root shell into
   `uv run` and `tsx`, then copy `narration.wav` and `alignment.json` into
   `public/audio/shorts/<video>/`.
@@ -162,6 +199,17 @@ each cut at a real pause. Clips are gitignored with the raws; the chosen one is 
 - **Check:** voice, camera move and captions agree: the route starts drawing when beat 2 begins,
   "Makassar" appears as a caption at the moment the Makassar dot fades in, and the file plays with
   audio in QuickTime.
+
+Result: `narrate.py` and `align.ts` now also copy their outputs to `public/audio/<kind>/<video>/`
+(WAVs there are gitignored, JSON is tracked). `src/lib/narration.ts` loads manifest and alignment
+through `staticFile()` and offers `wordTime()` so overlays can cue on a spoken word.
+`MakassanShort` takes `{ narration }` from `calculateMetadata`: duration is narration plus a one
+second tail, the camera settles half a second into beat 2, the Makassar dot fades in 150 ms before
+the word is spoken, the route draws from 1.4 s into beat 2 and lands 100 ms before the beat ends,
+and the Arafura Sea label reveals 300 ms before its word. Without narration files the old hand-set
+times still apply, so the composition never breaks. Captions sit at 78 percent of height, below the
+Arnhem Land label; 72 percent collided with it in the portrait framing. Preview re-rendered to
+`stories/shorts/makassan-trade-route/preview-beats-1-2.mp4` with the narration track.
 
 ### 9. The rest of the short
 - Only after 8 is signed off: `--beats 1-9`, re-check pace against the 55 to 60 s target, then

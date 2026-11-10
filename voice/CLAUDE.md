@@ -16,8 +16,9 @@ Read `PLAN.md` for the step list, measurements and open decisions before changin
 - `reference/raw/` and `reference/clips/` are personal voice recordings and gitignored. Never copy
   them elsewhere, upload them, or commit them. `reference/reference.wav` is the one tracked voice
   file and the only reference the pipeline reads.
-- Generated audio goes under `out/` (gitignored). The Remotion side only ever consumes
-  `out/<video>/narration.wav` and `alignment.json`.
+- Generated audio goes under `out/` (gitignored). `narrate.py` and `align.ts` copy
+  `narration.wav`, `manifest.json` and `alignment.json` to `public/audio/<kind>/<video>/`, which is
+  all the Remotion side reads (through `src/lib/narration.ts`). Never hand-edit the copies.
 - Seed every generate call (`torch.manual_seed`) so a re-run of one paragraph is reproducible.
 - Audio is 24 kHz mono from the model. Do not resample inside scripts except at the final
   loudness step.
@@ -30,7 +31,14 @@ uv run scripts/prepare_ref.py            # raw takes -> reference/clips/*-{full,
 uv run scripts/prepare_ref.py --pick X   # copy reference/clips/X.wav to reference/reference.wav
 uv run scripts/clone_test.py             # every clip x two test paragraphs -> out/clone-tests/
 uv run scripts/smoke.py                  # model/device benchmark -> out/smoke/results.json
+uv run scripts/narrate.py --story stories/shorts/<video>/<story>.md --beats 1,2 [--only 2] [--seed N]
+                                         # -> out/shorts/<video>/{beat-N.wav,narration.wav,manifest.json}
+pnpm voice:align shorts/<video>          # from the repo root; narration.wav -> alignment.json via whisper.cpp
 ```
+
+`narrate.py` takes `--story` relative to the repo root or the current directory. Each beat is
+seeded with `seed + n`, so re-running is byte-identical and `--seed` rolls every beat together;
+use `--only N --seed M` to re-roll one beat and restitch.
 
 ## Changing the reference voice
 
@@ -43,8 +51,10 @@ regenerated automatically, so re-run it for the whole video rather than mixing v
 - `reference/script.md` what to read when recording; the first paragraph is the 10 s window
 - `scripts/` one script per pipeline stage, each with a usage docstring
 - `out/clone-tests/notes.md` listening notes from the clone comparison
-- Planned, not yet written: `scripts/narrate.py` (direction.md -> narration.wav + manifest) and
-  `scripts/align.ts` (whisper.cpp word timestamps -> alignment.json)
+- `lexicon.json` word -> respelling substitutions applied before synthesis only; captions still
+  show the written word
+- `scripts/align.ts` runs under `tsx` from the Node side, not `uv`; whisper.cpp and its models live
+  in `.whisper/` (gitignored, rebuilt on first run)
 
 ## Gotchas
 
@@ -52,3 +62,10 @@ regenerated automatically, so re-run it for the whole video rather than mixing v
 - Turbo's `generate` accepts `audio_prompt_path`; `exaggeration` and `cfg_weight` are only
   meaningful on the original model.
 - `rec` exits non-zero on Ctrl-C after writing a valid file; that is expected.
+- ffmpeg 9's `loudnorm` JSON keys are lower case (`input_i`, `input_tp`); `narrate.py` relies on that.
+- whisper.cpp is pinned to 1.5.5 because it builds with `make` alone; 1.7.3+ needs cmake.
+- Never pass the full script as whisper's `--prompt`; it stops transcribing after the first
+  sentence. `align.ts` passes proper nouns only. Word text always comes from the script, whisper
+  supplies timings.
+- The manifest stores a short hash of `reference.wav`. If it differs from the current file, the
+  narration was made with an older voice and should be regenerated.

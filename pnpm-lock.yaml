@@ -48,6 +48,12 @@ importers:
         specifier: 4.6.7
         version: 4.6.7
     devDependencies:
+      '@remotion/captions':
+        specifier: 4.0.541
+        version: 4.0.541
+      '@remotion/install-whisper-cpp':
+        specifier: 4.0.541
+        version: 4.0.541
       '@types/d3-geo':
         specifier: ^3.1.1
         version: 3.1.1
@@ -619,6 +625,9 @@ packages:
 
   '@remotion/google-fonts@4.0.541':
     resolution: {integrity: sha512-MZNvxDPR4GDFs+PnTY8pwNlLsnKWhhpfyFFoUI9MAChgpGPjoIY7rTNSv8hV+698OCzhSag93gBYMFJxpuIxLA==}
+
+  '@remotion/install-whisper-cpp@4.0.541':
+    resolution: {integrity: sha512-is/ddOrI9F2Yc+lJ+vKxKR9oCZraUeaDACvKvdHE0ufnwfP+xi9hJfu+JZRbFAMTbWGBIbsa1QVqXmI8shEX0A==}
 
   '@remotion/licensing@4.0.541':
     resolution: {integrity: sha512-3pgkYJuIgvIMqQQNUVMWbaWPKN8AZUdlLp0X+Icsveocu4tyJhIZat9H3IF30WW49nTj9Z64ROTrJTzM2h1FsQ==}
@@ -2551,6 +2560,10 @@ snapshots:
     transitivePeerDependencies:
       - react
       - react-dom
+
+  '@remotion/install-whisper-cpp@4.0.541':
+    dependencies:
+      '@remotion/captions': 4.0.541
 
   '@remotion/licensing@4.0.541': {}
 
