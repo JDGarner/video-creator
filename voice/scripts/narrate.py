@@ -1,16 +1,17 @@
 """Synthesise a story's narration in the cloned voice, one WAV per beat, then stitch.
 
-Usage:
-  uv run scripts/narrate.py --story <path/to/story.md> [--beats 1,2 | 1-9] [--only 2] [--seed 0]
-                            [--gap-ms 500] [--model turbo|original] [--device cpu]
+Driven by `pnpm narrate <video>` (scripts/short.ts); see docs/PIPELINE.md. Direct use:
+  uv run scripts/narrate.py --story <story.md> --out <dir> [--beats 1,2|1-9] [--only 3] [--seed N]
+                            [--gap-ms 500] [--model turbo|original] [--device cpu] [--max-wpm 150] [--force]
 
-Reads the `## Narration` section. Numbered items are beats (shorts); otherwise each paragraph is
-a beat (longform direction.md). Writes to out/<kind>/<video>/ where the story lives at
-stories/<kind>/<video>/...:
-  beat-N.wav       one per beat, trimmed, raw model output otherwise
-  narration.wav    beats joined with a fixed gap, -16 LUFS integrated
-  manifest.json    beat texts and their start/end seconds inside narration.wav
---only regenerates just those beats and restitches with the existing files for the rest.
+Reads the `## Narration` section: numbered items are beats, otherwise each paragraph is one.
+Writes beat-N.wav, narration.wav (-16 LUFS) and manifest.json into --out. A beat is reused when
+its hash (text as sent to the model, seed, model, reference voice) matches the previous manifest
+and its WAV exists; --force regenerates everything selected.
+
+Seeds: beat n uses `base + n`. Without --seed, beats keep the seed they were last made with.
+--seed N re-takes every selected beat with base N. --only restricts regeneration to those beats;
+with --only and no --seed, each gets its previous seed + 1, i.e. "another take".
 """
 from __future__ import annotations
 
@@ -28,7 +29,6 @@ import numpy as np
 import soundfile as sf
 
 ROOT = Path(__file__).resolve().parent.parent
-REPO = ROOT.parent
 REFERENCE = ROOT / "reference" / "reference.wav"
 LEXICON = ROOT / "lexicon.json"
 SR = 24_000
@@ -50,6 +50,8 @@ def parse_beats(story: Path) -> list[str]:
     for it in items:
         it = re.sub(r"\*\*(.+?)\*\*|\*(.+?)\*|_(.+?)_", lambda mm: next(g for g in mm.groups() if g), it)
         clean.append(" ".join(it.split()))
+    if not clean:
+        sys.exit(f"the '## Narration' section of {story} has no beats")
     return clean
 
 
@@ -65,7 +67,7 @@ def parse_selection(spec: str | None, n: int) -> list[int]:
             out.append(int(part))
     bad = [i for i in out if not 1 <= i <= n]
     if bad:
-        sys.exit(f"beats {bad} out of range 1..{n}")
+        sys.exit(f"beats {bad} out of range; the script has {n} beats")
     return out
 
 
@@ -107,7 +109,7 @@ def synthesise(model, text: str, seed: int) -> np.ndarray:
 
 
 def loudnorm(src: Path, dst: Path) -> None:
-    """Two-pass ffmpeg loudnorm so the gain is linear, not pumping."""
+    """Two-pass ffmpeg loudnorm so the gain is linear, not pumping. ffmpeg 9 prints lower-case keys."""
     base = f"loudnorm=I={TARGET_LUFS}:TP={TRUE_PEAK}:LRA=11"
     p = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-i", str(src), "-af", f"{base}:print_format=json", "-f", "null", "-"], capture_output=True, text=True, check=True)
     start = p.stderr.index("{", p.stderr.index("Parsed_loudnorm"))
@@ -116,58 +118,92 @@ def loudnorm(src: Path, dst: Path) -> None:
     subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-y", "-i", str(src), "-af", f"{base}:{measured}", "-ar", str(SR), "-c:a", "pcm_s16le", str(dst)], check=True, capture_output=True)
 
 
+def beat_hash(sent_text: str, seed: int, model: str, reference_sha: str) -> str:
+    return hashlib.sha256(f"{sent_text}\n{seed}\n{model}\n{reference_sha}".encode()).hexdigest()[:16]
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--story", required=True, type=Path)
+    ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--beats", help="e.g. 1,2 or 1-9; default all")
     ap.add_argument("--only", help="regenerate only these beats, reuse files for the rest")
-    ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--gap-ms", type=int, default=500)
     ap.add_argument("--model", default="turbo")
     ap.add_argument("--device", default="cpu")
+    ap.add_argument("--max-wpm", type=float, default=150)
+    ap.add_argument("--force", action="store_true")
     args = ap.parse_args()
 
-    story = args.story if args.story.is_absolute() else (Path.cwd() / args.story)
-    if not story.exists():
-        story = REPO / args.story
-    story = story.resolve()
     if not REFERENCE.exists():
         sys.exit("no reference/reference.wav; run prepare_ref.py --pick first")
-    rel = story.relative_to(REPO / "stories").parts  # (kind, video, file)
-    out = ROOT / "out" / rel[0] / rel[1]
+    story = args.story.resolve()
+    out = args.out.resolve()
     out.mkdir(parents=True, exist_ok=True)
 
     beats = parse_beats(story)
     selected = parse_selection(args.beats, len(beats))
-    to_generate = parse_selection(args.only, len(beats)) if args.only else selected
+    only = set(parse_selection(args.only, len(beats))) if args.only else set()
     lexicon = json.loads(LEXICON.read_text()) if LEXICON.exists() else {}
+    reference_sha = hashlib.sha256(REFERENCE.read_bytes()).hexdigest()[:12]
 
-    model = load_model(args.model, args.device) if to_generate else None
-    clips: dict[int, np.ndarray] = {}
+    manifest_path = out / "manifest.json"
+    old: dict[int, dict] = {}
+    if manifest_path.exists():
+        old = {b["n"]: b for b in json.loads(manifest_path.read_text()).get("beats", [])}
+    base_seed = args.seed if args.seed is not None else 0
+
+    # decide, per beat, the seed and whether its WAV can be reused
+    plan: list[tuple[int, str, int, str, bool]] = []  # (n, sent_text, seed, hash, regenerate)
     for n in selected:
+        sent = apply_lexicon(beats[n - 1], lexicon)
+        prev = old.get(n)
+        if n in only:
+            seed = (base_seed + n) if args.seed is not None else (prev["seed"] + 1 if prev and "seed" in prev else n + 1)
+        elif args.seed is not None:
+            seed = base_seed + n
+        else:
+            seed = prev["seed"] if prev and "seed" in prev else n
+        h = beat_hash(sent, seed, args.model, reference_sha)
+        wav = out / f"beat-{n}.wav"
+        reusable = prev is not None and prev.get("hash") == h and wav.exists() and not args.force and n not in only
+        if n in only and not wav.exists() and prev is None:
+            sys.exit(f"--only {n}: beat-{n}.wav does not exist yet; run without --only first")
+        plan.append((n, sent, seed, h, not reusable))
+
+    to_make = [p for p in plan if p[4]]
+    old_manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
+    same_shape = [(b["n"], b.get("hash"), b.get("seed")) for b in old_manifest.get("beats", [])] == [(n, h, seed) for n, _, seed, h, _ in plan]
+    if not to_make and same_shape and old_manifest.get("gap_ms") == args.gap_ms and (out / "narration.wav").exists():
+        print(f"all {len(plan)} beats unchanged, narration.wav kept ({old_manifest.get('duration', 0):.1f} s)")
+        return
+    model = load_model(args.model, args.device) if to_make else None
+    clips: dict[int, np.ndarray] = {}
+    for n, sent, seed, h, regenerate in plan:
         path = out / f"beat-{n}.wav"
-        if n in to_generate:
-            text = apply_lexicon(beats[n - 1], lexicon)
+        if regenerate:
             t0 = time.perf_counter()
-            audio = synthesise(model, text, args.seed + n)
+            audio = synthesise(model, sent, seed)
             sf.write(path, audio, SR, subtype="PCM_16")
             words = len(beats[n - 1].split())
-            print(f"beat {n}: {len(audio)/SR:5.1f} s  {words} words  {words/(len(audio)/SR)*60:4.0f} wpm  gen {time.perf_counter()-t0:4.1f} s", flush=True)
-        elif path.exists():
+            wpm = words / (len(audio) / SR) * 60
+            flag = "  (fast)" if wpm > args.max_wpm else ""
+            print(f"beat {n}: {len(audio)/SR:5.1f} s  {words:2d} words  {wpm:4.0f} wpm  seed {seed}  gen {time.perf_counter()-t0:4.1f} s{flag}", flush=True)
+        else:
             audio, sr = sf.read(path, dtype="float32")
             assert sr == SR
-        else:
-            sys.exit(f"{path} missing; drop --only or include beat {n} in it")
+            print(f"beat {n}: reused (seed {seed})", flush=True)
         clips[n] = audio
 
     gap = np.zeros(int(args.gap_ms / 1000 * SR), dtype=np.float32)
     parts, manifest_beats, pos = [], [], 0.0
-    for i, n in enumerate(selected):
+    for i, (n, sent, seed, h, _) in enumerate(plan):
         if i:
             parts.append(gap)
             pos += len(gap) / SR
         a = clips[n]
-        manifest_beats.append({"n": n, "text": beats[n - 1], "file": f"beat-{n}.wav", "start": round(pos, 3), "end": round(pos + len(a) / SR, 3)})
+        manifest_beats.append({"n": n, "text": beats[n - 1], "file": f"beat-{n}.wav", "start": round(pos, 3), "end": round(pos + len(a) / SR, 3), "seed": seed, "hash": h})
         parts.append(a)
         pos += len(a) / SR
     joined = np.concatenate(parts)
@@ -178,27 +214,19 @@ def main() -> None:
         loudnorm(Path(tmp.name), out / "narration.wav")
 
     manifest = {
-        "video": rel[1],
-        "story": str(story.relative_to(REPO)),
+        "story": str(story),
         "model": args.model,
         "device": args.device,
         "reference": REFERENCE.name,
-        "reference_sha256": hashlib.sha256(REFERENCE.read_bytes()).hexdigest()[:12],
-        "seed": args.seed,
+        "reference_sha256": reference_sha,
         "gap_ms": args.gap_ms,
         "sample_rate": SR,
         "duration": round(len(joined) / SR, 3),
         "beats": manifest_beats,
     }
-    (out / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
-    # the Remotion side reads these through staticFile(), so publish a copy under public/
-    public = REPO / "public" / "audio" / rel[0] / rel[1]
-    public.mkdir(parents=True, exist_ok=True)
-    for name in ("narration.wav", "manifest.json"):
-        shutil.copy(out / name, public / name)
-    print(f"\n{out.relative_to(ROOT)}/narration.wav  {manifest['duration']:.1f} s, {len(selected)} beats  (copied to {public.relative_to(REPO)})")
-    for b in manifest_beats:
-        print(f"  beat {b['n']}  {b['start']:6.2f} -> {b['end']:6.2f}  {b['text'][:60]}")
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+    total_words = sum(len(beats[n - 1].split()) for n in selected)
+    print(f"narration.wav  {manifest['duration']:.1f} s, {len(selected)} beats, {total_words} words, {total_words / manifest['duration'] * 60:.0f} wpm overall")
 
 
 if __name__ == "__main__":

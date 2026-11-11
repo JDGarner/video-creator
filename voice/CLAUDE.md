@@ -16,9 +16,9 @@ Read `PLAN.md` for the step list, measurements and open decisions before changin
 - `reference/raw/` and `reference/clips/` are personal voice recordings and gitignored. Never copy
   them elsewhere, upload them, or commit them. `reference/reference.wav` is the one tracked voice
   file and the only reference the pipeline reads.
-- Generated audio goes under `out/` (gitignored). `narrate.py` and `align.ts` copy
-  `narration.wav`, `manifest.json` and `alignment.json` to `public/audio/<kind>/<video>/`, which is
-  all the Remotion side reads (through `src/lib/narration.ts`). Never hand-edit the copies.
+- Generated audio goes under `out/` (gitignored). `scripts/short.ts` copies `narration.wav`,
+  `manifest.json`, `alignment.json` and the merged `config.json` to `public/audio/<kind>/<video>/`,
+  which is all the Remotion side reads (through `src/lib/narration.ts`). Never hand-edit the copies.
 - Seed every generate call (`torch.manual_seed`) so a re-run of one paragraph is reproducible.
 - Audio is 24 kHz mono from the model. Do not resample inside scripts except at the final
   loudness step.
@@ -31,14 +31,14 @@ uv run scripts/prepare_ref.py            # raw takes -> reference/clips/*-{full,
 uv run scripts/prepare_ref.py --pick X   # copy reference/clips/X.wav to reference/reference.wav
 uv run scripts/clone_test.py             # every clip x two test paragraphs -> out/clone-tests/
 uv run scripts/smoke.py                  # model/device benchmark -> out/smoke/results.json
-uv run scripts/narrate.py --story stories/shorts/<video>/<story>.md --beats 1,2 [--only 2] [--seed N]
-                                         # -> out/shorts/<video>/{beat-N.wav,narration.wav,manifest.json}
-pnpm voice:align shorts/<video>          # from the repo root; narration.wav -> alignment.json via whisper.cpp
+pnpm narrate <video>                     # from the repo root; drives narrate.py with the merged config
+pnpm align <video>                       # from the repo root; narration.wav -> alignment.json via whisper.cpp
 ```
 
-`narrate.py` takes `--story` relative to the repo root or the current directory. Each beat is
-seeded with `seed + n`, so re-running is byte-identical and `--seed` rolls every beat together;
-use `--only N --seed M` to re-roll one beat and restitch.
+`narrate.py` and `align.ts` are normally run by `scripts/short.ts`, which passes the config and
+publishes outputs. Direct use is documented in each file's docstring. Beats are reused when their
+hash (text sent, seed, model, reference) matches the manifest; see `docs/PIPELINE.md` for the seed
+rules behind `--seed` and `--only`.
 
 ## Changing the reference voice
 

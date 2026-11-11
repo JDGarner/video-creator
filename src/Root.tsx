@@ -5,8 +5,8 @@ import { MapSpikeContact, MapSpikePanel, mapSpikeContactSize, PANELS } from "./d
 import { MapSpike2Contact, MapSpike2Panel, mapSpike2ContactSize, SPIKE2_NAMES } from "./dev/mapspike2/MapSpike2";
 import { Scene1, SCENE1_DURATION_SEC } from "./dev/makassan/Scene1";
 import { Scene2 } from "./dev/makassan/Scene2";
-import { MakassanShort, makassanShortMetadata, SHORT } from "./dev/shorts/MakassanShort";
 import { CaptionsCheck, captionsCheckMetadata } from "./dev/shorts/CaptionsCheck";
+import { DEFAULT_CONFIG, ShortCompositions } from "./shorts";
 import { ThemeSheet } from "./dev/ThemeSheet";
 import { ROUNDS, THEMES } from "./theme/themes";
 
@@ -46,22 +46,13 @@ export const Root: React.FC = () => (
     <Still id="spike2-map-contact" component={MapSpike2Contact} {...mapSpike2ContactSize()} />
     <Composition id="makassan-s1" component={Scene1} width={1920} height={1080} fps={30} durationInFrames={SCENE1_DURATION_SEC * 30} />
     <Still id="makassan-s2" component={Scene2} width={1920} height={1080} />
-    <Composition
-      id="makassan-short"
-      component={MakassanShort}
-      width={SHORT.width}
-      height={SHORT.height}
-      fps={SHORT.fps}
-      durationInFrames={SHORT.durationSec * SHORT.fps}
-      defaultProps={{ narration: null }}
-      calculateMetadata={makassanShortMetadata}
-    />
+    <ShortCompositions />
     <Composition
       id="captions-check"
       component={CaptionsCheck}
-      width={SHORT.width}
-      height={SHORT.height}
-      fps={SHORT.fps}
+      width={DEFAULT_CONFIG.width}
+      height={DEFAULT_CONFIG.height}
+      fps={DEFAULT_CONFIG.fps}
       durationInFrames={30}
       defaultProps={{ words: [], highlight: "accent" }}
       calculateMetadata={captionsCheckMetadata}

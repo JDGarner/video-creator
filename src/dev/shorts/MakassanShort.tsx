@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { AbsoluteFill, Audio, useCurrentFrame, useVideoConfig, type CalculateMetadataFunction } from "remotion";
+import { AbsoluteFill, Audio, useCurrentFrame, useVideoConfig } from "remotion";
 import { geoGraticule, geoPath } from "d3-geo";
 import { Captions } from "../../primitives/Captions";
 import { Display } from "../../primitives/Display";
@@ -14,22 +14,15 @@ import { MAP_PALETTE } from "../../theme/themes/map";
 import { getTheme } from "../../theme/themes";
 import { withAlpha } from "../../lib/color";
 import { greatCircleKm, type LonLat } from "../../lib/geo";
-import { beat, loadNarration, narrationFile, wordTime, type Narration } from "../../lib/narration";
+import { beat, narrationFile, wordTime, type Narration } from "../../lib/narration";
+import type { ShortProps } from "../../shorts";
 import { fade, progress, staggerFrames, useSec } from "../../motion/timeline";
 import { landFeatures } from "../../viz/globe/data";
 import { cameraForBox, lerpCamera, projectionFor } from "../../viz/map/camera";
 import { GlMapBase } from "../../viz/map/GlMapBase";
 import { PRAU_PATH } from "../../viz/map/icons";
 
-export const SHORT = { width: 1080, height: 1920, fps: 30, durationSec: 14, kind: "shorts", video: "makassan-trade-route" };
-
-export type MakassanShortProps = { narration: Narration | null };
-
-/** Pull beat timing, words and length from the narration files so the animation follows the voice. */
-export const makassanShortMetadata: CalculateMetadataFunction<MakassanShortProps> = async ({ props }) => {
-  const narration = await loadNarration(SHORT.kind, SHORT.video);
-  return { props: { ...props, narration }, durationInFrames: Math.ceil((narration.duration + 1) * SHORT.fps) };
-};
+const VIDEO = { kind: "shorts", id: "makassan-trade-route" };
 
 /** Scene times in seconds. Without narration these are the hand-set values the preview was built with. */
 function timings(narration: Narration | null) {
@@ -64,7 +57,7 @@ const LAND_LABELS: { name: string; coord: LonLat }[] = [
 ];
 
 
-const Short: React.FC<MakassanShortProps> = ({ narration }) => {
+const Short: React.FC<ShortProps> = ({ narration, config }) => {
   const T = useMemo(() => timings(narration), [narration]);
   const { width, height, fps } = useVideoConfig();
   const frame = useCurrentFrame();
@@ -125,7 +118,7 @@ const Short: React.FC<MakassanShortProps> = ({ narration }) => {
 
   return (
     <Paper variant="light">
-      {narration ? <Audio src={narrationFile(SHORT.kind, SHORT.video)} /> : null}
+      {narration ? <Audio src={narrationFile(VIDEO.kind, VIDEO.id)} /> : null}
       <AbsoluteFill style={{ backgroundColor: p.sea }}>
         <GlMapBase camera={camera} palette={p} width={width} height={height} />
         <svg width={width} height={height} style={{ position: "absolute", inset: 0 }}>
@@ -230,14 +223,14 @@ const Short: React.FC<MakassanShortProps> = ({ narration }) => {
           </Label>
         </div>
 
-        {narration ? <Captions words={narration.words} top={0.78} /> : null}
+        {narration ? <Captions words={narration.words} {...config.captions} /> : null}
       </AbsoluteFill>
     </Paper>
   );
 };
 
-export const MakassanShort: React.FC<MakassanShortProps> = (props) => (
-  <ThemeProvider theme={getTheme("fieldguide")} scale={1}>
+export const MakassanShort: React.FC<ShortProps> = (props) => (
+  <ThemeProvider theme={getTheme(props.config.theme)} scale={1}>
     <Short {...props} />
   </ThemeProvider>
 );

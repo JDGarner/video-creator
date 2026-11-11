@@ -1,28 +1,93 @@
 {
-  "video": "makassan-trade-route",
-  "story": "stories/shorts/makassan-trade-route/makassan_trade_route_short.md",
+  "story": "/Users/jamiegarner/dev/personal/video-creator/stories/shorts/makassan-trade-route/short.md",
   "model": "turbo",
   "device": "cpu",
   "reference": "reference.wav",
   "reference_sha256": "719d16d0db6b",
-  "seed": 0,
   "gap_ms": 500,
   "sample_rate": 24000,
-  "duration": 13.09,
+  "duration": 63.98,
   "beats": [
     {
       "n": 1,
       "text": "Long before the British arrived, northern Australia was already part of an international trade network.",
       "file": "beat-1.wav",
       "start": 0.0,
-      "end": 5.48
+      "end": 5.48,
+      "seed": 1,
+      "hash": "e1cd9aca878ec1c2"
     },
     {
       "n": 2,
       "text": "Every year, fleets from Makassar, in today's Indonesia, sailed over a thousand kilometres south across the Arafura Sea.",
       "file": "beat-2.wav",
       "start": 5.98,
-      "end": 13.09
+      "end": 13.09,
+      "seed": 2,
+      "hash": "d31a7a4cf346e7d4"
+    },
+    {
+      "n": 3,
+      "text": "They came for sea cucumber. Dried, it was a delicacy in China, and worth the voyage.",
+      "file": "beat-3.wav",
+      "start": 13.59,
+      "end": 18.66,
+      "seed": 4,
+      "hash": "0d7cc66ef20c905d"
+    },
+    {
+      "n": 4,
+      "text": "They rode the monsoon down in December, and the same winds home months later.",
+      "file": "beat-4.wav",
+      "start": 19.16,
+      "end": 23.35,
+      "seed": 4,
+      "hash": "d7fa9398f9093db4"
+    },
+    {
+      "n": 5,
+      "text": "On the Arnhem Land coast they built camps, boiling and drying the catch for the journey back.",
+      "file": "beat-5.wav",
+      "start": 23.85,
+      "end": 28.84,
+      "seed": 5,
+      "hash": "c571d2a851dec767"
+    },
+    {
+      "n": 6,
+      "text": "But this coast wasn't empty. Aboriginal communities had lived here for tens of thousands of years, and they traded too: for metal, cloth and tools. Some sailed back to Makassar.",
+      "file": "beat-6.wav",
+      "start": 29.34,
+      "end": 41.0,
+      "seed": 6,
+      "hash": "db24ab14199f4401"
+    },
+    {
+      "n": 7,
+      "text": "The traces remain. Indonesian words in Aboriginal languages. Tamarind trees at old camps. Bark paintings of the ships.",
+      "file": "beat-7.wav",
+      "start": 41.5,
+      "end": 50.69,
+      "seed": 7,
+      "hash": "4d626a20c6fd479e"
+    },
+    {
+      "n": 8,
+      "text": "In 1803, Matthew Flinders met six of these vessels. The last recorded voyage was 1907.",
+      "file": "beat-8.wav",
+      "start": 51.19,
+      "end": 57.36,
+      "seed": 8,
+      "hash": "167c62593669a19d"
+    },
+    {
+      "n": 9,
+      "text": "Australia's history didn't begin in 1788. It was already underway, across the sea to the north.",
+      "file": "beat-9.wav",
+      "start": 57.86,
+      "end": 63.98,
+      "seed": 9,
+      "hash": "5a7dddc93050013b"
     }
   ]
 }

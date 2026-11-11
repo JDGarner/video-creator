@@ -11,8 +11,6 @@ Centuries before the British, fleets from Indonesia sailed to northern Australia
 
 ## Narration
 
-About 140 words at a measured documentary pace. Each numbered block is one beat; the map moves on the beat change.
-
 1. Long before the British arrived, northern Australia was already part of an international trade network.
 2. Every year, fleets from Makassar, in today's Indonesia, sailed over a thousand kilometres south across the Arafura Sea.
 3. They came for sea cucumber. Dried, it was a delicacy in China, and worth the voyage.
@@ -38,6 +36,17 @@ One map, one camera, nine beats. Hypsometric atlas style. Overlays appear on the
 | 7 | 0:44–0:51 | Pull back slightly | Three evidence pins drop in sequence along the coast: a word glyph, a tree glyph, a bark painting glyph. Each with a two-word label. |
 | 8 | 0:51–0:56 | Hold | Date marker **1803** with six small prau silhouettes off the coast. Timeline ticks to **1907**. Route line and praus fade out. |
 | 9 | 0:56–1:00 | Slow pull out to the opening framing | Closing overlay: **Australia's history didn't begin in 1788.** Hold two seconds. |
+
+## Publish
+
+title: Northern Australia traded with Indonesia for centuries before 1788
+tags: history, australia, indonesia, makassan, trepang, arnhem land, maps
+hashtags: #shorts #history #australia #indonesia
+thumbnail: 0:09
+
+Draft, finalise with the script. Every year for centuries, fleets from Makassar sailed over a thousand kilometres to Arnhem Land for sea cucumber, trading with Aboriginal communities and leaving words, trees and paintings behind. The last voyage was in 1907.
+
+Sources and corrections in the pinned comment.
 
 ## Production notes
 

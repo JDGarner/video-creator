@@ -18,9 +18,11 @@ pnpm still <id> out/<id>.png
 pnpm typecheck
 pnpm test
 pnpm lint:theme
-pnpm voice:narrate --story stories/shorts/<video>/<story>.md --beats 1,2
-pnpm voice:align shorts/<video>
+pnpm short <video>      # narrate -> align -> render -> bundle, skipping unchanged stages
+pnpm narrate|align|render|bundle <video> [--beats 1,2] [--only 3] [--seed N] [--force]
 ```
+
+The shorts pipeline is described in `docs/PIPELINE.md`; read it before changing `scripts/short.ts`, `src/shorts/` or anything under `voice/`.
 
 Node 22 via nvm (`.nvmrc`). Remotion packages and zod are pinned exactly; Remotion 4.0.541 requires zod 4.6.7.
 
@@ -31,7 +33,9 @@ Node 22 via nvm (`.nvmrc`). Remotion packages and zod are pinned exactly; Remoti
 - `src/dev/` showcase compositions used as visual checks (`sheet-<theme>-<variant>`)
 - `src/lib/` pure helpers with Vitest tests next to them
 - `docs/design/` chosen reference renders and why; `spikes/` rejected explorations kept for reference
-- `stories/<video>/` storyboard plus `scenes/<n>/direction.md` (visuals, narration, production notes) and rendered stills
+- `stories/shorts/<video>/` a short's storyboard (`## Narration` numbered list is the script, `## Publish` is the YouTube metadata) and `video.json` overrides; `stories/longform/<video>/` the parked longform storyboard and scene directions
+- `src/shorts/` registry of short compositions (`short-<video>`), sized and timed from the published narration
+- `config/defaults.json` pipeline defaults, documented in `docs/PIPELINE.md`
 - `voice/` narration pipeline, see below
 
 ## Voice
@@ -40,5 +44,6 @@ Narration is my own voice, cloned locally with Chatterbox and run on CPU. `voice
 `uv` Python project; never mix it with the Node toolchain. Workflow: record takes with
 `voice/scripts/record.sh`, cut candidates with `prepare_ref.py`, compare with `clone_test.py`, then
 `--pick` one as `voice/reference/reference.wav`, the only tracked voice file. Raw takes, clips and
-generated audio are gitignored. The Remotion side consumes only `voice/out/<video>/narration.wav`
-and `alignment.json`. Status and decisions are in `voice/PLAN.md`.
+generated audio are gitignored. `scripts/short.ts` drives `narrate.py` and `align.ts` and publishes
+their outputs to `public/audio/shorts/<video>/`, which is all the compositions read. Status and
+decisions are in `voice/PLAN.md`; the flow is in `docs/PIPELINE.md`.

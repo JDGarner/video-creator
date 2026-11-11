@@ -1,205 +1,960 @@
 {
-  "video": "makassan-trade-route",
   "source": "narration.wav",
   "whisper": "medium.en@1.5.5",
   "words": [
     {
       "text": "Long",
-      "start": 0.08,
-      "end": 0.24,
+      "start": 0.09,
+      "end": 0.22,
       "beat": 1
     },
     {
       "text": "before",
-      "start": 0.24,
-      "end": 0.61,
+      "start": 0.22,
+      "end": 0.45,
       "beat": 1
     },
     {
       "text": "the",
-      "start": 0.61,
-      "end": 0.79,
+      "start": 0.55,
+      "end": 0.7,
       "beat": 1
     },
     {
       "text": "British",
-      "start": 0.79,
-      "end": 1.21,
+      "start": 0.71,
+      "end": 1.08,
       "beat": 1
     },
     {
       "text": "arrived,",
-      "start": 1.21,
-      "end": 1.8,
+      "start": 1.08,
+      "end": 1.52,
       "beat": 1
     },
     {
       "text": "northern",
-      "start": 1.8,
-      "end": 2.16,
+      "start": 1.64,
+      "end": 2,
       "beat": 1
     },
     {
       "text": "Australia",
-      "start": 2.16,
-      "end": 2.58,
+      "start": 2.01,
+      "end": 2.5,
       "beat": 1
     },
     {
       "text": "was",
-      "start": 2.58,
-      "end": 2.74,
+      "start": 2.5,
+      "end": 2.66,
       "beat": 1
     },
     {
       "text": "already",
-      "start": 2.74,
-      "end": 3.11,
+      "start": 2.66,
+      "end": 3.04,
       "beat": 1
     },
     {
       "text": "part",
-      "start": 3.11,
-      "end": 3.32,
+      "start": 3.04,
+      "end": 3.17,
       "beat": 1
     },
     {
       "text": "of",
-      "start": 3.32,
-      "end": 3.43,
+      "start": 3.3,
+      "end": 3.37,
       "beat": 1
     },
     {
       "text": "an",
-      "start": 3.44,
-      "end": 3.53,
+      "start": 3.37,
+      "end": 3.48,
       "beat": 1
     },
     {
       "text": "international",
-      "start": 3.56,
+      "start": 3.48,
       "end": 4.24,
       "beat": 1
     },
     {
       "text": "trade",
       "start": 4.24,
-      "end": 5,
+      "end": 4.97,
       "beat": 1
     },
     {
       "text": "network.",
-      "start": 5,
+      "start": 4.97,
       "end": 5.48,
       "beat": 1
     },
     {
       "text": "Every",
       "start": 6.13,
-      "end": 6.41,
+      "end": 6.42,
       "beat": 2
     },
     {
       "text": "year,",
-      "start": 6.41,
+      "start": 6.42,
       "end": 6.75,
       "beat": 2
     },
     {
       "text": "fleets",
       "start": 6.88,
-      "end": 7.1,
+      "end": 7.28,
       "beat": 2
     },
     {
       "text": "from",
-      "start": 7.24,
-      "end": 7.45,
+      "start": 7.28,
+      "end": 7.54,
       "beat": 2
     },
     {
       "text": "Makassar,",
-      "start": 7.45,
-      "end": 7.96,
+      "start": 7.58,
+      "end": 8.1,
       "beat": 2
     },
     {
       "text": "in",
-      "start": 7.96,
-      "end": 8.08,
+      "start": 8.16,
+      "end": 8.27,
       "beat": 2
     },
     {
       "text": "today's",
-      "start": 8.09,
-      "end": 8.55,
+      "start": 8.27,
+      "end": 8.77,
       "beat": 2
     },
     {
       "text": "Indonesia,",
-      "start": 8.55,
+      "start": 8.77,
       "end": 9.13,
       "beat": 2
     },
     {
       "text": "sailed",
-      "start": 9.13,
-      "end": 9.38,
+      "start": 9.53,
+      "end": 9.85,
       "beat": 2
     },
     {
       "text": "over",
-      "start": 9.53,
-      "end": 9.66,
+      "start": 9.85,
+      "end": 10.02,
       "beat": 2
     },
     {
       "text": "a",
-      "start": 9.66,
-      "end": 9.71,
+      "start": 10.15,
+      "end": 10.21,
       "beat": 2
     },
     {
       "text": "thousand",
-      "start": 9.71,
-      "end": 10.24,
+      "start": 10.21,
+      "end": 10.79,
       "beat": 2
     },
     {
       "text": "kilometres",
-      "start": 10.24,
-      "end": 10.98,
+      "start": 10.79,
+      "end": 11.49,
       "beat": 2
     },
     {
       "text": "south",
-      "start": 10.98,
-      "end": 11.37,
+      "start": 11.52,
+      "end": 11.87,
       "beat": 2
     },
     {
       "text": "across",
-      "start": 11.37,
-      "end": 11.83,
+      "start": 11.97,
+      "end": 12.23,
       "beat": 2
     },
     {
       "text": "the",
-      "start": 11.85,
-      "end": 12.07,
+      "start": 12.37,
+      "end": 12.52,
       "beat": 2
     },
     {
       "text": "Arafura",
-      "start": 12.07,
-      "end": 12.6,
+      "start": 12.52,
+      "end": 12.94,
       "beat": 2
     },
     {
       "text": "Sea.",
-      "start": 12.6,
-      "end": 12.91,
+      "start": 13.01,
+      "end": 13.09,
       "beat": 2
+    },
+    {
+      "text": "They",
+      "start": 13.71,
+      "end": 13.85,
+      "beat": 3
+    },
+    {
+      "text": "came",
+      "start": 13.89,
+      "end": 14.16,
+      "beat": 3
+    },
+    {
+      "text": "for",
+      "start": 14.16,
+      "end": 14.37,
+      "beat": 3
+    },
+    {
+      "text": "sea",
+      "start": 14.37,
+      "end": 14.58,
+      "beat": 3
+    },
+    {
+      "text": "cucumber.",
+      "start": 14.58,
+      "end": 15.26,
+      "beat": 3
+    },
+    {
+      "text": "Dried,",
+      "start": 15.26,
+      "end": 15.92,
+      "beat": 3
+    },
+    {
+      "text": "it",
+      "start": 15.92,
+      "end": 16.08,
+      "beat": 3
+    },
+    {
+      "text": "was",
+      "start": 16.08,
+      "end": 16.32,
+      "beat": 3
+    },
+    {
+      "text": "a",
+      "start": 16.32,
+      "end": 16.37,
+      "beat": 3
+    },
+    {
+      "text": "delicacy",
+      "start": 16.4,
+      "end": 17.04,
+      "beat": 3
+    },
+    {
+      "text": "in",
+      "start": 17.04,
+      "end": 17.2,
+      "beat": 3
+    },
+    {
+      "text": "China,",
+      "start": 17.2,
+      "end": 17.6,
+      "beat": 3
+    },
+    {
+      "text": "and",
+      "start": 17.6,
+      "end": 17.78,
+      "beat": 3
+    },
+    {
+      "text": "worth",
+      "start": 17.87,
+      "end": 18.24,
+      "beat": 3
+    },
+    {
+      "text": "the",
+      "start": 18.24,
+      "end": 18.4,
+      "beat": 3
+    },
+    {
+      "text": "voyage.",
+      "start": 18.4,
+      "end": 18.66,
+      "beat": 3
+    },
+    {
+      "text": "They",
+      "start": 19.32,
+      "end": 19.5,
+      "beat": 4
+    },
+    {
+      "text": "rode",
+      "start": 19.5,
+      "end": 19.78,
+      "beat": 4
+    },
+    {
+      "text": "the",
+      "start": 19.78,
+      "end": 19.98,
+      "beat": 4
+    },
+    {
+      "text": "monsoon",
+      "start": 19.99,
+      "end": 20.48,
+      "beat": 4
+    },
+    {
+      "text": "down",
+      "start": 20.48,
+      "end": 20.76,
+      "beat": 4
+    },
+    {
+      "text": "in",
+      "start": 20.76,
+      "end": 20.9,
+      "beat": 4
+    },
+    {
+      "text": "December,",
+      "start": 20.9,
+      "end": 21.47,
+      "beat": 4
+    },
+    {
+      "text": "and",
+      "start": 21.47,
+      "end": 21.67,
+      "beat": 4
+    },
+    {
+      "text": "the",
+      "start": 21.74,
+      "end": 21.89,
+      "beat": 4
+    },
+    {
+      "text": "same",
+      "start": 21.89,
+      "end": 22.12,
+      "beat": 4
+    },
+    {
+      "text": "winds",
+      "start": 22.26,
+      "end": 22.53,
+      "beat": 4
+    },
+    {
+      "text": "home",
+      "start": 22.53,
+      "end": 22.8,
+      "beat": 4
+    },
+    {
+      "text": "months",
+      "start": 22.8,
+      "end": 23.17,
+      "beat": 4
+    },
+    {
+      "text": "later.",
+      "start": 23.26,
+      "end": 23.35,
+      "beat": 4
+    },
+    {
+      "text": "On",
+      "start": 24.01,
+      "end": 24.06,
+      "beat": 5
+    },
+    {
+      "text": "the",
+      "start": 24.06,
+      "end": 24.27,
+      "beat": 5
+    },
+    {
+      "text": "Arnhem",
+      "start": 24.27,
+      "end": 24.69,
+      "beat": 5
+    },
+    {
+      "text": "Land",
+      "start": 24.69,
+      "end": 24.83,
+      "beat": 5
+    },
+    {
+      "text": "coast",
+      "start": 24.96,
+      "end": 25.32,
+      "beat": 5
+    },
+    {
+      "text": "they",
+      "start": 25.32,
+      "end": 25.58,
+      "beat": 5
+    },
+    {
+      "text": "built",
+      "start": 25.6,
+      "end": 25.95,
+      "beat": 5
+    },
+    {
+      "text": "camps,",
+      "start": 25.95,
+      "end": 26.3,
+      "beat": 5
+    },
+    {
+      "text": "boiling",
+      "start": 26.57,
+      "end": 26.94,
+      "beat": 5
+    },
+    {
+      "text": "and",
+      "start": 26.94,
+      "end": 27.12,
+      "beat": 5
+    },
+    {
+      "text": "drying",
+      "start": 27.16,
+      "end": 27.52,
+      "beat": 5
+    },
+    {
+      "text": "the",
+      "start": 27.53,
+      "end": 27.74,
+      "beat": 5
+    },
+    {
+      "text": "catch",
+      "start": 27.74,
+      "end": 28.07,
+      "beat": 5
+    },
+    {
+      "text": "for",
+      "start": 28.07,
+      "end": 28.27,
+      "beat": 5
+    },
+    {
+      "text": "the",
+      "start": 28.27,
+      "end": 28.46,
+      "beat": 5
+    },
+    {
+      "text": "journey",
+      "start": 28.46,
+      "end": 28.68,
+      "beat": 5
+    },
+    {
+      "text": "back.",
+      "start": 28.84,
+      "end": 28.84,
+      "beat": 5
+    },
+    {
+      "text": "But",
+      "start": 29.5,
+      "end": 29.64,
+      "beat": 6
+    },
+    {
+      "text": "this",
+      "start": 29.65,
+      "end": 29.95,
+      "beat": 6
+    },
+    {
+      "text": "coast",
+      "start": 29.95,
+      "end": 30.32,
+      "beat": 6
+    },
+    {
+      "text": "wasn't",
+      "start": 30.33,
+      "end": 30.78,
+      "beat": 6
+    },
+    {
+      "text": "empty.",
+      "start": 30.78,
+      "end": 31.42,
+      "beat": 6
+    },
+    {
+      "text": "Aboriginal",
+      "start": 31.52,
+      "end": 32.02,
+      "beat": 6
+    },
+    {
+      "text": "communities",
+      "start": 32.03,
+      "end": 32.61,
+      "beat": 6
+    },
+    {
+      "text": "had",
+      "start": 32.7,
+      "end": 32.88,
+      "beat": 6
+    },
+    {
+      "text": "lived",
+      "start": 32.88,
+      "end": 33.17,
+      "beat": 6
+    },
+    {
+      "text": "here",
+      "start": 33.24,
+      "end": 33.35,
+      "beat": 6
+    },
+    {
+      "text": "for",
+      "start": 33.43,
+      "end": 33.6,
+      "beat": 6
+    },
+    {
+      "text": "tens",
+      "start": 33.6,
+      "end": 33.84,
+      "beat": 6
+    },
+    {
+      "text": "of",
+      "start": 33.84,
+      "end": 33.96,
+      "beat": 6
+    },
+    {
+      "text": "thousands",
+      "start": 33.96,
+      "end": 34.51,
+      "beat": 6
+    },
+    {
+      "text": "of",
+      "start": 34.51,
+      "end": 34.57,
+      "beat": 6
+    },
+    {
+      "text": "years,",
+      "start": 34.57,
+      "end": 34.67,
+      "beat": 6
+    },
+    {
+      "text": "and",
+      "start": 35.09,
+      "end": 35.18,
+      "beat": 6
+    },
+    {
+      "text": "they",
+      "start": 35.18,
+      "end": 35.32,
+      "beat": 6
+    },
+    {
+      "text": "traded",
+      "start": 35.32,
+      "end": 35.86,
+      "beat": 6
+    },
+    {
+      "text": "too:",
+      "start": 35.86,
+      "end": 36.09,
+      "beat": 6
+    },
+    {
+      "text": "for",
+      "start": 36.31,
+      "end": 36.53,
+      "beat": 6
+    },
+    {
+      "text": "metal,",
+      "start": 36.53,
+      "end": 37.3,
+      "beat": 6
+    },
+    {
+      "text": "cloth",
+      "start": 37.3,
+      "end": 37.85,
+      "beat": 6
+    },
+    {
+      "text": "and",
+      "start": 37.85,
+      "end": 38.05,
+      "beat": 6
+    },
+    {
+      "text": "tools.",
+      "start": 38.17,
+      "end": 38.73,
+      "beat": 6
+    },
+    {
+      "text": "Some",
+      "start": 39.14,
+      "end": 39.51,
+      "beat": 6
+    },
+    {
+      "text": "sailed",
+      "start": 39.51,
+      "end": 40.13,
+      "beat": 6
+    },
+    {
+      "text": "back",
+      "start": 40.13,
+      "end": 40.54,
+      "beat": 6
+    },
+    {
+      "text": "to",
+      "start": 40.54,
+      "end": 40.73,
+      "beat": 6
+    },
+    {
+      "text": "Makassar.",
+      "start": 40.73,
+      "end": 41,
+      "beat": 6
+    },
+    {
+      "text": "The",
+      "start": 41.86,
+      "end": 42.08,
+      "beat": 7
+    },
+    {
+      "text": "traces",
+      "start": 42.12,
+      "end": 42.64,
+      "beat": 7
+    },
+    {
+      "text": "remain.",
+      "start": 42.64,
+      "end": 43.33,
+      "beat": 7
+    },
+    {
+      "text": "Indonesian",
+      "start": 43.39,
+      "end": 44.21,
+      "beat": 7
+    },
+    {
+      "text": "words",
+      "start": 44.21,
+      "end": 44.43,
+      "beat": 7
+    },
+    {
+      "text": "in",
+      "start": 44.8,
+      "end": 44.85,
+      "beat": 7
+    },
+    {
+      "text": "Aboriginal",
+      "start": 44.85,
+      "end": 45.7,
+      "beat": 7
+    },
+    {
+      "text": "languages.",
+      "start": 45.7,
+      "end": 46.54,
+      "beat": 7
+    },
+    {
+      "text": "Tamarind",
+      "start": 46.64,
+      "end": 47.27,
+      "beat": 7
+    },
+    {
+      "text": "trees",
+      "start": 47.27,
+      "end": 47.73,
+      "beat": 7
+    },
+    {
+      "text": "at",
+      "start": 47.73,
+      "end": 47.9,
+      "beat": 7
+    },
+    {
+      "text": "old",
+      "start": 47.94,
+      "end": 48.19,
+      "beat": 7
+    },
+    {
+      "text": "camps.",
+      "start": 48.19,
+      "end": 48.83,
+      "beat": 7
+    },
+    {
+      "text": "Bark",
+      "start": 49.05,
+      "end": 49.2,
+      "beat": 7
+    },
+    {
+      "text": "paintings",
+      "start": 49.2,
+      "end": 49.97,
+      "beat": 7
+    },
+    {
+      "text": "of",
+      "start": 49.99,
+      "end": 50.21,
+      "beat": 7
+    },
+    {
+      "text": "the",
+      "start": 50.21,
+      "end": 50.46,
+      "beat": 7
+    },
+    {
+      "text": "ships.",
+      "start": 50.46,
+      "end": 50.69,
+      "beat": 7
+    },
+    {
+      "text": "In",
+      "start": 51.34,
+      "end": 51.43,
+      "beat": 8
+    },
+    {
+      "text": "1803,",
+      "start": 51.43,
+      "end": 52.27,
+      "beat": 8
+    },
+    {
+      "text": "Matthew",
+      "start": 52.45,
+      "end": 52.81,
+      "beat": 8
+    },
+    {
+      "text": "Flinders",
+      "start": 52.81,
+      "end": 53.33,
+      "beat": 8
+    },
+    {
+      "text": "met",
+      "start": 53.33,
+      "end": 53.53,
+      "beat": 8
+    },
+    {
+      "text": "six",
+      "start": 53.53,
+      "end": 53.73,
+      "beat": 8
+    },
+    {
+      "text": "of",
+      "start": 53.73,
+      "end": 53.86,
+      "beat": 8
+    },
+    {
+      "text": "these",
+      "start": 53.86,
+      "end": 54.19,
+      "beat": 8
+    },
+    {
+      "text": "vessels.",
+      "start": 54.19,
+      "end": 54.9,
+      "beat": 8
+    },
+    {
+      "text": "The",
+      "start": 54.95,
+      "end": 55.12,
+      "beat": 8
+    },
+    {
+      "text": "last",
+      "start": 55.12,
+      "end": 55.37,
+      "beat": 8
+    },
+    {
+      "text": "recorded",
+      "start": 55.42,
+      "end": 55.99,
+      "beat": 8
+    },
+    {
+      "text": "voyage",
+      "start": 55.99,
+      "end": 56.41,
+      "beat": 8
+    },
+    {
+      "text": "was",
+      "start": 56.46,
+      "end": 56.65,
+      "beat": 8
+    },
+    {
+      "text": "1907.",
+      "start": 56.65,
+      "end": 57.36,
+      "beat": 8
+    },
+    {
+      "text": "Australia's",
+      "start": 57.97,
+      "end": 58.56,
+      "beat": 9
+    },
+    {
+      "text": "history",
+      "start": 58.56,
+      "end": 59.07,
+      "beat": 9
+    },
+    {
+      "text": "didn't",
+      "start": 59.07,
+      "end": 59.5,
+      "beat": 9
+    },
+    {
+      "text": "begin",
+      "start": 59.5,
+      "end": 59.86,
+      "beat": 9
+    },
+    {
+      "text": "in",
+      "start": 59.86,
+      "end": 60,
+      "beat": 9
+    },
+    {
+      "text": "1788.",
+      "start": 60,
+      "end": 61.15,
+      "beat": 9
+    },
+    {
+      "text": "It",
+      "start": 61.25,
+      "end": 61.3,
+      "beat": 9
+    },
+    {
+      "text": "was",
+      "start": 61.3,
+      "end": 61.46,
+      "beat": 9
+    },
+    {
+      "text": "already",
+      "start": 61.46,
+      "end": 61.85,
+      "beat": 9
+    },
+    {
+      "text": "underway,",
+      "start": 61.85,
+      "end": 62.41,
+      "beat": 9
+    },
+    {
+      "text": "across",
+      "start": 62.45,
+      "end": 62.75,
+      "beat": 9
+    },
+    {
+      "text": "the",
+      "start": 62.78,
+      "end": 62.94,
+      "beat": 9
+    },
+    {
+      "text": "sea",
+      "start": 62.94,
+      "end": 63.11,
+      "beat": 9
+    },
+    {
+      "text": "to",
+      "start": 63.11,
+      "end": 63.16,
+      "beat": 9
+    },
+    {
+      "text": "the",
+      "start": 63.24,
+      "end": 63.39,
+      "beat": 9
+    },
+    {
+      "text": "north.",
+      "start": 63.39,
+      "end": 63.82,
+      "beat": 9
     }
   ]
 }

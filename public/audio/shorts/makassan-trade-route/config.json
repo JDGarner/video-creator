@@ -1,0 +1,27 @@
+{
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "theme": "fieldguide",
+  "tailSec": 1,
+  "narration": {
+    "model": "turbo",
+    "device": "cpu",
+    "gapMs": 500,
+    "seed": 0,
+    "maxWpm": 150
+  },
+  "captions": {
+    "combineMs": 800,
+    "holdMs": 400,
+    "top": 0.78,
+    "maxWidth": 0.86,
+    "fontScale": 1.3,
+    "highlight": "accent"
+  },
+  "publish": {
+    "madeForKids": false,
+    "syntheticMedia": true,
+    "maxSec": 180
+  }
+}

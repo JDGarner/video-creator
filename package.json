@@ -9,8 +9,11 @@
     "typecheck": "tsc --noEmit",
     "lint:theme": "node scripts/check-hex.mjs",
     "test": "vitest run",
-    "voice:narrate": "cd voice && uv run scripts/narrate.py",
-    "voice:align": "tsx voice/scripts/align.ts"
+    "narrate": "tsx scripts/short.ts narrate",
+    "align": "tsx scripts/short.ts align",
+    "render": "tsx scripts/short.ts render",
+    "bundle": "tsx scripts/short.ts bundle",
+    "short": "tsx scripts/short.ts short"
   },
   "packageManager": "pnpm@11.9.0",
   "engines": {

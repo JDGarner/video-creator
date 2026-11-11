@@ -211,9 +211,17 @@ times still apply, so the composition never breaks. Captions sit at 78 percent o
 Arnhem Land label; 72 percent collided with it in the portrait framing. Preview re-rendered to
 `stories/shorts/makassan-trade-route/preview-beats-1-2.mp4` with the narration track.
 
-### 9. The rest of the short
-- Only after 8 is signed off: `--beats 1-9`, re-check pace against the 55 to 60 s target, then
-  build beats 3 to 9 in the composition against the manifest timings.
+### 9. Pipeline commands (done 2026-11-11)
+- `pnpm short <video>` and the per-stage `pnpm narrate|align|render`, driven by `scripts/short.ts`
+  with per-beat reuse, stage hashing, `--only`/`--seed` re-takes and `config/defaults.json` +
+  `video.json`. Specified in `docs/PIPELINE.md`, which is now the reference for this flow.
+- First full run over all nine beats: 63.7 s of narration, 159 words, 150 wpm overall, but beats
+  3 to 5 (short sentences) came out at about 200 wpm. Short sentences are read fast by Turbo; the
+  script or the reference take will need to account for that.
+
+### 10. The rest of the short
+- Script is not final. When it is: build beats 3 to 9 in the composition against the manifest
+  timings (or, better, finish beats-as-data first so no beat needs React).
 
 ## Decisions to make along the way
 

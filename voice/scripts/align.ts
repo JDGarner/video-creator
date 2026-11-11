@@ -9,12 +9,12 @@
  * interpolated between their neighbours, so every script word is present exactly once.
  */
 import { execFileSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { downloadWhisperModel, installWhisperCpp, transcribe } from "@remotion/install-whisper-cpp";
 
 const VOICE = path.resolve(import.meta.dirname, "..");
-const REPO = path.resolve(VOICE, "..");
 const WHISPER_DIR = path.join(VOICE, ".whisper", "whisper.cpp");
 const MODEL_DIR = path.join(VOICE, ".whisper", "models");
 const WHISPER_VERSION = "1.5.5"; // builds with make alone; >= 1.7.3 needs cmake
@@ -101,10 +101,10 @@ function fillGaps(words: Word[], manifest: Manifest): void {
   }
 }
 
-async function main() {
-  const target = process.argv[2];
-  if (!target) throw new Error("usage: align.ts <kind>/<video>, e.g. shorts/makassan-trade-route");
-  const dir = path.join(VOICE, "out", target);
+export type AlignResult = { heard: number; script: number; matched: number; interpolated: string[]; doubleMiss: boolean };
+
+/** Align `dir`/narration.wav against `dir`/manifest.json and write `dir`/alignment.json. */
+export async function alignNarration(dir: string): Promise<AlignResult> {
   const manifest: Manifest = JSON.parse(readFileSync(path.join(dir, "manifest.json"), "utf8"));
 
   if (!existsSync(WHISPER_DIR)) await installWhisperCpp({ to: WHISPER_DIR, version: WHISPER_VERSION, printOutput: false });
@@ -157,20 +157,18 @@ async function main() {
   const words = script.map((w) => ({ ...w, start: +w.start.toFixed(3), end: +w.end.toFixed(3) }));
   writeFileSync(path.join(dir, "alignment.json"), JSON.stringify({ video: manifest.video, source: "narration.wav", whisper: `${MODEL}@${WHISPER_VERSION}`, words }, null, 2) + "\n");
 
-  // the Remotion side reads it through staticFile(), so publish a copy under public/
-  const publicDir = path.join(REPO, "public", "audio", target);
-  mkdirSync(publicDir, { recursive: true });
-  copyFileSync(path.join(dir, "alignment.json"), path.join(publicDir, "alignment.json"));
-
-  const unmatched = script.map((w, i) => (pairs.has(i) ? null : w.text)).filter(Boolean);
-  console.log(`prompt: ${prompt}`);
-  console.log(`heard ${heard.length} words, script ${script.length}, matched ${pairs.size}`);
-  if (unmatched.length) console.log(`interpolated: ${unmatched.join(", ")}`);
-  console.log(`heard text: ${heard.map((h) => h.text).join(" ")}`);
-  for (const w of words) console.log(`${w.start.toFixed(2).padStart(6)} ${w.end.toFixed(2).padStart(6)}  b${w.beat}  ${w.text}`);
+  const unmatched = script.map((w, i) => (pairs.has(i) ? null : w.text)).filter((t): t is string => t !== null);
+  const doubleMiss = script.some((_, i) => i > 0 && !pairs.has(i) && !pairs.has(i - 1));
+  return { heard: heard.length, script: script.length, matched: pairs.size, interpolated: unmatched, doubleMiss };
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const target = process.argv[2];
+  if (!target) throw new Error("usage: align.ts <kind>/<video>, e.g. shorts/makassan-trade-route");
+  alignNarration(path.join(VOICE, "out", target))
+    .then((r) => console.log(JSON.stringify(r, null, 2)))
+    .catch((e) => {
+      console.error(e);
+      process.exit(1);
+    });
+}
