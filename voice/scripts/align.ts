@@ -13,6 +13,7 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { downloadWhisperModel, installWhisperCpp, transcribe } from "@remotion/install-whisper-cpp";
+import { spokenWords } from "../../src/lib/numbers";
 
 const VOICE = path.resolve(import.meta.dirname, "..");
 const WHISPER_DIR = path.join(VOICE, ".whisper", "whisper.cpp");
@@ -53,7 +54,22 @@ function heardWords(transcription: Awaited<ReturnType<typeof transcribe<true>>>[
       }
     }
   }
-  return out.filter((w) => norm(w.text).length > 0);
+  return out.filter((w) => norm(w.text).length > 0).flatMap(expandHeard);
+}
+
+/** "85-90%" heard over 1.2 s becomes five words sharing that span, so the script's words can match. */
+function expandHeard(w: Heard): Heard[] {
+  if (!/[\d-]/.test(w.text)) return [w];
+  const words = spokenWords(w.text);
+  if (words.length <= 1) return [{ ...w, text: words[0] ?? w.text }];
+  const chars = words.reduce((n, x) => n + x.length, 0);
+  let t = w.start;
+  return words.map((text) => {
+    const d = ((w.end - w.start) * text.length) / chars;
+    const h = { text, start: t, end: t + d };
+    t += d;
+    return h;
+  });
 }
 
 /** Longest common subsequence over normalised words; returns script index -> heard index. */

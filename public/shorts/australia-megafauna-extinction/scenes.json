@@ -1,0 +1,259 @@
+{
+  "id": "australia-megafauna-extinction",
+  "title": "Australian Megafauna Extinction",
+  "scenes": [
+    {
+      "type": "silhouettes",
+      "transition": "cut",
+      "headline": {
+        "text": "85 to 90 percent of megafauna lost",
+        "at": "percent",
+        "align": "center"
+      },
+      "caption": {
+        "text": "Animals over 44 kg · every land species over 100 kg",
+        "at": "percent + 0.6",
+        "align": "center"
+      },
+      "images": [
+        "diprotodon.svg",
+        "procoptodon.svg",
+        "megalania.svg",
+        "genyornis.svg",
+        "thylacoleo.svg",
+        "zygomaturus.svg",
+        "palorchestes.svg"
+      ],
+      "dim": {
+        "at": "percent",
+        "keep": 1
+      }
+    },
+    {
+      "type": "card",
+      "from": "Diprotodon",
+      "transition": "cut",
+      "headline": "DIPROTODON",
+      "caption": "Wombat relative · about 3 tonnes",
+      "image": "diprotodon.svg",
+      "tone": "surface",
+      "reference": "human.svg",
+      "height": 1.8,
+      "treatment": "silhouette"
+    },
+    {
+      "type": "card",
+      "from": "Procoptodon",
+      "transition": "cut",
+      "headline": "PROCOPTODON",
+      "caption": "Giant kangaroo · over 2 m tall",
+      "image": "procoptodon.svg",
+      "tone": "surface",
+      "reference": "human.svg",
+      "height": 2.3,
+      "treatment": "silhouette"
+    },
+    {
+      "type": "card",
+      "from": "Megalania",
+      "transition": "cut",
+      "headline": "MEGALANIA",
+      "caption": "Monitor lizard · 5 m and more, nose to tail",
+      "image": "megalania.svg",
+      "tone": "surface",
+      "reference": "human.svg",
+      "height": 1.2,
+      "treatment": "silhouette"
+    },
+    {
+      "type": "card",
+      "from": "Genyornis",
+      "transition": "cut",
+      "headline": "GENYORNIS",
+      "caption": "Flightless bird · about 200 kg",
+      "image": "genyornis.svg",
+      "tone": "surface",
+      "reference": "human.svg",
+      "height": 2,
+      "treatment": "silhouette"
+    },
+    {
+      "type": "timeline",
+      "from": "beat 3",
+      "transition": "fade",
+      "range": [
+        70000,
+        30000
+      ],
+      "tick": 10000,
+      "unit": "years ago",
+      "bands": [
+        {
+          "from": 65000,
+          "to": 50000,
+          "label": "Humans arrive",
+          "tone": "structure",
+          "at": "beat 3 + 0.3",
+          "note": "exact date debated"
+        },
+        {
+          "from": 50000,
+          "to": 40000,
+          "label": "Most megafauna gone",
+          "tone": "accent",
+          "at": "fifty"
+        }
+      ],
+      "silhouettes": {
+        "images": [
+          "diprotodon.svg",
+          "procoptodon.svg",
+          "megalania.svg",
+          "genyornis.svg"
+        ],
+        "dim": true,
+        "at": "So"
+      },
+      "question": "caused"
+    },
+    {
+      "type": "panels",
+      "from": "beat 4",
+      "transition": "cut",
+      "panels": [
+        {
+          "image": "human.svg",
+          "label": "Hunting",
+          "at": "hunting",
+          "treatment": "silhouette"
+        },
+        {
+          "image": "burnt-woodland.jpg",
+          "label": "Fire",
+          "at": "fire",
+          "treatment": "photo"
+        },
+        {
+          "image": "salt-lake.jpg",
+          "label": "Climate",
+          "at": "climate",
+          "treatment": "photo"
+        }
+      ]
+    },
+    {
+      "type": "card",
+      "from": "beat 5",
+      "transition": "fade",
+      "headline": "GENYORNIS EGGS",
+      "caption": "Burnt shell found where people camped",
+      "image": "genyornis.svg",
+      "tone": "surface",
+      "height": 2,
+      "treatment": "silhouette"
+    },
+    {
+      "type": "still",
+      "from": "cooked",
+      "transition": "cut",
+      "caption": "Burnt Genyornis eggshell · first reported 2016, confirmed 2022",
+      "image": "burnt-eggshell.jpg",
+      "fit": "cover",
+      "move": "pan-left",
+      "treatment": "photo",
+      "frame": true,
+      "inset": {
+        "image": "genyornis.svg",
+        "headline": "Genyornis",
+        "at": "cooked + 0.5"
+      }
+    },
+    {
+      "type": "timeline",
+      "from": "beat 6",
+      "transition": "fade",
+      "caption": {
+        "text": "Megafauna survived earlier climate swings",
+        "at": "survived",
+        "align": "center"
+      },
+      "range": [
+        150000,
+        30000
+      ],
+      "tick": 20000,
+      "unit": "years ago",
+      "bands": [
+        {
+          "from": 130000,
+          "to": 115000,
+          "label": "Dry period",
+          "tone": "muted"
+        },
+        {
+          "from": 95000,
+          "to": 85000,
+          "label": "Dry period",
+          "tone": "muted"
+        },
+        {
+          "from": 65000,
+          "to": 50000,
+          "label": "Humans arrive",
+          "tone": "structure"
+        },
+        {
+          "from": 50000,
+          "to": 40000,
+          "label": "Most megafauna gone",
+          "tone": "accent"
+        }
+      ],
+      "silhouettes": {
+        "images": [
+          "diprotodon.svg",
+          "procoptodon.svg",
+          "megalania.svg",
+          "genyornis.svg"
+        ],
+        "dim": false
+      }
+    },
+    {
+      "type": "montage",
+      "from": "beat 7",
+      "transition": "fade",
+      "headline": {
+        "text": "HUMANS: A MAJOR DRIVER",
+        "at": "beat 7 + 0.4",
+        "align": "center"
+      },
+      "caption": {
+        "text": "Exact causes still debated",
+        "at": "debated - 0.3",
+        "align": "center"
+      },
+      "images": [
+        "diprotodon.svg",
+        "procoptodon.svg",
+        "megalania.svg",
+        "genyornis.svg"
+      ],
+      "dim": true,
+      "treatment": "silhouette"
+    }
+  ],
+  "assets": {
+    "diprotodon.svg": "shorts/australia-megafauna-extinction/assets/diprotodon.svg",
+    "procoptodon.svg": "shorts/australia-megafauna-extinction/assets/procoptodon.svg",
+    "megalania.svg": "shorts/australia-megafauna-extinction/assets/megalania.svg",
+    "genyornis.svg": "shorts/australia-megafauna-extinction/assets/genyornis.svg",
+    "thylacoleo.svg": "shorts/australia-megafauna-extinction/assets/thylacoleo.svg",
+    "zygomaturus.svg": "shorts/australia-megafauna-extinction/assets/zygomaturus.svg",
+    "palorchestes.svg": "shorts/australia-megafauna-extinction/assets/palorchestes.svg",
+    "human.svg": "shorts/australia-megafauna-extinction/assets/human.svg",
+    "burnt-woodland.jpg": "shorts/australia-megafauna-extinction/assets/burnt-woodland.jpg",
+    "salt-lake.jpg": "shorts/australia-megafauna-extinction/assets/salt-lake.jpg",
+    "burnt-eggshell.jpg": null
+  }
+}

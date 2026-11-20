@@ -54,7 +54,7 @@ export const Root: React.FC = () => (
       height={DEFAULT_CONFIG.height}
       fps={DEFAULT_CONFIG.fps}
       durationInFrames={30}
-      defaultProps={{ words: [], highlight: "accent" }}
+      defaultProps={{ words: [], highlight: "block", box: "none" }}
       calculateMetadata={captionsCheckMetadata}
     />
   </>

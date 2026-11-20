@@ -19,9 +19,9 @@ export function beat(beats: Beat[], n: number): Beat | undefined {
   return beats.find((b) => b.n === n);
 }
 
-/** Load narration.wav's manifest and alignment for a video from public/audio/<kind>/<video>/. */
+/** Load narration.wav's manifest and alignment for a video from public/<kind>/<video>/. */
 export async function loadNarration(kind: string, video: string): Promise<Narration> {
-  const base = `audio/${kind}/${video}`;
+  const base = `${kind}/${video}`;
   const [manifest, alignment] = await Promise.all([
     fetch(staticFile(`${base}/manifest.json`)).then((r) => r.json() as Promise<{ duration: number; beats: Beat[] }>),
     fetch(staticFile(`${base}/alignment.json`)).then((r) => r.json() as Promise<{ words: AlignedWord[] }>),
@@ -30,5 +30,5 @@ export async function loadNarration(kind: string, video: string): Promise<Narrat
 }
 
 export function narrationFile(kind: string, video: string): string {
-  return staticFile(`audio/${kind}/${video}/narration.wav`);
+  return staticFile(`${kind}/${video}/narration.wav`);
 }

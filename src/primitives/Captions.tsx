@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { useCurrentFrame, useVideoConfig } from "remotion";
-import { useColor, useTheme } from "../theme/ThemeProvider";
+import { useColor, useTheme, useVariant } from "../theme/ThemeProvider";
+import { highlightColors } from "../theme/tokens";
 import { fontFamily } from "../theme/fonts";
 import { withAlpha } from "../lib/color";
 import { activeToken, captionPages, pageAt, type AlignedWord } from "../lib/captions";
@@ -19,18 +20,21 @@ type Props = {
   size?: "h1" | "h2";
   /** Multiplier on the type size; captions on a phone want to be larger than a caption card title. */
   fontScale?: number;
-  /** accent: spoken word in the accent colour. underline: spoken word in ink with an accent rule under it. */
-  highlight?: "accent" | "underline";
+  /** accent: spoken word in the accent colour. underline: spoken word in ink with an accent rule under it. block: spoken word in ink on a filled accent block. */
+  highlight?: "accent" | "underline" | "block";
+  /** surface: the page sits on a surface card with the theme's card border. none: straight on the paper. */
+  box?: "surface" | "none";
 };
 
 /** Shorts-style captions: one to three words at a time, timed to the frame from an alignment. */
-export const Captions: React.FC<Props> = ({ words, combineMs = 800, holdMs = 400, top = 0.72, maxWidth = 0.86, size = "h2", fontScale = 1.3, highlight = "accent" }) => {
+export const Captions: React.FC<Props> = ({ words, combineMs = 800, holdMs = 400, top = 0.72, maxWidth = 0.86, size = "h2", fontScale = 1.3, highlight = "block", box = "none" }) => {
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
   const { theme, scale } = useTheme();
   const surface = useColor("surface");
   const ink = useColor("ink");
   const accent = useColor("accent");
+  const [blockFill, blockInk] = highlightColors(theme, useVariant());
 
   const pages = useMemo(() => captionPages(words, combineMs), [words, combineMs]);
   const tMs = (frame / fps) * 1000;
@@ -42,25 +46,30 @@ export const Captions: React.FC<Props> = ({ words, combineMs = 800, holdMs = 400
   const opacity = fade(frame, Math.round((page.startMs / 1000) * fps), 2);
   const hair = theme.stroke.hair * scale;
   const rule = `${hair}px solid ${ink}`;
-  const spec = theme.fonts.display;
+  const spec = theme.fonts.caption ?? theme.fonts.display;
 
-  const box: React.CSSProperties = {
+  const card: React.CSSProperties = {
     display: "inline-block",
     maxWidth: width * maxWidth,
     boxSizing: "border-box",
     padding: `${theme.space[2]! * scale}px ${theme.space[5]! * scale}px`,
-    backgroundColor: withAlpha(surface, 0.94),
   };
-  if (theme.card.border === "rules") {
-    box.borderTop = rule;
-    box.borderBottom = rule;
-  } else if (theme.card.border === "single" || theme.card.border === "double") {
-    box.border = rule;
+  if (box === "surface") {
+    card.backgroundColor = withAlpha(surface, 0.94);
+    if (theme.card.border === "rules") {
+      card.borderTop = rule;
+      card.borderBottom = rule;
+    } else if (theme.card.border === "single" || theme.card.border === "double") {
+      card.border = rule;
+    }
   }
+  // every token gets the same padding so the line does not shift as the block moves between words
+  const block = highlight === "block";
+  const token: React.CSSProperties = block ? { display: "inline-block", padding: "0.02em 0.16em", margin: "0 0.02em", borderRadius: "0.14em" } : {};
 
   return (
     <div style={{ position: "absolute", left: 0, right: 0, top: height * top, transform: "translateY(-50%)", textAlign: "center", opacity }}>
-      <div style={box}>
+      <div style={card}>
         <div
           style={{
             fontFamily: fontFamily(spec),
@@ -77,11 +86,13 @@ export const Captions: React.FC<Props> = ({ words, combineMs = 800, holdMs = 400
             const style: React.CSSProperties =
               highlight === "accent"
                 ? { color: isActive ? accent : ink }
-                : { color: ink, boxShadow: isActive ? `inset 0 ${-theme.stroke.bold * scale}px 0 ${accent}` : "none" };
+                : highlight === "underline"
+                  ? { color: ink, boxShadow: isActive ? `inset 0 ${-theme.stroke.bold * scale}px 0 ${accent}` : "none" }
+                  : { ...token, color: isActive ? blockInk : ink, backgroundColor: isActive ? blockFill : "transparent" };
             // eslint-disable-next-line react/no-array-index-key
             return (
               <span key={i} style={style}>
-                {tok.text}
+                {block ? tok.text.trim() : tok.text}
               </span>
             );
           })}

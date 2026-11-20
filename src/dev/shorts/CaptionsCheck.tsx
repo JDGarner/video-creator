@@ -6,9 +6,9 @@ import { ThemeProvider, useColor } from "../../theme/ThemeProvider";
 import { getTheme } from "../../theme/themes";
 import type { AlignedWord } from "../../lib/captions";
 
-export type CaptionsCheckProps = { words: AlignedWord[]; highlight: "accent" | "underline" };
+export type CaptionsCheckProps = { words: AlignedWord[]; highlight: "accent" | "underline" | "block"; box: "surface" | "none" };
 
-export const ALIGNMENT = "audio/shorts/makassan-trade-route/alignment.json";
+export const ALIGNMENT = "shorts/makassan-trade-route/alignment.json";
 
 /** Loads the real alignment so the composition's length and captions come from the narration. */
 export const captionsCheckMetadata: CalculateMetadataFunction<CaptionsCheckProps> = async ({ props }) => {
@@ -29,11 +29,11 @@ const Guides: React.FC = () => {
   );
 };
 
-export const CaptionsCheck: React.FC<CaptionsCheckProps> = ({ words, highlight }) => (
+export const CaptionsCheck: React.FC<CaptionsCheckProps> = ({ words, highlight, box }) => (
   <ThemeProvider theme={getTheme("fieldguide")} scale={1}>
     <Paper variant="light">
       <Guides />
-      <Captions words={words} highlight={highlight} />
+      <Captions words={words} highlight={highlight} box={box} />
     </Paper>
   </ThemeProvider>
 );

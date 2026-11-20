@@ -9,10 +9,14 @@
     "typecheck": "tsc --noEmit",
     "lint:theme": "node scripts/check-hex.mjs",
     "test": "vitest run",
+    "check": "tsx scripts/short.ts check",
     "narrate": "tsx scripts/short.ts narrate",
     "align": "tsx scripts/short.ts align",
     "render": "tsx scripts/short.ts render",
     "bundle": "tsx scripts/short.ts bundle",
+    "stills": "tsx scripts/short.ts stills",
+    "asset": "tsx scripts/asset.ts",
+    "docs:scenes": "tsx scripts/scene-docs.ts",
     "short": "tsx scripts/short.ts short"
   },
   "packageManager": "pnpm@11.9.0",
@@ -20,8 +24,10 @@
     "node": ">=22"
   },
   "devDependencies": {
+    "@remotion/bundler": "4.0.541",
     "@remotion/captions": "4.0.541",
     "@remotion/install-whisper-cpp": "4.0.541",
+    "@remotion/renderer": "4.0.541",
     "@types/d3-geo": "^3.1.1",
     "@types/geojson": "^7946.0.16",
     "@types/node": "^26.6.6",
@@ -32,7 +38,8 @@
     "@types/topojson-specification": "^1.0.5",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.0",
+    "yaml": "^2.9.1"
   },
   "dependencies": {
     "@react-three/fiber": "8.18.0",

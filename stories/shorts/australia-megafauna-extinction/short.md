@@ -10,15 +10,13 @@ Australia lost nearly all of its giant animals around 45,000 years ago, shortly 
 
 ## Narration
 
-1. Around 85–90% of Australia’s megafauna — animals over 44 kilograms — went extinct during the last Ice Age, before Europeans arrived.
-2. Australia was once home to the Diprotodon, a three-tonne wombat relative; Procoptodon, a giant kangaroo standing over two metres tall; Megalania, an enormous monitor lizard; and Genyornis, a 200-kilogram flightless bird.
-3. Most disappeared roughly 50,000 to 40,000 years ago — after humans had arrived, though how long after is debated. So what caused it?
-5. There are three main explanations: human hunting, changes to the landscape caused by fire, and climate change.
-6. Burnt eggshell fragments suggest humans collected and cooked the eggs of giant flightless birds, potentially reducing their breeding success.
-7. Climate change may also have contributed, but many of these animals had survived earlier climate fluctuations.
-8. Today, many researchers consider human activity a major driver, although the exact causes are still debated.
-
-## Visuals and animation
+1. Around eighty five to ninety percent of Australia's megafauna, animals over forty four kilograms, went extinct during the last Ice Age, before Europeans arrived.
+2. Australia was once home to the Diprotodon, a three tonne wombat relative; Procoptodon, a giant kangaroo standing over two metres tall; Megalania, an enormous monitor lizard; and Genyornis, a two hundred kilogram flightless bird.
+3. Most disappeared roughly fifty thousand to forty thousand years ago, after humans had arrived, though how long after is debated. So what caused it?
+4. There are three main explanations: human hunting, changes to the landscape caused by fire, and climate change.
+5. Burnt eggshell fragments suggest humans collected and cooked the eggs of giant flightless birds, potentially reducing their breeding success.
+6. Climate change may also have contributed, but many of these animals had survived earlier climate fluctuations.
+7. Today, many researchers consider human activity a major driver, although the exact causes are still debated.
 
 ## Visuals and animation
 
@@ -80,12 +78,123 @@ silhouette in the same spot on every card.
 - Hold 2 s on black before end.
 
 
+## Scenes
+
+The data the renderer uses. Each item is one scene; `from` is a spoken word or a beat, and a
+scene ends when the next begins. Field reference: `docs/SCENES.md`. Images are listed in
+`assets.yaml`; any not yet in `assets/` render as labelled placeholders.
+
+```yaml
+- type: silhouettes
+  images: [diprotodon.svg, procoptodon.svg, megalania.svg, genyornis.svg, thylacoleo.svg, zygomaturus.svg, palorchestes.svg]
+  dim: { at: percent, keep: 1 }
+  headline: { text: 85 to 90 percent of megafauna lost, at: percent }
+  caption: { text: Animals over 44 kg · every land species over 100 kg, at: percent + 0.6 }
+
+- type: card
+  from: Diprotodon
+  image: diprotodon.svg
+  reference: human.svg
+  height: 1.8
+  treatment: silhouette
+  headline: DIPROTODON
+  caption: Wombat relative · about 3 tonnes
+
+- type: card
+  from: Procoptodon
+  image: procoptodon.svg
+  reference: human.svg
+  height: 2.3
+  treatment: silhouette
+  headline: PROCOPTODON
+  caption: Giant kangaroo · over 2 m tall
+
+- type: card
+  from: Megalania
+  image: megalania.svg
+  reference: human.svg
+  height: 1.2
+  treatment: silhouette
+  headline: MEGALANIA
+  caption: Monitor lizard · 5 m and more, nose to tail
+
+- type: card
+  from: Genyornis
+  image: genyornis.svg
+  reference: human.svg
+  height: 2.0
+  treatment: silhouette
+  headline: GENYORNIS
+  caption: Flightless bird · about 200 kg
+
+- type: timeline
+  from: beat 3
+  transition: fade
+  range: [70000, 30000]
+  tick: 10000
+  unit: years ago
+  bands:
+    - { from: 65000, to: 50000, label: Humans arrive, tone: structure, at: beat 3 + 0.3, note: exact date debated }
+    - { from: 50000, to: 40000, label: Most megafauna gone, tone: accent, at: fifty }
+  silhouettes: { images: [diprotodon.svg, procoptodon.svg, megalania.svg, genyornis.svg], dim: true, at: So }
+  question: caused
+
+- type: panels
+  from: beat 4
+  panels:
+    - { image: human.svg, label: Hunting, at: hunting, treatment: silhouette }
+    - { image: burnt-woodland.jpg, label: Fire, at: fire }
+    - { image: salt-lake.jpg, label: Climate, at: climate }
+
+- type: card
+  from: beat 5
+  transition: fade
+  image: genyornis.svg
+  treatment: silhouette
+  height: 2.0
+  headline: GENYORNIS EGGS
+  caption: Burnt shell found where people camped
+
+- type: still
+  from: cooked
+  image: burnt-eggshell.jpg
+  frame: true
+  move: pan-left
+  caption: Burnt Genyornis eggshell · first reported 2016, confirmed 2022
+  inset: { image: genyornis.svg, headline: Genyornis, at: cooked + 0.5 }
+
+- type: timeline
+  from: beat 6
+  transition: fade
+  range: [150000, 30000]
+  tick: 20000
+  unit: years ago
+  bands:
+    - { from: 130000, to: 115000, label: Dry period, tone: muted }
+    - { from: 95000, to: 85000, label: Dry period, tone: muted }
+    - { from: 65000, to: 50000, label: Humans arrive, tone: structure }
+    - { from: 50000, to: 40000, label: Most megafauna gone, tone: accent }
+  silhouettes: { images: [diprotodon.svg, procoptodon.svg, megalania.svg, genyornis.svg] }
+  caption: { text: Megafauna survived earlier climate swings, at: survived }
+
+- type: montage
+  from: beat 7
+  transition: fade
+  images: [diprotodon.svg, procoptodon.svg, megalania.svg, genyornis.svg]
+  dim: true
+  treatment: silhouette
+  headline: { text: "HUMANS: A MAJOR DRIVER", at: beat 7 + 0.4 }
+  caption: { text: Exact causes still debated, at: debated - 0.3 }
+```
+
 ## Publish
 
-title: Nearly all Australian species went extinct BEFORE Europeans arrived
-tags: history, australia, TODO: ADD MORE TAGS
-hashtags: #shorts #history #australia TODO: ADD MORE TAGS
-thumbnail: TODO: pick thumbnail
+title: Nearly all of Australia's giant animals were gone BEFORE Europeans arrived
+tags: history, australia, megafauna, extinction, diprotodon, ice age
+
+Australia lost almost all of its giant animals around forty five thousand years ago, not long after people arrived. Hunting, fire and climate have all been blamed; most researchers now put people at the centre of it.
+
+Sources in the pinned comment.
 
 ## Sources
 

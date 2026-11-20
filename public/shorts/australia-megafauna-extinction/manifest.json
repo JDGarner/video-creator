@@ -1,0 +1,75 @@
+{
+  "story": "/Users/jamiegarner/dev/personal/video-creator/stories/shorts/australia-megafauna-extinction/short.md",
+  "model": "turbo",
+  "device": "cpu",
+  "reference": "reference.wav",
+  "reference_sha256": "9b3a1edbb790",
+  "gap_ms": 500,
+  "sample_rate": 24000,
+  "duration": 65.27,
+  "beats": [
+    {
+      "n": 1,
+      "text": "Around eighty five to ninety percent of Australia's megafauna, animals over forty four kilograms, went extinct during the last Ice Age, before Europeans arrived.",
+      "file": "beat-1.wav",
+      "start": 0.0,
+      "end": 9.6,
+      "seed": 1,
+      "hash": "4939cf76ff468f5a"
+    },
+    {
+      "n": 2,
+      "text": "Australia was once home to the Diprotodon, a three tonne wombat relative; Procoptodon, a giant kangaroo standing over two metres tall; Megalania, an enormous monitor lizard; and Genyornis, a two hundred kilogram flightless bird.",
+      "file": "beat-2.wav",
+      "start": 10.1,
+      "end": 25.94,
+      "seed": 2,
+      "hash": "c6dd65225fc876c1"
+    },
+    {
+      "n": 3,
+      "text": "Most disappeared roughly fifty thousand to forty thousand years ago, after humans had arrived, though how long after is debated. So what caused it?",
+      "file": "beat-3.wav",
+      "start": 26.44,
+      "end": 36.28,
+      "seed": 3,
+      "hash": "815f4dfd59cd6cf0"
+    },
+    {
+      "n": 4,
+      "text": "There are three main explanations: human hunting, changes to the landscape caused by fire, and climate change.",
+      "file": "beat-4.wav",
+      "start": 36.78,
+      "end": 43.22,
+      "seed": 4,
+      "hash": "d5bbeb792933d39d"
+    },
+    {
+      "n": 5,
+      "text": "Burnt eggshell fragments suggest humans collected and cooked the eggs of giant flightless birds, potentially reducing their breeding success.",
+      "file": "beat-5.wav",
+      "start": 43.72,
+      "end": 51.79,
+      "seed": 5,
+      "hash": "6d5a38dfd9059ac6"
+    },
+    {
+      "n": 6,
+      "text": "Climate change may also have contributed, but many of these animals had survived earlier climate fluctuations.",
+      "file": "beat-6.wav",
+      "start": 52.29,
+      "end": 58.41,
+      "seed": 6,
+      "hash": "d1ecaee83c104a7e"
+    },
+    {
+      "n": 7,
+      "text": "Today, many researchers consider human activity a major driver, although the exact causes are still debated.",
+      "file": "beat-7.wav",
+      "start": 58.91,
+      "end": 65.27,
+      "seed": 7,
+      "hash": "e416af17ca5c7472"
+    }
+  ]
+}

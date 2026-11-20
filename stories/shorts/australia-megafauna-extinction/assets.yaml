@@ -1,0 +1,47 @@
+- file: burnt-woodland.jpg
+  source: https://commons.wikimedia.org/wiki/File:Post_bushfire_epicormic_regrowth_in_eucalyptus,_Blue_Mountains,_NSW,_Australia_08.jpg
+  licence: CC BY-SA 4.0
+  credit: Cabrils, Wikimedia Commons
+  note: photograph, burnt eucalypt woodland
+- file: salt-lake.jpg
+  source: https://commons.wikimedia.org/wiki/File:LakeEyreSaltCrust.JPG
+  licence: CC BY 3.0
+  credit: Phanly, Wikimedia Commons
+  note: photograph, dry salt lake bed such as Kati Thanda-Lake Eyre
+- file: burnt-eggshell.jpg
+  source: TODO
+  licence: TODO
+  note: close-up photograph of burnt eggshell fragments
+- file: diprotodon.svg
+  source: https://www.phylopic.org/images/0dd852df-bb80-456f-ab3f-d8bf011ca2a1
+  licence: CC0
+  credit: Steven Traver
+- file: procoptodon.svg
+  source: https://www.phylopic.org/images/32c52ba0-49c1-4a14-b758-954f68e00edc
+  licence: CC0
+- file: thylacoleo.svg
+  source: https://www.phylopic.org/images/21dde05e-dcb4-416c-bb2a-0faec8bf4d9c
+  licence: CC0
+  credit: Steven Traver
+- file: zygomaturus.svg
+  source: https://www.phylopic.org/images/15ff49e1-c526-42b8-abe0-23127843ac6e
+  licence: CC BY-SA 3.0
+  credit: Zimices
+- file: palorchestes.svg
+  source: https://www.phylopic.org/images/331da08e-99ce-4dbc-9a4a-c83143e6df82
+  licence: CC BY-SA 3.0
+  credit: Zimices
+- file: megalania.svg
+  note: Komodo dragon silhouette standing in for Megalania (Varanus priscus), which PhyloPic lacks
+  source: https://www.phylopic.org/images/ce6a78bc-3ef1-4d60-ab40-113eb84c7802
+  licence: CC0
+  credit: Steven Traver
+- file: genyornis.svg
+  note: Dromornis stirtoni silhouette, a close dromornithid relative; PhyloPic has no Genyornis
+  source: https://www.phylopic.org/images/d965ccb6-6d6c-47ed-a0db-ea9d3c2cac15
+  licence: CC BY 3.0
+  credit: Julio Garza
+- file: human.svg
+  source: https://www.phylopic.org/images/30d16233-028d-4a70-9002-db349d73c0bc
+  licence: CC0
+  credit: Jiro Wada

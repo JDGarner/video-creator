@@ -15,7 +15,8 @@ The current target is YouTube Shorts (9:16, under a minute). Long-form videos ar
 | [`context.md`](context.md) | why the project exists, the visual target, decisions already made |
 | [`handoff.md`](handoff.md) | the stack, repo layout, build order and hard rules for anyone changing code |
 | [`docs/PIPELINE.md`](docs/PIPELINE.md) | the shorts pipeline: commands, flags, inputs, outputs, config fields, skipping, failure rules |
-| [`docs/examples/`](docs/examples/) | a complete example storyboard (`short.md`) and `video.json` override |
+| [`docs/SCENES.md`](docs/SCENES.md) | the scene types a storyboard can use and every field, generated from the schemas |
+| [`docs/examples/`](docs/examples/) | a complete example storyboard (`short.md`), `assets.yaml` and `video.json` |
 | [`docs/design/`](docs/design/README.md) | chosen reference renders and why; `spikes/` holds the rejected explorations |
 | [`voice/CLAUDE.md`](voice/CLAUDE.md) | rules and gotchas for the voice-cloning side |
 | [`voice/PLAN.md`](voice/PLAN.md) | step-by-step status of the narration work, measurements, open decisions |
@@ -24,19 +25,25 @@ The current target is YouTube Shorts (9:16, under a minute). Long-form videos ar
 ## How a short gets made
 
 ```
-stories/shorts/<video>/short.md ──► narrate ──► align ──► render ──► bundle ──► out/shorts/<video>/publish/
-                                    voice         words      MP4        upload folder
+stories/shorts/<video>/short.md ──► check ──► narrate ──► align ──► render ──► bundle ──► out/shorts/<video>/publish/
+                                    scenes,     voice        words      MP4        upload folder
+                                    assets
 ```
 
 1. **Storyboard.** You write `stories/shorts/<video>/short.md`. The `## Narration` numbered list is
-   the script, one item per beat; the rest of the file is for the visuals and for notes.
+   the script, one item per beat. The `## Scenes` YAML list says what is on screen and when, cued to
+   spoken words and beats, using the scene types in `docs/SCENES.md`. Images are listed in
+   `assets.yaml` with their source and licence. The rest of the file is prose for humans.
+   `pnpm check` lints all of it and publishes the scene data; `pnpm stills` renders one frame per
+   scene to look at before anything longer runs.
 2. **Narrate.** Each beat is synthesised with [Chatterbox](https://github.com/resemble-ai/chatterbox)
    from a short recording of my own voice, loudness-normalised and stitched into `narration.wav`
    with a `manifest.json` of beat timings.
 3. **Align.** whisper.cpp hears the narration back and every script word gets a start and end time
    in `alignment.json`.
-4. **Render.** A Remotion composition takes the manifest, alignment and merged config, cues its
-   animation to beats and words, draws Shorts-style captions, and renders the MP4.
+4. **Render.** One generic Remotion composition lays the scenes on the timeline from the manifest
+   and alignment, animates each scene type, draws Shorts-style captions, and renders the MP4.
+   Images not yet sourced render as labelled placeholders, so a rough cut comes first.
 5. **Bundle.** The storyboard's `## Publish` section becomes a folder with the MP4, a subtitle
    file, a reference frame for the thumbnail and a `metadata.json` with the title, description,
    tags and the answers YouTube Studio asks for. The upload itself is a drag and a paste.
@@ -51,12 +58,16 @@ pnpm install            # Node 22 via nvm (.nvmrc); pnpm 11
 pnpm dev                # Remotion studio, including the captions-check and theme sheets
 pnpm still <id> out/<id>.png
 
-pnpm short <video>      # narrate -> align -> render, skipping unchanged stages
-pnpm narrate <video>    # one stage at a time
+pnpm short <video>      # check -> narrate -> align -> render -> bundle, skipping unchanged stages
+pnpm check <video>      # one stage at a time
+pnpm narrate <video>
 pnpm align <video>
 pnpm render <video>
 pnpm bundle <video>
+pnpm stills <video>     # one PNG per scene
+pnpm asset <video> phylopic:<taxon> | <commons url> | --search "words"   # fetch images with licence bookkeeping
 #   flags: --beats 1,2   --only 3   --seed N   --force
+pnpm docs:scenes        # regenerate docs/SCENES.md from the scene schemas
 
 pnpm typecheck
 pnpm test               # vitest, pure helpers in src/lib
@@ -74,15 +85,16 @@ voice (record, cut candidates, compare clones, pick one) is described in `voice/
 | `src/primitives/` | style-aware building blocks: `Paper`, `Grain`, `Display`, `Label`, `CaptionCard`, `Captions`, `DrawPath`, `Reveal` |
 | `src/motion/` | easings, springs, timeline helpers |
 | `src/viz/` | globe and regional map renderers (d3-geo, Natural Earth) |
-| `src/lib/` | pure helpers with tests: config, narration, captions, publish metadata and SRT, geo, colour |
-| `src/shorts/` | registry of short compositions, one `short-<video>` per entry, sized and timed from the published narration |
+| `src/lib/` | pure helpers with tests: config, storyboard parsing and lint, cues, numbers, narration, captions, publish metadata and SRT, geo, colour |
+| `src/scenes/` | scene types: Zod schema per type, the component that draws it, the registry that picks one |
+| `src/shorts/` | the generic data-driven composition, the registry of `short-<video>` compositions and `videos.json` listing the data-driven ones |
 | `src/dev/` | visual-check compositions: theme sheets, map spikes, the Makassan short, captions check |
-| `stories/shorts/<video>/` | storyboard, `video.json`, and any preview you choose to keep |
+| `stories/shorts/<video>/` | storyboard, `assets.yaml`, `assets/`, `video.json`, and any preview you choose to keep |
 | `stories/longform/<video>/` | the parked long-form storyboard and scene directions |
 | `config/defaults.json` | pipeline defaults, every field documented in `docs/PIPELINE.md` |
-| `public/audio/shorts/<video>/` | published narration, manifest, alignment and config read by the composition |
+| `public/shorts/<video>/` | published narration, manifest, alignment, config, scenes and assets read by the composition |
 | `voice/` | Chatterbox narration, whisper alignment, the reference voice |
-| `scripts/` | `short.ts` (the pipeline) and `check-hex.mjs` (theme lint) |
+| `scripts/` | `short.ts` (the pipeline), `asset.ts` (image fetcher), `scene-docs.ts` (SCENES.md generator) and `check-hex.mjs` (theme lint) |
 
 ## Hard rules
 
@@ -96,25 +108,24 @@ voice (record, cut candidates, compare clones, pick one) is described in `voice/
 
 ## Status
 
-- Beats 1 and 2 of the Makassan trade route short are animated, narrated and captioned end to end.
-  All nine beats are narrated; beats 3 to 9 have no picture yet because the script is not final.
-- Narrate, align, render and bundle run as separate or combined commands with per-beat skipping.
-  Uploading is manual from the bundle folder.
+- Shorts are data: six scene types (`still`, `card`, `timeline`, `panels`, `silhouettes`, `montage`)
+  render any storyboard with a `## Scenes` section without new code. The megafauna short runs end
+  to end this way with placeholder art, waiting on its images.
+- The Makassan short is still a hand-written map composition; beats 1 and 2 are animated, all nine
+  narrated. Its map will become a `map` scene type.
+- Check, narrate, align, render, stills and bundle run as separate or combined commands with
+  per-stage skipping. Uploading is manual from the bundle folder.
 - Long-form is parked until the shorts pipeline is settled.
 
 ## Improvements
 
 Roughly in the order they pay off.
 
-1. **Beats as data.** The one stage still done by hand, or by an AI session, is the animation.
-   Each short is a hand-written React component (`src/dev/shorts/MakassanShort.tsx`). The plan is
-   a small vocabulary of overlay components with Zod schemas (camera box, route, marker, label,
-   pin, counter, caption card), each cued on a beat or a word, so a short's visuals are a data
-   block in the storyboard and `pnpm render` animates any short without new code. AI is then only
-   needed when a video wants an overlay type that does not exist yet. `context.md` already states
-   this as the intended model; the shorts pipeline just has not reached it.
-2. **Finish the Makassan short.** Beats 3 to 9 once the script is final, ideally as the first
-   consumer of beats-as-data rather than more hand-written React.
+1. **A `map` scene type.** The Makassan short is the last hand-written composition. A map scene
+   with a camera box, route, markers, labels and a distance counter, each cued on a word, would
+   move it onto scene data and let maps mix with stills, cards and timelines in any short.
+2. **Finish the Makassan short.** Beats 3 to 9 once the script is final, as scene data once the
+   map type exists.
 3. **Distance counter.** Beat 2 counts to 2,030 km while the narration says "over a thousand".
    It should be the great-circle distance from Makassar to the vessel's current position.
 4. **Pace control.** Short sentences come out around 200 words per minute against a 150 target.
@@ -126,20 +137,24 @@ Roughly in the order they pay off.
 6. **Human take override.** Let a `beat-N.wav` dropped next to the storyboard replace the
    synthesised beat, for proper nouns the model never gets right. Align and render would work
    unchanged.
-7. **Caption highlight.** `accent` versus `underline` is undecided; pick one from a side-by-side
-   render and drop the other from the config.
-8. **Collision check.** A still per beat at the caption band would catch captions overlapping map
-   labels before a full render. The stills in `stories/shorts/makassan-trade-route/` are stale and
-   should be regenerated by the pipeline rather than kept by hand.
-9. **API upload.** `pnpm bundle` stops at a folder. Uploading through the YouTube Data API would
+7. **Caption highlight.** `block` (spoken word on a filled accent block, no card) is the default
+   after a side-by-side; `accent` and `underline` are still options and could be dropped. A bold
+   sans caption face, as the reference Shorts use, is the next thing to try.
+8. **Contact sheet.** `pnpm stills` gives one PNG per scene; a single sheet of all of them, and a
+   check that nothing sits in the caption band, would make the review loop one image. The stills in
+   `stories/shorts/makassan-trade-route/` are stale and should go.
+9. **More asset sources.** `pnpm asset` knows PhyloPic and Wikimedia Commons. Pexels and Unsplash
+   have APIs with the same shape; a contact address in the user agent would also lift the Commons
+   throttling on original files.
+10. **API upload.** `pnpm bundle` stops at a folder. Uploading through the YouTube Data API would
    remove the last manual step, but uploads from an unaudited API project are locked to private
    and the quota allows about six a day, so it only pays once there is a backlog.
-10. **Regional projections.** Maps are orthographic or a fitted regional view; history and geography
+11. **Regional projections.** Maps are orthographic or a fitted regional view; history and geography
    topics will want conic and Mercator-like fits of one country or sea as first-class options.
-11. **whisper.cpp upgrade.** Pinned to 1.5.5 because newer releases build with cmake, which is not
+12. **whisper.cpp upgrade.** Pinned to 1.5.5 because newer releases build with cmake, which is not
     installed. Upgrading would bring better timestamps and the `whisper-cli` binary.
-12. **Tests for the pipeline script.** `scripts/short.ts` is exercised by hand. A fixture short with
+13. **Tests for the pipeline script.** `scripts/short.ts` is exercised by hand. A fixture short with
     a two-beat script and a fake narrator would let the hashing, `--only` and stale-alignment rules
     run under vitest.
-13. **Long-form.** Resume `stories/longform/` on the same primitives: scene registry, transitions,
+14. **Long-form.** Resume `stories/longform/` on the same primitives: scene registry, transitions,
     chapter furniture, and a narration manifest that spans minutes rather than seconds.

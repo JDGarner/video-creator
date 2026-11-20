@@ -4,23 +4,40 @@ import defaults from "../../config/defaults.json";
 import { MakassanShort } from "../dev/shorts/MakassanShort";
 import { mergeConfig, type ShortConfig } from "../lib/config";
 import { loadNarration, type Narration } from "../lib/narration";
+import type { Scene } from "../scenes/schema";
+import { DataShort } from "./DataShort";
+import dataVideos from "./videos.json";
 
-export type ShortProps = { narration: Narration | null; config: ShortConfig };
+/** scenes.json as published by `pnpm check`: the storyboard's scenes plus where each asset ended up. */
+export type SceneData = { id: string; title: string; scenes: Scene[]; assets: Record<string, string | null> };
 
-/** Every short the pipeline can render, by the folder name under stories/shorts/. */
+export type ShortProps = { narration: Narration | null; config: ShortConfig; data: SceneData | null };
+
+/**
+ * Every short the pipeline can render, by the folder name under stories/shorts/. Storyboards with a
+ * `## Scenes` section are listed in videos.json by the pipeline and rendered by DataShort; the rest
+ * are hand-written compositions.
+ */
 export const SHORTS: Record<string, React.FC<ShortProps>> = {
+  ...Object.fromEntries((dataVideos as string[]).map((id) => [id, DataShort])),
   "makassan-trade-route": MakassanShort,
 };
 
 export const DEFAULT_CONFIG = mergeConfig(defaults, {});
 
+async function fetchJson<T>(rel: string): Promise<T | null> {
+  const r = await fetch(staticFile(rel));
+  return r.ok ? ((await r.json()) as T) : null;
+}
+
 const metadataFor =
   (id: string): CalculateMetadataFunction<ShortProps> =>
   async ({ props }) => {
-    const config = mergeConfig(defaults, await (await fetch(staticFile(`audio/shorts/${id}/config.json`))).json());
+    const config = mergeConfig(defaults, (await fetchJson(`shorts/${id}/config.json`)) ?? {});
     const narration = await loadNarration("shorts", id);
+    const data = (dataVideos as string[]).includes(id) ? await fetchJson<SceneData>(`shorts/${id}/scenes.json`) : null;
     return {
-      props: { ...props, narration, config },
+      props: { ...props, narration, config, data },
       fps: config.fps,
       width: config.width,
       height: config.height,
@@ -40,7 +57,7 @@ export const ShortCompositions: React.FC = () => (
         height={DEFAULT_CONFIG.height}
         fps={DEFAULT_CONFIG.fps}
         durationInFrames={DEFAULT_CONFIG.fps * 10}
-        defaultProps={{ narration: null, config: DEFAULT_CONFIG }}
+        defaultProps={{ narration: null, config: DEFAULT_CONFIG, data: null }}
         calculateMetadata={metadataFor(id)}
       />
     ))}

@@ -17,7 +17,7 @@ Read `PLAN.md` for the step list, measurements and open decisions before changin
   them elsewhere, upload them, or commit them. `reference/reference.wav` is the one tracked voice
   file and the only reference the pipeline reads.
 - Generated audio goes under `out/` (gitignored). `scripts/short.ts` copies `narration.wav`,
-  `manifest.json`, `alignment.json` and the merged `config.json` to `public/audio/<kind>/<video>/`,
+  `manifest.json`, `alignment.json` and the merged `config.json` to `public/<kind>/<video>/`,
   which is all the Remotion side reads (through `src/lib/narration.ts`). Never hand-edit the copies.
 - Seed every generate call (`torch.manual_seed`) so a re-run of one paragraph is reproducible.
 - Audio is 24 kHz mono from the model. Do not resample inside scripts except at the final

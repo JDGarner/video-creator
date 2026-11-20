@@ -11,7 +11,7 @@ export type FontSpec = {
   style: "normal" | "italic";
 };
 
-export type ThemeColors = {
+type RoleColors = {
   bg: string;
   bgDark: string;
   ink: string;
@@ -30,14 +30,26 @@ export type ThemeColors = {
   ice: string;
 };
 
-export type ColorKey = keyof ThemeColors;
+export type ThemeColors = RoleColors & {
+  /** Accent on the dark variant when the light one does not carry; accent when absent. */
+  accentDark?: string;
+  /** Caption block behind the spoken word and the text on it; accent and ink when absent. */
+  highlight?: string;
+  highlightInk?: string;
+  highlightDark?: string;
+  highlightInkDark?: string;
+};
+
+/** Colours every theme defines and that resolve against the variant. */
+export type ColorKey = keyof RoleColors;
 
 export type TypeSize = "hero" | "h1" | "h2" | "label" | "caption";
 
 export type Theme = {
   name: string;
   colors: ThemeColors;
-  fonts: Record<FontRole, FontSpec>;
+  /** caption is optional: captions fall back to display when a theme does not set one. */
+  fonts: Record<FontRole, FontSpec> & { caption?: FontSpec };
   /** Size scale in px at 1080p; scaled by height / 1080 at render time. */
   type: Record<TypeSize, number> & { labelTracking: string; labelCase: "upper" | "smallcaps" };
   space: readonly number[];
@@ -79,5 +91,13 @@ export function resolveColor(theme: Theme, key: ColorKey, variant: Variant): str
     water: "waterDark",
     land: "landDark",
   };
+  if (key === "accent") return theme.colors.accentDark ?? theme.colors.accent;
   return theme.colors[onDark[key] ?? key];
+}
+
+/** The caption block colours for a variant: fill then text. */
+export function highlightColors(theme: Theme, variant: Variant): [string, string] {
+  const c = theme.colors;
+  if (variant === "dark") return [c.highlightDark ?? c.highlight ?? resolveColor(theme, "accent", variant), c.highlightInkDark ?? c.highlightInk ?? resolveColor(theme, "ink", variant)];
+  return [c.highlight ?? c.accent, c.highlightInk ?? c.ink];
 }

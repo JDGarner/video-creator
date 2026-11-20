@@ -8,6 +8,9 @@ What the pipeline reads:
     file. The text is spoken and captioned exactly as written, so write spoken English: numbers
     as words where you want them read that way, no markdown links, no footnote marks.
     Pronunciation fixes go in voice/lexicon.json, never in this text.
+  - "## Scenes": a YAML list of what is on screen. One item per scene, each starting at a spoken
+    word or a beat ("from") and ending when the next begins. Types and fields: docs/SCENES.md.
+    Images are file names from assets.yaml; a file not yet in assets/ renders as a placeholder.
   - "## Publish": what goes into YouTube. "key: value" lines first (title is required; tags,
     hashtags and thumbnail are optional), then a blank line, then the description as free text.
     Hashtags are appended to the description. thumbnail is a time in the video; Shorts take no
@@ -54,6 +57,53 @@ One map, one camera, eight beats. Hypsometric atlas style. Overlays appear on th
 | 6 | Hold | Title overlay: **ETOPS**, with the two expansions on separate lines, the joke in the italic face. |
 | 7 | Hold | Route becomes solid; aircraft reaches Los Angeles. |
 | 8 | Slow pull out to the opening framing | Closing overlay: **The map did not change. The confidence did.** Hold two seconds. |
+
+## Scenes
+
+```yaml
+- type: still
+  image: pacific-wide.jpg
+  move: zoom-in
+  headline: { text: Sydney to Los Angeles, at: Sydney }
+  caption: { text: Fourteen hours · one ocean, at: Sydney + 1.2 }
+
+- type: timeline
+  from: beat 2
+  transition: fade
+  range: [1950, 2000]
+  tick: 10
+  bands:
+    - { from: 1953, to: 1985, label: Sixty minute rule, tone: structure }
+    - { from: 1985, to: 1988, label: ETOPS 120, tone: accent, at: eighties }
+
+- type: card
+  from: Lose
+  image: twin-one-engine.png
+  headline: ONE ENGINE OUT
+  caption: The other must reach land
+
+- type: panels
+  from: beat 5
+  panels:
+    - { image: etops-90.png, label: "90", at: ninety, treatment: illustration }
+    - { image: etops-120.png, label: "120", at: twenty, treatment: illustration }
+    - { image: etops-180.png, label: "180", at: eighty, treatment: illustration }
+
+- type: still
+  from: ETOPS
+  transition: fade
+  image: twin-over-ocean.jpg
+  frame: true
+  headline: ETOPS
+  caption: Extended range twin operations
+
+- type: montage
+  from: beat 8
+  transition: fade
+  images: [pacific-wide.jpg, twin-over-ocean.jpg]
+  headline: { text: The map did not change., at: beat 8 + 0.2 }
+  caption: { text: The confidence did., at: confidence - 0.2 }
+```
 
 ## Publish
 

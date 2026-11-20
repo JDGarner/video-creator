@@ -219,7 +219,16 @@ Arnhem Land label; 72 percent collided with it in the portrait framing. Preview 
   3 to 5 (short sentences) came out at about 200 wpm. Short sentences are read fast by Turbo; the
   script or the reference take will need to account for that.
 
-### 10. The rest of the short
+### 10. Scenes as data (done 2026-11-18)
+- Storyboards now carry a `## Scenes` YAML list rendered by `src/scenes/` through one generic
+  composition; see `docs/PIPELINE.md` and `docs/SCENES.md`. `pnpm check` lints the storyboard
+  (numbering, digits, dashes, cues, assets) before anything is synthesised.
+- Align expands what whisper writes as digits ("85-90%", "44kg", "50,000") into spoken words
+  before matching, so number-heavy scripts align: megafauna short 147/150 matched, was 132.
+- First data-driven short: `australia-megafauna-extinction`, 7 beats, 65.3 s, 138 wpm, rendered
+  end to end with placeholder art.
+
+### 11. The rest of the Makassan short
 - Script is not final. When it is: build beats 3 to 9 in the composition against the manifest
   timings (or, better, finish beats-as-data first so no beat needs React).
 

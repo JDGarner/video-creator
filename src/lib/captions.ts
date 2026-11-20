@@ -1,7 +1,7 @@
 import { createTikTokStyleCaptions, type Caption, type TikTokPage } from "@remotion/captions";
 
 /** One word of narration with its spoken span in seconds, as written in alignment.json. */
-export type AlignedWord = { text: string; start: number; end: number };
+export type AlignedWord = { text: string; start: number; end: number; beat?: number };
 
 /** Group words into short pages the way Shorts captions do: a page gathers words until it spans combineMs. */
 export function captionPages(words: AlignedWord[], combineMs: number): TikTokPage[] {

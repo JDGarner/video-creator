@@ -1,18 +1,23 @@
 import type { Theme } from "../../tokens";
+import { withAlpha } from "../../../lib/color";
 
-/** Exploration direction: kraft-toned paper, marigold accent, Vollkorn headlines with Work Sans labels, captions ruled above and below only. */
+const MINT = "#5CF2C5";
+
+/** Cream paper with a plum accent that doubles as the caption block; the dark variant is deep navy with pale mint ink and a mint accent, the spoken word mint on a translucent mint block. Vollkorn headlines with Work Sans labels and Bricolage Grotesque captions. */
 export const fieldguide: Theme = {
   name: "fieldguide",
   colors: {
-    bg: "#E6D9C0", bgDark: "#20190F", ink: "#2A2217", inkOnDark: "#EFE4CF", muted: "#7B6E57", mutedOnDark: "#A9987C",
-    structure: "#5B5A4E", structureAlt: "#B6A786", accent: "#F5A623", surface: "#EADFC8", surfaceDark: "#2A2217",
-    water: "#D9CBAE", waterDark: "#171209", land: "#CDBE9E", landDark: "#3C3222", ice: "#F1E8D4",
+    bg: "#F6EFE6", bgDark: "#0C1A2B", ink: "#2A2217", inkOnDark: "#BFEFE0", muted: "#7B6E57", mutedOnDark: "#7FA99C",
+    structure: "#5B5A4E", structureAlt: "#B6A786", accent: "#5E3A6B", accentDark: MINT, surface: "#EADFC8", surfaceDark: "#132840",
+    water: "#D9CBAE", waterDark: "#0A1522", land: "#CDBE9E", landDark: "#163049", ice: "#F1E8D4",
+    highlightInk: "#FFFFFF", highlightDark: withAlpha(MINT, 0.16), highlightInkDark: MINT,
   },
   fonts: {
     display: { family: "Vollkorn", weights: [600, 700], style: "normal" },
     label: { family: "Work Sans", weights: [600, 700], style: "normal" },
     body: { family: "Vollkorn", weights: [400, 500], style: "normal" },
     italic: { family: "Vollkorn", weights: [400], style: "italic" },
+    caption: { family: "Bricolage Grotesque", weights: [500], style: "normal" },
   },
   type: { hero: 220, h1: 72, h2: 44, label: 18, caption: 15, labelTracking: "0.14em", labelCase: "upper" },
   space: [4, 8, 12, 16, 24, 32, 48, 64, 96],

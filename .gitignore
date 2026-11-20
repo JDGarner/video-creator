@@ -11,4 +11,5 @@ voice/.venv/
 voice/reference/raw/
 voice/reference/clips/
 voice/.whisper/
-public/audio/**/*.wav
+public/shorts/**/*.wav
+public/shorts/*/assets/

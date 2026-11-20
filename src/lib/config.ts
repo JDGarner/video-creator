@@ -6,7 +6,9 @@ export const ShortConfigSchema = z.object({
   width: z.number().int().positive(),
   height: z.number().int().positive(),
   theme: z.string(),
+  variant: z.enum(["light", "dark"]),
   tailSec: z.number().nonnegative(),
+  wordmark: z.boolean(),
   narration: z.object({
     model: z.enum(["turbo", "original"]),
     device: z.enum(["cpu", "mps"]),
@@ -20,7 +22,8 @@ export const ShortConfigSchema = z.object({
     top: z.number().min(0).max(1),
     maxWidth: z.number().min(0).max(1),
     fontScale: z.number().positive(),
-    highlight: z.enum(["accent", "underline"]),
+    highlight: z.enum(["accent", "underline", "block"]),
+    box: z.enum(["surface", "none"]),
   }),
   publish: z.object({
     madeForKids: z.boolean(),

@@ -22,6 +22,7 @@ import * as SourceSerif4 from "@remotion/google-fonts/SourceSerif4";
 import * as SpaceGrotesk from "@remotion/google-fonts/SpaceGrotesk";
 import * as Alegreya from "@remotion/google-fonts/Alegreya";
 import * as Bitter from "@remotion/google-fonts/Bitter";
+import * as BricolageGrotesque from "@remotion/google-fonts/BricolageGrotesque";
 import * as LibreBaskerville from "@remotion/google-fonts/LibreBaskerville";
 import * as OldStandardTT from "@remotion/google-fonts/OldStandardTT";
 import * as ZillaSlab from "@remotion/google-fonts/ZillaSlab";
@@ -33,6 +34,7 @@ import { THEMES } from "./themes";
 const LOADERS: Record<string, GoogleFont> = {
   Alegreya: Alegreya as unknown as GoogleFont,
   Bitter: Bitter as unknown as GoogleFont,
+  "Bricolage Grotesque": BricolageGrotesque as unknown as GoogleFont,
   "Libre Baskerville": LibreBaskerville as unknown as GoogleFont,
   "Old Standard TT": OldStandardTT as unknown as GoogleFont,
   "Zilla Slab": ZillaSlab as unknown as GoogleFont,
@@ -85,6 +87,6 @@ for (const theme of Object.values(THEMES) as Theme[]) {
 export function fontFamily(spec: FontSpec): string {
   const family = families.get(`${spec.family}/${spec.style}`);
   if (!family) throw new Error(`Font "${spec.family}" was not loaded`);
-  const generic = spec.family.includes("Mono") ? "monospace" : /Archivo|Karla|Work Sans|Inter Tight|Space Grotesk|Manrope/.test(spec.family) ? "sans-serif" : "serif";
+  const generic = spec.family.includes("Mono") ? "monospace" : /Archivo|Karla|Work Sans|Inter Tight|Space Grotesk|Manrope|Bricolage/.test(spec.family) ? "sans-serif" : "serif";
   return `"${family}", ${generic}`;
 }

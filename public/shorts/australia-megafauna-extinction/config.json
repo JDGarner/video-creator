@@ -3,7 +3,9 @@
   "width": 1080,
   "height": 1920,
   "theme": "fieldguide",
+  "variant": "light",
   "tailSec": 1,
+  "wordmark": true,
   "narration": {
     "model": "turbo",
     "device": "cpu",
@@ -16,8 +18,9 @@
     "holdMs": 400,
     "top": 0.78,
     "maxWidth": 0.86,
-    "fontScale": 1.3,
-    "highlight": "accent"
+    "fontScale": 1.5,
+    "highlight": "block",
+    "box": "none"
   },
   "publish": {
     "madeForKids": false,

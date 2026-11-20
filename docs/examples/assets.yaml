@@ -1,0 +1,24 @@
+# stories/shorts/<video>/assets.yaml: every image the scenes name. The files go in assets/ next to
+# it. source and licence are required; credit is required unless the licence needs none (CC0, public
+# domain, own). Credits are appended to the upload description. TODO anywhere here blocks bundle.
+- file: pacific-wide.jpg
+  source: https://commons.wikimedia.org/wiki/File:...
+  licence: CC BY-SA 4.0
+  credit: Jane Example, Wikimedia Commons
+- file: twin-one-engine.png
+  source: own
+  licence: own
+  note: illustration, one engine greyed
+- file: twin-over-ocean.jpg
+  source: https://www.pexels.com/photo/...
+  licence: Pexels
+  credit: John Example
+- file: etops-90.png
+  source: own
+  licence: own
+- file: etops-120.png
+  source: own
+  licence: own
+- file: etops-180.png
+  source: own
+  licence: own
