@@ -1,5 +1,6 @@
 import React from "react";
 import { CardScene } from "./CardScene";
+import { LandmassScene } from "./LandmassScene";
 import { MontageScene } from "./MontageScene";
 import { PanelsScene } from "./PanelsScene";
 import type { Scene } from "./schema";
@@ -22,6 +23,8 @@ export const SceneView: React.FC<{ scene: Scene }> = ({ scene }) => {
       return <SilhouettesScene scene={scene} />;
     case "montage":
       return <MontageScene scene={scene} />;
+    case "landmass":
+      return <LandmassScene scene={scene} />;
   }
 };
 

@@ -8,6 +8,7 @@ import { Label } from "../primitives/Label";
 import { useColor, useTheme } from "../theme/ThemeProvider";
 import { useAsset, useScene } from "./context";
 import { SceneText } from "./Text";
+import { bandHeight, LAYOUT } from "./layout";
 import type { StillScene as Schema } from "./schema";
 
 export const StillScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ scene }) => {
@@ -21,7 +22,7 @@ export const StillScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ scene
   const s = (i: number) => theme.space[i]! * scale;
   const hair = theme.stroke.hair * scale;
 
-  const box = scene.frame ? { left: width * 0.07, top: height * 0.1, width: width * 0.86, height: height * 0.52 } : { left: 0, top: 0, width, height };
+  const box = scene.frame ? { left: width * LAYOUT.margin, top: height * LAYOUT.frame.top, width: width * (1 - 2 * LAYOUT.margin), height: bandHeight(height, LAYOUT.frame) } : { left: 0, top: 0, width, height };
   return (
     <>
       <div style={{ position: "absolute", ...box }}>
@@ -30,7 +31,7 @@ export const StillScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ scene
         <Still src={img.src} name={img.name} fit={scene.fit} move={scene.move} treatment={scene.treatment} moveFrames={end - start} />
       </div>
       {scene.inset ? (
-        <Reveal at={local(scene.inset.at, start + 8)} from="right" style={{ position: "absolute", right: width * 0.06, top: height * 0.1, width: width * 0.3 }}>
+        <Reveal at={local(scene.inset.at, start + 8)} from="right" style={{ position: "absolute", right: width * LAYOUT.margin, top: height * LAYOUT.frame.top, width: width * 0.3 }}>
           <div style={{ backgroundColor: surface, border: `${hair}px solid ${ink}`, padding: s(1) }}>
             <div style={{ position: "relative", width: "100%", height: width * 0.3 * 0.75 }}>
               <Still src={inset.src} name={inset.name} fit="contain" treatment={/\.svg$/i.test(inset.name) ? "silhouette" : "illustration"} />
@@ -48,7 +49,7 @@ export const StillScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ scene
           </div>
         </Reveal>
       ) : null}
-      <SceneText headline={scene.headline} caption={scene.caption} boxed={!scene.frame} top={scene.frame ? 0.645 : 0.1} />
+      <SceneText headline={scene.headline} caption={scene.caption} boxed={!scene.frame} top={scene.frame ? LAYOUT.frame.text : LAYOUT.headline} />
     </>
   );
 };

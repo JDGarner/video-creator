@@ -30,7 +30,9 @@ export const Reveal: React.FC<Props> = ({ at, from = "below", spring: springName
   const exitP = exiting ? fade(frame, exitAt, exitFrames) : 0;
   const eased = exitP * exitP;
   const opacity = frame < at ? 0 : opacityIn * (1 - eased);
-  const off = (1 - p) * dist + eased * dist * 0.5;
+  // whole pixels only, and dead once under a pixel: a spring's sub-pixel tail re-rasterises text every frame and reads as jitter
+  const raw = (1 - p) * dist + eased * dist * 0.5;
+  const off = Math.abs(raw) < 1 ? 0 : Math.round(raw);
 
   let transform = "none";
   if (from === "below") transform = `translateY(${off}px)`;

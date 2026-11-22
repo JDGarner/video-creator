@@ -8,6 +8,7 @@ import { useColor, useTheme } from "../theme/ThemeProvider";
 import { withAlpha } from "../lib/color";
 import { useAsset, useScene } from "./context";
 import { SceneText } from "./Text";
+import { bandHeight, LAYOUT } from "./layout";
 import type { PanelsScene as Schema } from "./schema";
 
 const Panel: React.FC<{ panel: z.output<typeof Schema>["panels"][number]; at: number; left: number; width: number; top: number; height: number }> = ({ panel, at, left, width, top, height }) => {
@@ -42,14 +43,14 @@ export const PanelsScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ scen
   const x0 = width * 0.04;
   const total = width * 0.92;
   const w = (total - gap * (n - 1)) / n;
-  const top = height * 0.14;
-  const h = height * 0.54;
+  const top = height * LAYOUT.tall.top;
+  const h = bandHeight(height, LAYOUT.tall);
   return (
     <>
       {scene.panels.map((p, i) => (
         <Panel key={p.label} panel={p} at={p.at === undefined ? start + Math.round(i * 0.6 * fps) : local(p.at)} left={x0 + i * (w + gap)} width={w} top={top} height={h} />
       ))}
-      <SceneText headline={scene.headline} caption={scene.caption} top={0.05} />
+      <SceneText headline={scene.headline} caption={scene.caption} top={LAYOUT.headlineTight} />
     </>
   );
 };

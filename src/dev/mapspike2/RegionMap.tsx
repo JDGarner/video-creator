@@ -4,7 +4,7 @@ import { geoGraticule, geoMercator, geoPath } from "d3-geo";
 import { Display } from "../../primitives/Display";
 import { Grain } from "../../primitives/Grain";
 import { Label } from "../../primitives/Label";
-import { CaptionCard } from "../../primitives/CaptionCard";
+import { CaptionCard } from "../CaptionCard";
 import { useTheme } from "../../theme/ThemeProvider";
 import type { MapPalette } from "../../theme/themes/map";
 import { withAlpha } from "../../lib/color";

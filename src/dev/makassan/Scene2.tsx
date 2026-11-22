@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, useVideoConfig } from "remotion";
-import { CaptionCard } from "../../primitives/CaptionCard";
+import { CaptionCard } from "../CaptionCard";
 import { Display } from "../../primitives/Display";
 import { Label } from "../../primitives/Label";
 import { Paper } from "../../primitives/Paper";

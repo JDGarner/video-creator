@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useMemo } from "react";
 import { useVideoConfig } from "remotion";
+import { loadThemeFonts } from "./fonts";
 import { resolveColor, type ColorKey, type Theme, type Variant } from "./tokens";
 
 type ThemeContextValue = {
@@ -17,6 +18,7 @@ export const ThemeProvider: React.FC<{ theme: Theme; scale?: number; children: R
   children,
 }) => {
   const { height } = useVideoConfig();
+  loadThemeFonts(theme);
   const value = useMemo(() => ({ theme, scale: scale ?? height / 1080 }), [theme, scale, height]);
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };

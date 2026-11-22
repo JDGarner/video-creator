@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
 import { geoGraticule, geoPath } from "d3-geo";
-import { CaptionCard } from "../../primitives/CaptionCard";
+import { CaptionCard } from "../CaptionCard";
 import { DrawPath } from "../../primitives/DrawPath";
 import { Grain } from "../../primitives/Grain";
 import { Label } from "../../primitives/Label";

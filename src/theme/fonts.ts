@@ -28,7 +28,6 @@ import * as OldStandardTT from "@remotion/google-fonts/OldStandardTT";
 import * as ZillaSlab from "@remotion/google-fonts/ZillaSlab";
 import type { GoogleFont } from "@remotion/google-fonts";
 import type { FontSpec, Theme } from "./tokens";
-import { THEMES } from "./themes";
 
 /** Adding a font to a theme means adding its module here too. */
 const LOADERS: Record<string, GoogleFont> = {
@@ -64,29 +63,33 @@ const LOADERS: Record<string, GoogleFont> = {
 
 const families = new Map<string, string>();
 
-function load(spec: FontSpec): void {
+function load(spec: FontSpec): string {
+  const key = `${spec.family}/${spec.style}`;
+  const hit = families.get(key);
+  if (hit) return hit;
   const loader = LOADERS[spec.family];
   if (!loader) {
     throw new Error(`No font loader registered for "${spec.family}". Add it to src/theme/fonts.ts`);
   }
-  const key = `${spec.family}/${spec.style}`;
-  if (families.has(key)) return;
   const { fontFamily } = loader.loadFont(spec.style, {
     weights: spec.weights.map(String),
     subsets: ["latin"],
   });
   families.set(key, fontFamily);
+  return fontFamily;
 }
 
-// Module top level, as Remotion requires: every theme's fonts are declared
-// before any composition renders, and delayRender is handled by the package.
-for (const theme of Object.values(THEMES) as Theme[]) {
-  for (const spec of Object.values(theme.fonts)) load(spec);
+/**
+ * Load every face a theme uses. Idempotent. ThemeProvider calls it, so a render fetches only the
+ * fonts of the theme on screen rather than every theme in the registry; the fonts package handles
+ * delayRender while they arrive.
+ */
+export function loadThemeFonts(theme: Theme): void {
+  for (const spec of Object.values(theme.fonts)) if (spec) load(spec);
 }
 
 export function fontFamily(spec: FontSpec): string {
-  const family = families.get(`${spec.family}/${spec.style}`);
-  if (!family) throw new Error(`Font "${spec.family}" was not loaded`);
+  const family = load(spec);
   const generic = spec.family.includes("Mono") ? "monospace" : /Archivo|Karla|Work Sans|Inter Tight|Space Grotesk|Manrope|Bricolage/.test(spec.family) ? "sans-serif" : "serif";
   return `"${family}", ${generic}`;
 }

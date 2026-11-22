@@ -3,7 +3,7 @@
   "title": "Australian Megafauna Extinction",
   "scenes": [
     {
-      "type": "silhouettes",
+      "type": "landmass",
       "transition": "cut",
       "headline": {
         "text": "85 to 90 percent of megafauna lost",
@@ -11,22 +11,16 @@
         "align": "center"
       },
       "caption": {
-        "text": "Animals over 44 kg · every land species over 100 kg",
+        "text": "Animals over 44 kg",
         "at": "percent + 0.6",
         "align": "center"
       },
-      "images": [
-        "diprotodon.svg",
-        "procoptodon.svg",
-        "megalania.svg",
-        "genyornis.svg",
-        "thylacoleo.svg",
-        "zygomaturus.svg",
-        "palorchestes.svg"
-      ],
-      "dim": {
+      "region": "Australia",
+      "loss": {
+        "fraction": 0.875,
         "at": "percent",
-        "keep": 1
+        "keep": "east",
+        "sweepSec": 0.8
       }
     },
     {
@@ -245,15 +239,12 @@
   ],
   "assets": {
     "diprotodon.svg": "shorts/australia-megafauna-extinction/assets/diprotodon.svg",
+    "human.svg": "shorts/australia-megafauna-extinction/assets/human.svg",
     "procoptodon.svg": "shorts/australia-megafauna-extinction/assets/procoptodon.svg",
     "megalania.svg": "shorts/australia-megafauna-extinction/assets/megalania.svg",
     "genyornis.svg": "shorts/australia-megafauna-extinction/assets/genyornis.svg",
-    "thylacoleo.svg": "shorts/australia-megafauna-extinction/assets/thylacoleo.svg",
-    "zygomaturus.svg": "shorts/australia-megafauna-extinction/assets/zygomaturus.svg",
-    "palorchestes.svg": "shorts/australia-megafauna-extinction/assets/palorchestes.svg",
-    "human.svg": "shorts/australia-megafauna-extinction/assets/human.svg",
     "burnt-woodland.jpg": "shorts/australia-megafauna-extinction/assets/burnt-woodland.jpg",
     "salt-lake.jpg": "shorts/australia-megafauna-extinction/assets/salt-lake.jpg",
-    "burnt-eggshell.jpg": null
+    "burnt-eggshell.jpg": "shorts/australia-megafauna-extinction/assets/burnt-eggshell.jpg"
   }
 }

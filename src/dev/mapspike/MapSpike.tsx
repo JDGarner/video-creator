@@ -4,14 +4,12 @@ import { ThemeProvider } from "../../theme/ThemeProvider";
 import { getTheme } from "../../theme/themes";
 import { FlatGlobe } from "./FlatGlobe";
 import { ReliefGlobe } from "./ReliefGlobe";
-import { ThreeGlobe } from "./ThreeGlobe";
 
 export const SPIKE_THEME = "fieldguide";
 
 export const PANELS = {
   flat: FlatGlobe,
   relief: ReliefGlobe,
-  three: ThreeGlobe,
 } as const;
 
 export type PanelName = keyof typeof PANELS;

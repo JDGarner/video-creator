@@ -109,7 +109,22 @@ export const MontageScene = z.object({
   treatment: Treatment.default("illustration"),
 });
 
-export const SceneSchema = z.discriminatedUnion("type", [StillScene, CardScene, TimelineScene, PanelsScene, SilhouettesScene, MontageScene]);
+export const LandmassScene = z.object({
+  type: z.literal("landmass"),
+  ...base,
+  region: z.string().describe('A country as Natural Earth names it, e.g. "Australia"; drawn flat in ink, centred'),
+  loss: z
+    .object({
+      fraction: z.number().min(0).max(1).describe("Share of the land area that turns to the alert colour"),
+      at: Cue,
+      keep: z.enum(["east", "west", "north", "south"]).default("east").describe("Which edge the remaining strip hugs"),
+      sweepSec: z.number().nonnegative().default(0.8).describe("How long the colour takes to sweep across from the far edge; 0 switches in one step"),
+    })
+    .optional()
+    .describe("From the cue, this share of the area sweeps to the alert colour, leaving a strip along one edge"),
+});
+
+export const SceneSchema = z.discriminatedUnion("type", [StillScene, CardScene, TimelineScene, PanelsScene, SilhouettesScene, MontageScene, LandmassScene]);
 export const ScenesSchema = z.array(SceneSchema).min(1);
 
 export type Scene = z.output<typeof SceneSchema>;
@@ -151,5 +166,6 @@ export function sceneCues(scene: Scene, index: number): { where: string; cue: z.
   }
   if (scene.type === "panels") scene.panels.forEach((p, i) => p.at !== undefined && out.push({ where: `${tag} panels[${i}].at`, cue: p.at }));
   if (scene.type === "silhouettes" && scene.dim) out.push({ where: `${tag} dim.at`, cue: scene.dim.at });
+  if (scene.type === "landmass" && scene.loss) out.push({ where: `${tag} loss.at`, cue: scene.loss.at });
   return out;
 }

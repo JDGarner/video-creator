@@ -10,6 +10,7 @@ import { withAlpha } from "../lib/color";
 import { fade, staggerFrames } from "../motion/timeline";
 import { useAsset, useScene } from "./context";
 import { SceneText } from "./Text";
+import { bandHeight, LAYOUT } from "./layout";
 import type { TimelineScene as Schema } from "./schema";
 
 const fmt = (v: number) => Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -42,7 +43,7 @@ export const TimelineScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ sc
   const x1 = width * 0.92;
   const [v0, v1] = scene.range;
   const x = (v: number) => x0 + ((v - v0) / (v1 - v0)) * (x1 - x0);
-  const axisY = height * 0.5;
+  const axisY = height * LAYOUT.timeline.axis;
   const bandH = height * 0.04;
   const ticks: number[] = [];
   const dir = v1 > v0 ? 1 : -1;
@@ -65,7 +66,7 @@ export const TimelineScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ sc
   return (
     <>
       {scene.silhouettes ? (
-        <div style={{ position: "absolute", left: x0, right: width - x1, top: height * 0.22, height: height * 0.12, display: "flex", gap: s(2), alignItems: "flex-end" }}>
+        <div style={{ position: "absolute", left: x0, right: width - x1, top: height * LAYOUT.timeline.silhouettes.top, height: bandHeight(height, LAYOUT.timeline.silhouettes), display: "flex", gap: s(2), alignItems: "flex-end" }}>
           {scene.silhouettes.images.map((f) => (
             <Silhouette key={f} file={f} dim={scene.silhouettes!.dim} dimAt={local(scene.silhouettes!.at, start)} />
           ))}
@@ -113,14 +114,14 @@ export const TimelineScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ sc
         );
       })}
       {scene.question !== undefined ? (
-        <Reveal at={local(scene.question)} from="scale" style={{ position: "absolute", left: 0, right: 0, top: height * 0.56, textAlign: "center" }}>
+        <Reveal at={local(scene.question)} from="scale" style={{ position: "absolute", left: 0, right: 0, top: height * LAYOUT.timeline.question, textAlign: "center" }}>
           <Display size="hero" align="center" color="accent">
             ?
           </Display>
         </Reveal>
       ) : null}
       <div style={{ position: "absolute", left: x0, top: axisY + 2, width: x1 - x0, height: hair, backgroundColor: withAlpha(muted, 0) }} />
-      <SceneText headline={scene.headline} caption={scene.caption} top={0.09} />
+      <SceneText headline={scene.headline} caption={scene.caption} top={LAYOUT.timeline.text} />
     </>
   );
 };

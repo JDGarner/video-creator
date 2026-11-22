@@ -20,9 +20,9 @@ longform video in `stories/longform/` is parked; everything below is written so 
 | Apple Silicon | **Decided (step 2): CPU.** All nine model/device runs worked, but on the M4 Max CPU beat Metal for Turbo (0.44 vs 0.89 RTF) and Nano (0.21 vs 0.75). Only the original model was faster on Metal, and it is the slowest overall. Full table in `out/smoke/results.json`. |
 | Output | 24 kHz mono WAV. Every file carries Resemble's PerTh watermark (imperceptible, survives MP3). |
 | Audio tools | `ffmpeg` 9, `sox` and `rec` installed via Homebrew (step 1). |
-| Alignment | `@remotion/install-whisper-cpp` 4.0.541 gives word-level timestamps locally via whisper.cpp, which is the `alignment.json` the handoff's `timing.ts` expects. Its `toCaptions()` converts the same output to `@remotion/captions`' `Caption[]`. |
+| Alignment | `@remotion/install-whisper-cpp` 4.0.541 gives word-level timestamps locally via whisper.cpp, which is the `alignment.json` the compositions expect. Its `toCaptions()` converts the same output to `@remotion/captions`' `Caption[]`. |
 | Captions | `@remotion/captions` 4.0.541: `createTikTokStyleCaptions({ captions, combineTokensWithinMilliseconds })` groups word tokens into short pages. That is the Shorts-style caption mechanic; we style the pages ourselves with theme fonts. |
-| The short | `src/dev/shorts/MakassanShort.tsx`, 1080x1920 at 30 fps, currently 14 s covering beats 1 and 2 with hand-set times in `T`. Preview at `stories/shorts/makassan-trade-route/preview-beats-1-2.mp4`, no audio, no captions. |
+| The short | `src/shorts/MakassanShort.tsx`, 1080x1920 at 30 fps, currently 14 s covering beats 1 and 2 with hand-set times in `T`. Preview at `stories/shorts/makassan-trade-route/preview-beats-1-2.mp4`, no audio, no captions. |
 
 ## Layout
 
@@ -142,7 +142,7 @@ two runs.
 ### 6. Word alignment (done 2026-11-10)
 - `align.ts` (run with `pnpm voice:align <video>`) uses `@remotion/install-whisper-cpp` to download
   whisper.cpp and the `medium.en` model, transcribes `narration.wav` with word timestamps, and
-  writes `alignment.json` as `{ words: [{ text, start, end }] }` in seconds, the handoff's shape.
+  writes `alignment.json` as `{ words: [{ text, start, end }] }` in seconds.
 - Pass the known script as whisper's prompt so it spells the place names our way; then snap the
   recognised words back onto the script text (same order, fuzzy match) so captions show what was
   written, not what whisper heard. Word timings come from whisper, word text from the script.
@@ -212,7 +212,7 @@ Arnhem Land label; 72 percent collided with it in the portrait framing. Preview 
 `stories/shorts/makassan-trade-route/preview-beats-1-2.mp4` with the narration track.
 
 ### 9. Pipeline commands (done 2026-11-11)
-- `pnpm short <video>` and the per-stage `pnpm narrate|align|render`, driven by `scripts/short.ts`
+- `pnpm short <video>` and the per-stage `pnpm narrate|align|render`, driven by `scripts/short.ts` and `scripts/short/Short.ts`
   with per-beat reuse, stage hashing, `--only`/`--seed` re-takes and `config/defaults.json` +
   `video.json`. Specified in `docs/PIPELINE.md`, which is now the reference for this flow.
 - First full run over all nine beats: 63.7 s of narration, 159 words, 150 wpm overall, but beats

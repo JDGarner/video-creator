@@ -1,7 +1,7 @@
 import React from "react";
 import { useColor, useTheme, useVariant, VariantProvider } from "../theme/ThemeProvider";
-import { Display } from "./Display";
-import { Label } from "./Label";
+import { Display } from "../primitives/Display";
+import { Label } from "../primitives/Label";
 
 type Props = {
   eyebrow?: string;

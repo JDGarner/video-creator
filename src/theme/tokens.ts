@@ -38,6 +38,9 @@ export type ThemeColors = RoleColors & {
   highlightInk?: string;
   highlightDark?: string;
   highlightInkDark?: string;
+  /** Loss, danger, the red in a diagram; accent when absent. */
+  alert?: string;
+  alertDark?: string;
 };
 
 /** Colours every theme defines and that resolve against the variant. */
@@ -93,6 +96,13 @@ export function resolveColor(theme: Theme, key: ColorKey, variant: Variant): str
   };
   if (key === "accent") return theme.colors.accentDark ?? theme.colors.accent;
   return theme.colors[onDark[key] ?? key];
+}
+
+/** The alert colour for a variant, falling back to the accent. */
+export function alertColor(theme: Theme, variant: Variant): string {
+  const c = theme.colors;
+  if (variant === "dark") return c.alertDark ?? c.alert ?? resolveColor(theme, "accent", variant);
+  return c.alert ?? c.accent;
 }
 
 /** The caption block colours for a variant: fill then text. */

@@ -7,6 +7,7 @@ import { useTheme } from "../theme/ThemeProvider";
 import { fade } from "../motion/timeline";
 import { useAsset, useScene } from "./context";
 import { SceneText } from "./Text";
+import { LAYOUT } from "./layout";
 import type { SilhouettesScene as Schema } from "./schema";
 
 const One: React.FC<{ file: string; at: number; dimAt: number | null; left: number; top: number; width: number; height: number }> = ({ file, at, dimAt, left, top, width, height }) => {
@@ -37,8 +38,9 @@ export const SilhouettesScene: React.FC<{ scene: z.output<typeof Schema> }> = ({
     <>
       {scene.background ? <Still src={bgImg.src} name={bgImg.name} fit="cover" move="zoom-in" moveFrames={end - start} treatment="illustration" /> : null}
       {rows.map((row, r) => {
-        const rowTop = r === 0 ? height * 0.42 : height * 0.53;
-        const rowH = r === 0 ? height * 0.1 : height * 0.13;
+        const band = LAYOUT.silhouettes.rows[r]!;
+        const rowTop = height * band.top;
+        const rowH = height * band.height;
         const slot = (width * 0.9) / Math.max(row.length, 1);
         const offset = width * 0.05 + (r === 1 ? slot * 0.25 : 0);
         return row.map((file, i) => {
@@ -46,7 +48,7 @@ export const SilhouettesScene: React.FC<{ scene: z.output<typeof Schema> }> = ({
           return <One key={`${r}-${file}-${i}`} file={file} at={start + k * stagger} dimAt={dimAt !== null && k >= keep ? dimAt : null} left={offset + i * slot} top={rowTop} width={slot * 0.9} height={rowH} />;
         });
       })}
-      <SceneText headline={scene.headline} caption={scene.caption} boxed={!!scene.background} top={0.1} />
+      <SceneText headline={scene.headline} caption={scene.caption} boxed={!!scene.background} top={LAYOUT.headline} />
     </>
   );
 };

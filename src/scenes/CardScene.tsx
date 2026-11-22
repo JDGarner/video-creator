@@ -8,6 +8,7 @@ import { useColor, useTheme } from "../theme/ThemeProvider";
 import { withAlpha } from "../lib/color";
 import { useAsset, useScene } from "./context";
 import { SceneText } from "./Text";
+import { LAYOUT } from "./layout";
 import type { CardScene as Schema } from "./schema";
 
 const REFERENCE_M = 1.75;
@@ -23,10 +24,10 @@ export const CardScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ scene 
   const ink = useColor("ink");
   const hair = theme.stroke.hair * scale;
 
-  const areaTop = height * 0.12;
-  const baseline = height * 0.58;
+  const areaTop = height * LAYOUT.card.top;
+  const baseline = height * LAYOUT.card.baseline;
   const areaH = baseline - areaTop;
-  const refH = height * 0.2;
+  const refH = height * LAYOUT.card.referenceH;
   const subjectH = scene.height ? Math.min(areaH, (scene.height / REFERENCE_M) * refH) : areaH;
   const subjectBox = scene.reference ? { left: width * 0.06, width: width * 0.58 } : { left: width * 0.08, width: width * 0.84 };
 
@@ -47,7 +48,7 @@ export const CardScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ scene 
           </div>
         </div>
       ) : null}
-      <SceneText headline={scene.headline} caption={scene.caption} top={0.61} />
+      <SceneText headline={scene.headline} caption={scene.caption} top={LAYOUT.card.text} />
     </>
   );
 };

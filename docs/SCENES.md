@@ -73,3 +73,10 @@ punctuation. Images are file names listed in the video's `assets.yaml`.
 | `images` | list of string | required |  |
 | `dim` | boolean | `false` | Grey outlines instead of full colour |
 | `treatment` | `photo` \| `illustration` \| `plain` \| `silhouette` | `"illustration"` | photo: desaturated, paper-tinted, grained. illustration: grain and vignette only. plain: untouched. silhouette: a black shape recoloured in the theme ink |
+
+## `landmass`
+
+| field | type | default | meaning |
+|---|---|---|---|
+| `region` | string | required | A country as Natural Earth names it, e.g. "Australia"; drawn flat in ink, centred |
+| `loss` | { fraction: number, at: number or string, keep?: `east` \| `west` \| `north` \| `south`, sweepSec?: number } |  | From the cue, this share of the area sweeps to the alert colour, leaving a strip along one edge |

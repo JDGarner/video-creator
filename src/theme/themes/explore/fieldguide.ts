@@ -8,9 +8,10 @@ export const fieldguide: Theme = {
   name: "fieldguide",
   colors: {
     bg: "#F6EFE6", bgDark: "#0C1A2B", ink: "#2A2217", inkOnDark: "#BFEFE0", muted: "#7B6E57", mutedOnDark: "#7FA99C",
-    structure: "#5B5A4E", structureAlt: "#B6A786", accent: "#5E3A6B", accentDark: MINT, surface: "#EADFC8", surfaceDark: "#132840",
+    structure: "#5B5A4E", structureAlt: "#B6A786", accent: "#5E3A6B", accentDark: MINT, surface: "#F6EFE6", surfaceDark: "#132840",
     water: "#D9CBAE", waterDark: "#0A1522", land: "#CDBE9E", landDark: "#163049", ice: "#F1E8D4",
     highlightInk: "#FFFFFF", highlightDark: withAlpha(MINT, 0.16), highlightInkDark: MINT,
+    alert: "#C2452D", alertDark: "#FF6B57",
   },
   fonts: {
     display: { family: "Vollkorn", weights: [600, 700], style: "normal" },

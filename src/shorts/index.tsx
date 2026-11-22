@@ -1,7 +1,7 @@
 import React from "react";
 import { Composition, staticFile, type CalculateMetadataFunction } from "remotion";
 import defaults from "../../config/defaults.json";
-import { MakassanShort } from "../dev/shorts/MakassanShort";
+import { MakassanShort } from "./MakassanShort";
 import { mergeConfig, type ShortConfig } from "../lib/config";
 import { loadNarration, type Narration } from "../lib/narration";
 import type { Scene } from "../scenes/schema";

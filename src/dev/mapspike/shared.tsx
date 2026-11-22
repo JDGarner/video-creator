@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill } from "remotion";
-import { CaptionCard } from "../../primitives/CaptionCard";
+import { CaptionCard } from "../CaptionCard";
 import { Display } from "../../primitives/Display";
 import { Label } from "../../primitives/Label";
 import { useColor, useTheme } from "../../theme/ThemeProvider";

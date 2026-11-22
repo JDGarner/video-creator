@@ -5,6 +5,7 @@ import { Reveal } from "../primitives/Reveal";
 import { useColor, useTheme } from "../theme/ThemeProvider";
 import { withAlpha } from "../lib/color";
 import { useScene } from "./context";
+import { LAYOUT } from "./layout";
 import type { TextSpec } from "./schema";
 
 const spec = (t: TextSpec | undefined) => (t === undefined ? undefined : typeof t === "string" ? { text: t, at: undefined, until: undefined, align: "center" as const } : t);
@@ -24,7 +25,7 @@ type Props = {
  * The headline and caption every scene may carry: display serif over italic serif, centred in the
  * upper part of the frame, above the caption band. Each line has its own cue and exit.
  */
-export const SceneText: React.FC<Props> = ({ headline, caption, top = 0.1, boxed = false, stagger = 6 }) => {
+export const SceneText: React.FC<Props> = ({ headline, caption, top = LAYOUT.headline, boxed = false, stagger = 6 }) => {
   const { width, height } = useVideoConfig();
   const { theme, scale } = useTheme();
   const { local, start } = useScene();
@@ -62,7 +63,7 @@ export const SceneText: React.FC<Props> = ({ headline, caption, top = 0.1, boxed
   const lastUntil = [h, c].filter(Boolean).every((t) => t!.until !== undefined) ? Math.max(...untils) : undefined;
 
   return (
-    <div style={{ position: "absolute", left: 0, right: 0, top: height * top, display: "flex", justifyContent: align === "left" ? "flex-start" : "center", padding: `0 ${width * 0.07}px` }}>
+    <div style={{ position: "absolute", left: 0, right: 0, top: height * top, display: "flex", justifyContent: align === "left" ? "flex-start" : "center", padding: `0 ${width * LAYOUT.margin}px` }}>
       {boxed ? (
         <Reveal at={firstAt} exitAt={lastUntil} from="fade">
           <div style={{ padding: `${s(3)}px ${s(5)}px`, backgroundColor: withAlpha(surface, 0.94), border: `${theme.stroke.hair * scale}px solid ${ink}`, maxWidth: width * 0.86 }}>{block}</div>

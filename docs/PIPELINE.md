@@ -3,7 +3,7 @@
 How a YouTube Short goes from a written storyboard to an MP4 with cloned narration and word-timed
 captions, plus everything the upload form asks for. Every stage is deterministic code; no model is
 involved after the storyboard is written. Read this before touching anything under
-`scripts/short.ts`, `voice/`, `src/scenes/` or `src/shorts/`.
+`scripts/short/`, `voice/`, `src/scenes/` or `src/shorts/`.
 
 ```
 stories/shorts/<video>/short.md ──► check ──► narrate ──► align ──► render ──► bundle ──► you watch, you upload
@@ -39,6 +39,7 @@ Every stage skips itself when its outputs exist and its inputs are unchanged (se
 | `--beats 1,2` or `--beats 1-4` | narrate | which beats to include in the narration; default all |
 | `--only 3` | narrate | regenerate only these beats, reuse the existing WAVs for the rest, restitch |
 | `--seed N` | narrate | take number: beat n is seeded with `N + n`. Without it, beats keep the seed they were last made with, and `--only` beats get their previous seed + 1, i.e. another take |
+| `--scene N` | render | render only scene N (counting from 1) to `out/shorts/<video>/scene-N.mp4`, for checking a layout change; not hashed and not what bundle ships |
 | `--force` | all | ignore recorded hashes and run anyway, e.g. after upgrading Chatterbox |
 
 Typical editing loop once the script is final: listen, then `pnpm short <video> --only 3 --seed 1`
@@ -144,9 +145,9 @@ Each stage checks before doing work and stops with a plain message:
 - `--only` naming a beat whose WAV does not exist yet
 - narrate: pace above `maxWpm` is a warning, not a stop
 - align: a script word whisper did not hear is interpolated and listed; two missed words in a row is a warning to listen
-- render refuses to run when `alignment.json` is older than `narration.wav`, so stale captions cannot ship
+- render refuses to run when `alignment.json` was not made from the current `narration.wav` (by content hash, so a touched file is fine and a copied one is not), so stale captions cannot ship
 - the manifest's reference hash differing from the current `reference.wav` makes narrate regenerate, never reuse
-- bundle refuses a video whose assets are still placeholders, an `assets.yaml` with TODO sources or licences, an MP4 older than `alignment.json`, a resolution other than the configured one, a missing audio stream, a duration over `publish.maxSec`, a `## Publish` without a title, a title over 100 characters, tags over 500 characters in total, a description over 5000, or an unknown field name in the section
+- bundle refuses an mp4 that the current inputs did not produce (the render hash must match), so an edit after the last render cannot ship
 - bundle measures integrated loudness and records it as `lufs` in `metadata.json`. YouTube plays at about -14 LUFS and never turns audio up, so a quieter master plays quieter than its neighbours
 
 ## Adding a short
@@ -167,7 +168,7 @@ Each stage checks before doing work and stops with a plain message:
 A short that needs something no scene type does gets a new type: schema in `src/scenes/schema.ts`,
 component in `src/scenes/`, a case in `src/scenes/index.tsx`, then `pnpm docs:scenes`. A fully
 hand-written composition is still possible by adding it to `SHORTS` in `src/shorts/index.tsx`, as
-`src/dev/shorts/MakassanShort.tsx` is.
+`src/shorts/MakassanShort.tsx` is.
 5. Upload from `out/shorts/<video>/publish/`: the MP4, then `metadata.json` for the text and the
    two Studio answers, `captions.srt` as the subtitle track. The thumbnail can only be chosen in the
    mobile app, and only as a frame of the video; `thumbnail.png` shows which one to scrub to.

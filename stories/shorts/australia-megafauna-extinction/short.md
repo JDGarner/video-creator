@@ -10,10 +10,10 @@ Australia lost nearly all of its giant animals around 45,000 years ago, shortly 
 
 ## Narration
 
-1. Around eighty five to ninety percent of Australia's megafauna, animals over forty four kilograms, went extinct during the last Ice Age, before Europeans arrived.
-2. Australia was once home to the Diprotodon, a three tonne wombat relative; Procoptodon, a giant kangaroo standing over two metres tall; Megalania, an enormous monitor lizard; and Genyornis, a two hundred kilogram flightless bird.
+1. Around eighty five to ninety percent of Australia's megafauna went extinct before Europeans arrived.
+2. These include Diprotodon, a three tonne wombat relative. Procoptodon, a giant kangaroo standing over two metres tall. Megalania, an enormous monitor lizard. And Genyornis, a two hundred kilogram flightless bird.
 3. Most disappeared roughly fifty thousand to forty thousand years ago, after humans had arrived, though how long after is debated. So what caused it?
-4. There are three main explanations: human hunting, changes to the landscape caused by fire, and climate change.
+4. There are three main explanations. Human hunting, changes to the landscape caused by fire, and climate change.
 5. Burnt eggshell fragments suggest humans collected and cooked the eggs of giant flightless birds, potentially reducing their breeding success.
 6. Climate change may also have contributed, but many of these animals had survived earlier climate fluctuations.
 7. Today, many researchers consider human activity a major driver, although the exact causes are still debated.
@@ -85,11 +85,11 @@ scene ends when the next begins. Field reference: `docs/SCENES.md`. Images are l
 `assets.yaml`; any not yet in `assets/` render as labelled placeholders.
 
 ```yaml
-- type: silhouettes
-  images: [diprotodon.svg, procoptodon.svg, megalania.svg, genyornis.svg, thylacoleo.svg, zygomaturus.svg, palorchestes.svg]
-  dim: { at: percent, keep: 1 }
+- type: landmass
+  region: Australia
+  loss: { fraction: 0.875, at: percent, keep: east }
   headline: { text: 85 to 90 percent of megafauna lost, at: percent }
-  caption: { text: Animals over 44 kg · every land species over 100 kg, at: percent + 0.6 }
+  caption: { text: Animals over 44 kg, at: percent + 0.6 }
 
 - type: card
   from: Diprotodon

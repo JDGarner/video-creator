@@ -16,7 +16,7 @@ Read `PLAN.md` for the step list, measurements and open decisions before changin
 - `reference/raw/` and `reference/clips/` are personal voice recordings and gitignored. Never copy
   them elsewhere, upload them, or commit them. `reference/reference.wav` is the one tracked voice
   file and the only reference the pipeline reads.
-- Generated audio goes under `out/` (gitignored). `scripts/short.ts` copies `narration.wav`,
+- Generated audio goes under `out/` (gitignored). `scripts/short/Short.ts` copies `narration.wav`,
   `manifest.json`, `alignment.json` and the merged `config.json` to `public/<kind>/<video>/`,
   which is all the Remotion side reads (through `src/lib/narration.ts`). Never hand-edit the copies.
 - Seed every generate call (`torch.manual_seed`) so a re-run of one paragraph is reproducible.
@@ -35,7 +35,7 @@ pnpm narrate <video>                     # from the repo root; drives narrate.py
 pnpm align <video>                       # from the repo root; narration.wav -> alignment.json via whisper.cpp
 ```
 
-`narrate.py` and `align.ts` are normally run by `scripts/short.ts`, which passes the config and
+`narrate.py` and `align.ts` are normally run by `scripts/short/Short.ts`, which passes the config and
 publishes outputs. Direct use is documented in each file's docstring. Beats are reused when their
 hash (text sent, seed, model, reference) matches the manifest; see `docs/PIPELINE.md` for the seed
 rules behind `--seed` and `--only`.

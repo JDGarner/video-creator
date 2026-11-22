@@ -13,7 +13,7 @@ The current target is YouTube Shorts (9:16, under a minute). Long-form videos ar
 | doc | what it covers |
 |---|---|
 | [`context.md`](context.md) | why the project exists, the visual target, decisions already made |
-| [`handoff.md`](handoff.md) | the stack, repo layout, build order and hard rules for anyone changing code |
+| [`docs/MOTION.md`](docs/MOTION.md) | how things move: enter, exit, stagger, camera, count-ups |
 | [`docs/PIPELINE.md`](docs/PIPELINE.md) | the shorts pipeline: commands, flags, inputs, outputs, config fields, skipping, failure rules |
 | [`docs/SCENES.md`](docs/SCENES.md) | the scene types a storyboard can use and every field, generated from the schemas |
 | [`docs/examples/`](docs/examples/) | a complete example storyboard (`short.md`), `assets.yaml` and `video.json` |
@@ -66,7 +66,7 @@ pnpm render <video>
 pnpm bundle <video>
 pnpm stills <video>     # one PNG per scene
 pnpm asset <video> phylopic:<taxon> | <commons url> | --search "words"   # fetch images with licence bookkeeping
-#   flags: --beats 1,2   --only 3   --seed N   --force
+#   flags: --beats 1,2   --only 3   --seed N   --scene N   --force
 pnpm docs:scenes        # regenerate docs/SCENES.md from the scene schemas
 
 pnpm typecheck
@@ -94,7 +94,7 @@ voice (record, cut candidates, compare clones, pick one) is described in `voice/
 | `config/defaults.json` | pipeline defaults, every field documented in `docs/PIPELINE.md` |
 | `public/shorts/<video>/` | published narration, manifest, alignment, config, scenes and assets read by the composition |
 | `voice/` | Chatterbox narration, whisper alignment, the reference voice |
-| `scripts/` | `short.ts` (the pipeline), `asset.ts` (image fetcher), `scene-docs.ts` (SCENES.md generator) and `check-hex.mjs` (theme lint) |
+| `scripts/` | `short.ts` (pipeline CLI) over `short/` (`Short.ts` stages, `hash.ts`, `media.ts` ffmpeg, `bundle.ts` publish folder, `tools.ts` what tests fake), `asset.ts` (image fetcher), `scene-docs.ts` (SCENES.md generator) and `check-hex.mjs` (theme lint) |
 
 ## Hard rules
 
@@ -123,7 +123,9 @@ Roughly in the order they pay off.
 
 1. **A `map` scene type.** The Makassan short is the last hand-written composition. A map scene
    with a camera box, route, markers, labels and a distance counter, each cued on a word, would
-   move it onto scene data and let maps mix with stills, cards and timelines in any short.
+   move it onto scene data and let maps mix with stills, cards and timelines in any short. The
+   `landmass` type covers the flat case, a country drawn in ink with a share of its area switching
+   colour, but has no camera, sea or labels.
 2. **Finish the Makassan short.** Beats 3 to 9 once the script is final, as scene data once the
    map type exists.
 3. **Distance counter.** Beat 2 counts to 2,030 km while the narration says "over a thousand".
@@ -153,8 +155,5 @@ Roughly in the order they pay off.
    topics will want conic and Mercator-like fits of one country or sea as first-class options.
 12. **whisper.cpp upgrade.** Pinned to 1.5.5 because newer releases build with cmake, which is not
     installed. Upgrading would bring better timestamps and the `whisper-cli` binary.
-13. **Tests for the pipeline script.** `scripts/short.ts` is exercised by hand. A fixture short with
-    a two-beat script and a fake narrator would let the hashing, `--only` and stale-alignment rules
-    run under vitest.
-14. **Long-form.** Resume `stories/longform/` on the same primitives: scene registry, transitions,
+13. **Long-form.** Resume `stories/longform/` on the same primitives: scene registry, transitions,
     chapter furniture, and a narration manifest that spans minutes rather than seconds.
