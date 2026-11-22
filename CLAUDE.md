@@ -32,9 +32,11 @@ Node 22 via nvm (`.nvmrc`). Remotion packages and zod are pinned exactly; Remoti
 
 ## Where things live
 
-- `src/theme/` tokens, themes (`atlas`, `midnight`), fonts, provider
+- `src/theme/` tokens, themes (`fieldguide` is the one in use; `atlas`, `midnight` and `explore/` are directions kept for the sheets), fonts, provider
 - `src/primitives/` style-aware, content-agnostic building blocks
 - `src/dev/` visual checks and spikes only, nothing here ships (`sheet-<theme>-<variant>`, `captions-check`, map spikes)
+- `src/motion/` springs, easings, timeline helpers; the rules are in `docs/MOTION.md`
+- `src/viz/` map renderers and camera maths on d3-geo and Natural Earth, kept for a `map` scene type
 - `src/lib/` pure helpers with Vitest tests next to them
 - `docs/design/` chosen reference renders and why; `spikes/` rejected explorations kept for reference
 - `stories/shorts/<video>/` a short's storyboard (`## Narration` is the script, `## Scenes` the visuals as YAML, `## Publish` the YouTube metadata), `assets.yaml` + `assets/` for its images, `video.json` overrides

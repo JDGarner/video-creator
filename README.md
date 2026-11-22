@@ -5,8 +5,8 @@ A storyboard and some structured data go in, an MP4 with cloned narration and wo
 comes out. No generative video anywhere; AI helps write code and scene data, the frames are all
 deterministic React.
 
-The current target is YouTube Shorts (9:16, under a minute). Long-form videos are parked under
-`stories/longform/` and reuse the same themes, primitives and voice.
+The current target is YouTube Shorts (9:16, under a minute). Long-form videos are a later goal
+and will reuse the same themes, primitives and voice; nothing for them is in the repo yet.
 
 ## Where to read
 
@@ -82,7 +82,7 @@ voice (record, cut candidates, compare clones, pick one) is described in `voice/
 | path | what |
 |---|---|
 | `src/theme/` | tokens, themes (`atlas`, `midnight`, the `fieldguide` family), fonts, provider |
-| `src/primitives/` | style-aware building blocks: `Paper`, `Grain`, `Display`, `Label`, `CaptionCard`, `Captions`, `DrawPath`, `Reveal` |
+| `src/primitives/` | style-aware building blocks: `Paper`, `Grain`, `Display`, `Label`, `Captions`, `Still`, `DrawPath`, `Reveal` |
 | `src/motion/` | easings, springs, timeline helpers |
 | `src/viz/` | globe and regional map renderers (d3-geo, Natural Earth) |
 | `src/lib/` | pure helpers with tests: config, storyboard parsing and lint, cues, numbers, narration, captions, publish metadata and SRT, geo, colour |
@@ -149,5 +149,6 @@ Roughly in the order they pay off.
    topics will want conic and Mercator-like fits of one country or sea as first-class options.
 10. **whisper.cpp upgrade.** Pinned to 1.5.5 because newer releases build with cmake, which is not
     installed. Upgrading would bring better timestamps and the `whisper-cli` binary.
-11. **Long-form.** Resume `stories/longform/` on the same primitives: scene registry, transitions,
-    chapter furniture, and a narration manifest that spans minutes rather than seconds.
+11. **Long-form.** Build on the same primitives: scene registry, transitions, chapter furniture,
+    and a narration manifest that spans minutes rather than seconds. The earlier long-form
+    storyboard (Makassan trade route) is in git history before 2026-11-23 if it is wanted again.

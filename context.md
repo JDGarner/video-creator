@@ -51,3 +51,17 @@ I want this to be **easily customisable**. The palette, fonts, texture, and moti
 - 3D of any kind.
 - Shorts/vertical layouts (keep the theme and scene components resolution-agnostic where cheap, but don't build vertical compositions yet).
 - Publishing automation beyond generating metadata and thumbnails.
+
+## Revisions since this was written (2026-11-23)
+
+The sections above are the original brief and still describe the intent. What has changed in practice:
+
+- **Shorts came first.** The vertical 9:16 pipeline is built and ships; long-form is the later goal.
+- **Content is YAML in a markdown storyboard**, not a standalone JSON document: `## Narration` is the
+  script, `## Scenes` the visuals, `## Publish` the upload metadata. Zod still validates the scenes.
+- **Narration is my own cloned voice** (Chatterbox, local), aligned with whisper.cpp; no third-party TTS.
+- **Maps use raster relief.** The chosen atlas look is Natural Earth hypsometric tints over a shaded sea
+  (`docs/design/`), not flat vector land. Globes were explored and parked.
+- **The light paper is cream with a plum accent and a navy dark variant**, decided in the `fieldguide`
+  theme rather than the rust accent sketched above.
+
