@@ -1,7 +1,7 @@
 /**
  * Word-align narration.wav against the script it was made from, using whisper.cpp.
  *
- * Usage: pnpm voice:align shorts/makassan-trade-route
+ * Usage: pnpm voice:align shorts/australia-megafauna-extinction
  *
  * Reads voice/out/<kind>/<video>/{narration.wav,manifest.json}; writes alignment.json there as
  * { words: [{ text, start, end, beat }] } in seconds. Word text comes from the script, timings from
@@ -180,7 +180,7 @@ export async function alignNarration(dir: string): Promise<AlignResult> {
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const target = process.argv[2];
-  if (!target) throw new Error("usage: align.ts <kind>/<video>, e.g. shorts/makassan-trade-route");
+  if (!target) throw new Error("usage: align.ts <kind>/<video>, e.g. shorts/australia-megafauna-extinction");
   alignNarration(path.join(VOICE, "out", target))
     .then((r) => console.log(JSON.stringify(r, null, 2)))
     .catch((e) => {

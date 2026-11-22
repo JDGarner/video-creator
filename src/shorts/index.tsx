@@ -1,7 +1,6 @@
 import React from "react";
 import { Composition, staticFile, type CalculateMetadataFunction } from "remotion";
 import defaults from "../../config/defaults.json";
-import { MakassanShort } from "./MakassanShort";
 import { mergeConfig, type ShortConfig } from "../lib/config";
 import { loadNarration, type Narration } from "../lib/narration";
 import type { Scene } from "../scenes/schema";
@@ -13,15 +12,8 @@ export type SceneData = { id: string; title: string; scenes: Scene[]; assets: Re
 
 export type ShortProps = { narration: Narration | null; config: ShortConfig; data: SceneData | null };
 
-/**
- * Every short the pipeline can render, by the folder name under stories/shorts/. Storyboards with a
- * `## Scenes` section are listed in videos.json by the pipeline and rendered by DataShort; the rest
- * are hand-written compositions.
- */
-export const SHORTS: Record<string, React.FC<ShortProps>> = {
-  ...Object.fromEntries((dataVideos as string[]).map((id) => [id, DataShort])),
-  "makassan-trade-route": MakassanShort,
-};
+/** Every short the pipeline can render, by folder name under stories/shorts/. `pnpm check` writes the list. */
+export const VIDEOS: string[] = dataVideos;
 
 export const DEFAULT_CONFIG = mergeConfig(defaults, {});
 
@@ -35,7 +27,7 @@ const metadataFor =
   async ({ props }) => {
     const config = mergeConfig(defaults, (await fetchJson(`shorts/${id}/config.json`)) ?? {});
     const narration = await loadNarration("shorts", id);
-    const data = (dataVideos as string[]).includes(id) ? await fetchJson<SceneData>(`shorts/${id}/scenes.json`) : null;
+    const data = await fetchJson<SceneData>(`shorts/${id}/scenes.json`);
     return {
       props: { ...props, narration, config, data },
       fps: config.fps,
@@ -48,11 +40,11 @@ const metadataFor =
 /** One `short-<id>` composition per registered short, sized and timed from its published files. */
 export const ShortCompositions: React.FC = () => (
   <>
-    {Object.entries(SHORTS).map(([id, Component]) => (
+    {VIDEOS.map((id) => (
       <Composition
         key={id}
         id={`short-${id}`}
-        component={Component}
+        component={DataShort}
         width={DEFAULT_CONFIG.width}
         height={DEFAULT_CONFIG.height}
         fps={DEFAULT_CONFIG.fps}

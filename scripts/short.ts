@@ -18,7 +18,7 @@ async function main(): Promise<void> {
   const single: Stage[] = ["check", "narrate", "align", "render", "bundle", "stills"];
   const stages: Stage[] = stageArg === "short" ? ["check", "narrate", "align", "render", "bundle"] : single.includes(stageArg as Stage) ? [stageArg as Stage] : [];
   if (!stages.length) throw new PipelineError(USAGE);
-  if (!id) throw new PipelineError("which video? e.g. pnpm short makassan-trade-route");
+  if (!id) throw new PipelineError("which video? e.g. pnpm short australia-megafauna-extinction");
   const flags: Flags = { beats: values.beats, only: values.only, seed: values.seed === undefined ? undefined : Number(values.seed), scene: values.scene === undefined ? undefined : Number(values.scene), force: values.force };
   if (flags.seed !== undefined && Number.isNaN(flags.seed)) throw new PipelineError("--seed must be an integer");
   if (flags.scene !== undefined && (!Number.isInteger(flags.scene) || flags.scene < 1)) throw new PipelineError("--scene must be a scene number, counting from 1");

@@ -26,7 +26,7 @@ pnpm asset <video> phylopic:<taxon> | <commons url> [--as f] | --search "words" 
 pnpm docs:scenes        # regenerate docs/SCENES.md after changing src/scenes/schema.ts
 ```
 
-The shorts pipeline is described in `docs/PIPELINE.md`; read it before changing `scripts/short/`, `src/shorts/`, `src/scenes/` or anything under `voice/`. Shorts are data: a storyboard's `## Scenes` YAML is rendered by the scene types in `src/scenes/` (documented in `docs/SCENES.md`). Adding a scene type = schema + component + registry case + `pnpm docs:scenes`. Do not hand-write a composition for a short unless no scene type can express it.
+The shorts pipeline is described in `docs/PIPELINE.md`; read it before changing `scripts/short/`, `src/shorts/`, `src/scenes/` or anything under `voice/`. Shorts are data: a storyboard's `## Scenes` YAML is rendered by the scene types in `src/scenes/` (documented in `docs/SCENES.md`). Adding a scene type = schema + component + registry case + `pnpm docs:scenes`. There are no hand-written compositions: a short that needs something new gets a scene type.
 
 Node 22 via nvm (`.nvmrc`). Remotion packages and zod are pinned exactly; Remotion 4.0.541 requires zod 4.6.7.
 
@@ -37,9 +37,9 @@ Node 22 via nvm (`.nvmrc`). Remotion packages and zod are pinned exactly; Remoti
 - `src/dev/` visual checks and spikes only, nothing here ships (`sheet-<theme>-<variant>`, `captions-check`, map spikes)
 - `src/lib/` pure helpers with Vitest tests next to them
 - `docs/design/` chosen reference renders and why; `spikes/` rejected explorations kept for reference
-- `stories/shorts/<video>/` a short's storyboard (`## Narration` is the script, `## Scenes` the visuals as YAML, `## Publish` the YouTube metadata), `assets.yaml` + `assets/` for its images, `video.json` overrides; `stories/longform/<video>/` the parked longform storyboard and scene directions
+- `stories/shorts/<video>/` a short's storyboard (`## Narration` is the script, `## Scenes` the visuals as YAML, `## Publish` the YouTube metadata), `assets.yaml` + `assets/` for its images, `video.json` overrides
 - `src/scenes/` scene types: `schema.ts` (Zod, one per type), a component per type, `index.tsx` picks one
-- `src/shorts/` `DataShort` renders any storyboard with scenes, `MakassanShort` is the one hand-written short until a `map` scene type exists; `index.tsx` registers `short-<video>` compositions, `videos.json` lists the data-driven ones (written by `pnpm check`)
+- `src/shorts/` `DataShort` renders any storyboard; `index.tsx` registers a `short-<video>` composition for each entry in `videos.json` (written by `pnpm check`)
 - `config/defaults.json` pipeline defaults, documented in `docs/PIPELINE.md`
 - `voice/` narration pipeline, see below
 

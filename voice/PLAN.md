@@ -3,11 +3,10 @@
 Goal: record a short reference of my own voice, run Chatterbox locally on this Mac, and turn a
 story's narration into a WAV in that voice, plus word timestamps for cueing scenes and captions.
 
-**Current target (2026-11-10):** the YouTube Short in `stories/shorts/makassan-trade-route/`, and
-within it beats 1 and 2 only, end to end: cloned voice-over, word-timed captions in the Shorts
-style (one to three words on screen at a time, changing on the spoken word), rendered into the
-existing `makassan-short` composition. Only once that works do we do the other seven beats. The
-longform video in `stories/longform/` is parked; everything below is written so it works for both.
+**Status (2026-11-23):** done through step 10. The pipeline narrates, aligns and captions any
+short under `stories/shorts/`; the first one shipped end to end is `australia-megafauna-extinction`.
+Steps 1 to 9 were built against the Makassan trade-route short, since removed from the repo (it is
+in git history before 2026-11-23); file paths in those steps refer to it.
 
 ## What we are working with
 
@@ -22,7 +21,7 @@ longform video in `stories/longform/` is parked; everything below is written so 
 | Audio tools | `ffmpeg` 9, `sox` and `rec` installed via Homebrew (step 1). |
 | Alignment | `@remotion/install-whisper-cpp` 4.0.541 gives word-level timestamps locally via whisper.cpp, which is the `alignment.json` the compositions expect. Its `toCaptions()` converts the same output to `@remotion/captions`' `Caption[]`. |
 | Captions | `@remotion/captions` 4.0.541: `createTikTokStyleCaptions({ captions, combineTokensWithinMilliseconds })` groups word tokens into short pages. That is the Shorts-style caption mechanic; we style the pages ourselves with theme fonts. |
-| The short | `src/shorts/MakassanShort.tsx`, 1080x1920 at 30 fps, currently 14 s covering beats 1 and 2 with hand-set times in `T`. Preview at `stories/shorts/makassan-trade-route/preview-beats-1-2.mp4`, no audio, no captions. |
+| The short | `src/shorts/DataShort.tsx`, 1080x1920 at 30 fps, renders any storyboard's `## Scenes` against the narration; see `docs/PIPELINE.md`. |
 
 ## Layout
 
@@ -228,9 +227,9 @@ Arnhem Land label; 72 percent collided with it in the portrait framing. Preview 
 - First data-driven short: `australia-megafauna-extinction`, 7 beats, 65.3 s, 138 wpm, rendered
   end to end with placeholder art.
 
-### 11. The rest of the Makassan short
-- Script is not final. When it is: build beats 3 to 9 in the composition against the manifest
-  timings (or, better, finish beats-as-data first so no beat needs React).
+### 11. Removed: the Makassan short (2026-11-23)
+- Dropped rather than finished; the next map-led short will be written as scene data once a `map`
+  scene type exists (README, Improvements).
 
 ## Decisions to make along the way
 

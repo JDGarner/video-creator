@@ -87,10 +87,9 @@ voice (record, cut candidates, compare clones, pick one) is described in `voice/
 | `src/viz/` | globe and regional map renderers (d3-geo, Natural Earth) |
 | `src/lib/` | pure helpers with tests: config, storyboard parsing and lint, cues, numbers, narration, captions, publish metadata and SRT, geo, colour |
 | `src/scenes/` | scene types: Zod schema per type, the component that draws it, the registry that picks one |
-| `src/shorts/` | the generic data-driven composition, the registry of `short-<video>` compositions and `videos.json` listing the data-driven ones |
-| `src/dev/` | visual-check compositions: theme sheets, map spikes, the Makassan short, captions check |
+| `src/shorts/` | the data-driven composition, and the registry of one `short-<video>` composition per entry in `videos.json` |
+| `src/dev/` | visual checks and spikes, nothing here ships: theme sheets, map spikes, captions check |
 | `stories/shorts/<video>/` | storyboard, `assets.yaml`, `assets/`, `video.json`, and any preview you choose to keep |
-| `stories/longform/<video>/` | the parked long-form storyboard and scene directions |
 | `config/defaults.json` | pipeline defaults, every field documented in `docs/PIPELINE.md` |
 | `public/shorts/<video>/` | published narration, manifest, alignment, config, scenes and assets read by the composition |
 | `voice/` | Chatterbox narration, whisper alignment, the reference voice |
@@ -108,11 +107,11 @@ voice (record, cut candidates, compare clones, pick one) is described in `voice/
 
 ## Status
 
-- Shorts are data: six scene types (`still`, `card`, `timeline`, `panels`, `silhouettes`, `montage`)
-  render any storyboard with a `## Scenes` section without new code. The megafauna short runs end
-  to end this way with placeholder art, waiting on its images.
-- The Makassan short is still a hand-written map composition; beats 1 and 2 are animated, all nine
-  narrated. Its map will become a `map` scene type.
+- Shorts are data: seven scene types (`still`, `card`, `timeline`, `panels`, `silhouettes`,
+  `montage`, `landmass`) render any storyboard with a `## Scenes` section without new code. There
+  are no hand-written compositions. The megafauna short runs end to end and bundles.
+- The raster atlas map renderer in `src/viz/map/` is kept for a `map` scene type but has no scene
+  yet.
 - Check, narrate, align, render, stills and bundle run as separate or combined commands with
   per-stage skipping. Uploading is manual from the bundle folder.
 - Long-form is parked until the shorts pipeline is settled.
@@ -121,39 +120,34 @@ voice (record, cut candidates, compare clones, pick one) is described in `voice/
 
 Roughly in the order they pay off.
 
-1. **A `map` scene type.** The Makassan short is the last hand-written composition. A map scene
-   with a camera box, route, markers, labels and a distance counter, each cued on a word, would
-   move it onto scene data and let maps mix with stills, cards and timelines in any short. The
+1. **A `map` scene type.** A map scene with a camera box, a route that draws on with a marker
+   travelling it, labels and a distance counter, each cued on a word, built on the atlas renderer
+   in `src/viz/map/`. It would let maps mix with stills, cards and timelines in any short. The
    `landmass` type covers the flat case, a country drawn in ink with a share of its area switching
    colour, but has no camera, sea or labels.
-2. **Finish the Makassan short.** Beats 3 to 9 once the script is final, as scene data once the
-   map type exists.
-3. **Distance counter.** Beat 2 counts to 2,030 km while the narration says "over a thousand".
-   It should be the great-circle distance from Makassar to the vessel's current position.
-4. **Pace control.** Short sentences come out around 200 words per minute against a 150 target.
+2. **Pace control.** Short sentences come out around 200 words per minute against a 150 target.
    Options: longer sentences in the storyboard, a slower reference take, or per-beat speed hints
    in the lexicon. Narrate already warns above `narration.maxWpm`.
-5. **Loudness target.** Narration is mastered to −16 LUFS; YouTube plays at about −14 and never
+3. **Loudness target.** Narration is mastered to −16 LUFS; YouTube plays at about −14 and never
    turns audio up, so the shorts play slightly quiet. Moving the target to −14 is one constant in
    `narrate.py`, but it changes every beat's audio, so do it before the next full listen.
-6. **Human take override.** Let a `beat-N.wav` dropped next to the storyboard replace the
+4. **Human take override.** Let a `beat-N.wav` dropped next to the storyboard replace the
    synthesised beat, for proper nouns the model never gets right. Align and render would work
    unchanged.
-7. **Caption highlight.** `block` (spoken word on a filled accent block, no card) is the default
+5. **Caption highlight.** `block` (spoken word on a filled accent block, no card) is the default
    after a side-by-side; `accent` and `underline` are still options and could be dropped. A bold
    sans caption face, as the reference Shorts use, is the next thing to try.
-8. **Contact sheet.** `pnpm stills` gives one PNG per scene; a single sheet of all of them, and a
-   check that nothing sits in the caption band, would make the review loop one image. The stills in
-   `stories/shorts/makassan-trade-route/` are stale and should go.
-9. **More asset sources.** `pnpm asset` knows PhyloPic and Wikimedia Commons. Pexels and Unsplash
+6. **Contact sheet.** `pnpm stills` gives one PNG per scene; a single sheet of all of them, and a
+   check that nothing sits in the caption band, would make the review loop one image.
+7. **More asset sources.** `pnpm asset` knows PhyloPic and Wikimedia Commons. Pexels and Unsplash
    have APIs with the same shape; a contact address in the user agent would also lift the Commons
    throttling on original files.
-10. **API upload.** `pnpm bundle` stops at a folder. Uploading through the YouTube Data API would
+8. **API upload.** `pnpm bundle` stops at a folder. Uploading through the YouTube Data API would
    remove the last manual step, but uploads from an unaudited API project are locked to private
    and the quota allows about six a day, so it only pays once there is a backlog.
-11. **Regional projections.** Maps are orthographic or a fitted regional view; history and geography
+9. **Regional projections.** Maps are orthographic or a fitted regional view; history and geography
    topics will want conic and Mercator-like fits of one country or sea as first-class options.
-12. **whisper.cpp upgrade.** Pinned to 1.5.5 because newer releases build with cmake, which is not
+10. **whisper.cpp upgrade.** Pinned to 1.5.5 because newer releases build with cmake, which is not
     installed. Upgrading would bring better timestamps and the `whisper-cli` binary.
-13. **Long-form.** Resume `stories/longform/` on the same primitives: scene registry, transitions,
+11. **Long-form.** Resume `stories/longform/` on the same primitives: scene registry, transitions,
     chapter furniture, and a narration manifest that spans minutes rather than seconds.

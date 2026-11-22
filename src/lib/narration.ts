@@ -6,19 +6,6 @@ export type Beat = { n: number; text: string; start: number; end: number };
 
 export type Narration = { duration: number; beats: Beat[]; words: AlignedWord[] };
 
-const norm = (w: string) => w.toLowerCase().replace(/[^a-z0-9]/g, "");
-
-/** Seconds at which `word` is first spoken, or `fallback` when the word is not in the alignment. */
-export function wordTime(words: AlignedWord[], word: string, fallback: number): number {
-  const target = norm(word);
-  return words.find((w) => norm(w.text) === target)?.start ?? fallback;
-}
-
-/** The beat with this number, or undefined when the manifest has not been generated yet. */
-export function beat(beats: Beat[], n: number): Beat | undefined {
-  return beats.find((b) => b.n === n);
-}
-
 /** Load narration.wav's manifest and alignment for a video from public/<kind>/<video>/. */
 export async function loadNarration(kind: string, video: string): Promise<Narration> {
   const base = `${kind}/${video}`;

@@ -8,7 +8,7 @@ import type { AlignedWord } from "../../lib/captions";
 
 export type CaptionsCheckProps = { words: AlignedWord[]; highlight: "accent" | "underline" | "block"; box: "surface" | "none" };
 
-export const ALIGNMENT = "shorts/makassan-trade-route/alignment.json";
+export const ALIGNMENT = "shorts/australia-megafauna-extinction/alignment.json";
 
 /** Loads the real alignment so the composition's length and captions come from the narration. */
 export const captionsCheckMetadata: CalculateMetadataFunction<CaptionsCheckProps> = async ({ props }) => {

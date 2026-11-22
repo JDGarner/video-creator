@@ -166,9 +166,8 @@ Each stage checks before doing work and stops with a plain message:
 4. `pnpm short <video>`, watch `out/shorts/<video>/<video>.mp4`.
 
 A short that needs something no scene type does gets a new type: schema in `src/scenes/schema.ts`,
-component in `src/scenes/`, a case in `src/scenes/index.tsx`, then `pnpm docs:scenes`. A fully
-hand-written composition is still possible by adding it to `SHORTS` in `src/shorts/index.tsx`, as
-`src/shorts/MakassanShort.tsx` is.
+component in `src/scenes/`, a case in `src/scenes/index.tsx`, then `pnpm docs:scenes`. Every short
+is rendered by `DataShort`; check refuses a storyboard without a `## Scenes` section.
 5. Upload from `out/shorts/<video>/publish/`: the MP4, then `metadata.json` for the text and the
    two Studio answers, `captions.srt` as the subtitle track. The thumbnail can only be chosen in the
    mobile app, and only as a frame of the video; `thumbnail.png` shows which one to scrub to.

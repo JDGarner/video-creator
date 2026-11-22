@@ -15,14 +15,11 @@ OUT = ROOT / "out" / "clone-tests"
 
 TEXTS = {
     "s1": (
-        "What if I told you that Australia was already part of an international trading network "
-        "long before the British arrived? For centuries, fleets of Indonesian sailing vessels travelled "
-        "thousands of kilometres across the seas to northern Australia."
+        "Around eighty five to ninety percent of Australia's megafauna went extinct before Europeans arrived."
     ),
-    "s4": (
-        "The destination was a region the Makassans called Marege', referring to the northern Australian "
-        "coast, particularly the Arnhem Land region. Typically, fleets departed Makassar around December, "
-        "travelling south across the Indonesian archipelago and the Arafura Sea."
+    "s2": (
+        "These include Diprotodon, a three tonne wombat relative. Procoptodon, a giant kangaroo standing over "
+        "two metres tall. Megalania, an enormous monitor lizard. And Genyornis, a two hundred kilogram flightless bird."
     ),
 }
 

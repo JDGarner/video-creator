@@ -120,6 +120,11 @@ describe("Short", () => {
     expect(() => new Short("nope", { root, log: quiet })).toThrow(/no such short/);
   });
 
+  it("check refuses a storyboard without scenes", () => {
+    writeFileSync(path.join(root, "stories", "shorts", ID, "short.md"), STORY.replace(/## Scenes[\s\S]*?## Publish/, "## Publish"));
+    expect(() => make().check()).toThrow(/no ## Scenes/);
+  });
+
   it("check publishes config and scenes and registers the video", () => {
     make().check();
     expect(JSON.parse(readFileSync(pub("config.json"), "utf8")).fps).toBe(FPS);

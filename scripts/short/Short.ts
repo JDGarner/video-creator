@@ -152,10 +152,7 @@ export class Short {
     }
     report(findings, this.log);
     this.writeConfig();
-    if (!story.scenes) {
-      this.log("no ## Scenes section: a hand-written composition is expected in src/shorts/index.tsx");
-      return;
-    }
+    if (!story.scenes) fail("no ## Scenes section; shorts are data, see docs/SCENES.md and docs/examples/short.md");
     const used = sceneImages(story.scenes);
     const assetDir = this.publicFile("assets");
     rmSync(assetDir, { recursive: true, force: true });
@@ -230,11 +227,9 @@ export class Short {
     // by content, not mtime: a copied or touched file must not pass, a byte-identical restitch must
     if (this.hashes.align !== fileSha(wav)) fail("alignment.json does not match narration.wav; run align first");
     this.publish("narration.wav", "manifest.json", "alignment.json");
-    if (this.scenes()) {
-      if (!existsSync(this.publicFile("scenes.json"))) fail("no scenes.json; run check first");
-      // cues could not be checked before the narration existed
-      report(checkStory(readFileSync(this.story, "utf8"), { narration: this.narration()! }).filter((f) => f.level === "error"), this.log);
-    }
+    if (!existsSync(this.publicFile("scenes.json"))) fail("no scenes.json; run check first");
+    // cues could not be checked before the narration existed
+    report(checkStory(readFileSync(this.story, "utf8"), { narration: this.narration()! }).filter((f) => f.level === "error"), this.log);
   }
 
   /** Frame range [start, end) of each scene, from its cue against the real narration. */
