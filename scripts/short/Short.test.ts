@@ -50,7 +50,7 @@ const BEATS = [
   { n: 2, text: "Second beat ends here now.", start: 3.5, end: 6 },
 ];
 
-type Calls = { narrate: string[][]; align: number; render: { id: string; out: string; frames?: [number, number] }[] };
+type Calls = { narrate: string[][]; align: number; render: { id: string; out: string; frames?: [number, number]; props?: object }[] };
 
 function fakeTools(calls: Calls): Tools {
   return {
@@ -71,8 +71,8 @@ function fakeTools(calls: Calls): Tools {
       writeFileSync(path.join(dir, "alignment.json"), JSON.stringify({ words }));
       return { heard: words.length, script: words.length, matched: words.length, interpolated: [], doubleMiss: false };
     },
-    render(id, out, frames) {
-      calls.render.push({ id, out, frames });
+    render(id, out, frames, _root, props) {
+      calls.render.push({ id, out, frames, props });
       writeFileSync(out, `mp4:${frames?.join("-") ?? "all"}`);
     },
     media: {
@@ -195,6 +195,20 @@ describe("Short", () => {
       [0, 105],
       [105, 210],
     ]);
+  });
+
+  it("renders a sentence-caption variant beside the default with --full-sentences", async () => {
+    const short = await runShort();
+    short.render({ force: false, fullSentences: true });
+    const variant = calls.render[1]!;
+    expect(variant.out).toBe(out("fixture-sentences.mp4"));
+    expect(variant.props).toEqual({ overrides: { captions: { mode: "sentences" } } });
+    expect(calls.render[0]!.props).toBeUndefined();
+    // each variant keeps its own hash, so neither re-renders the other
+    short.render({ force: false, fullSentences: true });
+    short.render(flags);
+    expect(calls.render).toHaveLength(2);
+    expect(() => short.bundle({ force: false, fullSentences: true }, false)).toThrow(/default render/);
   });
 
   it("bundles the mp4, captions and metadata", async () => {

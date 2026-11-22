@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { activeToken, captionPages, pageAt, type AlignedWord } from "./captions";
+import { activeToken, captionPages, pageAt, sentencePages, type AlignedWord } from "./captions";
 
 // beat 1 and the start of beat 2 from the real alignment, with the 0.5 s gap between them
 const WORDS: AlignedWord[] = [
@@ -75,3 +75,22 @@ describe("activeToken", () => {
     expect(activeToken(first!, first!.tokens[1]!.fromMs + 10)).toBe(1);
   });
 });
+
+describe("sentencePages", () => {
+  const pages = sentencePages(WORDS);
+
+  it("makes one page per sentence, the trailing fragment included", () => {
+    expect(pages).toHaveLength(2);
+    expect(pages[0]!.text.trim()).toBe("Long before the British arrived, northern Australia was already part of an international trade network.");
+    expect(pages[1]!.text.trim()).toBe("Every year,");
+  });
+  it("runs a page until the next sentence starts", () => {
+    expect(pages[0]!.startMs).toBeCloseTo(80);
+    expect(pages[0]!.startMs + pages[0]!.durationMs).toBeCloseTo(6130);
+    expect(pages[1]!.durationMs).toBeCloseTo(6750 - 6130);
+  });
+  it("still finds the spoken word inside a sentence", () => {
+    expect(activeToken(pages[0]!, 2200)).toBe(6);
+  });
+});
+

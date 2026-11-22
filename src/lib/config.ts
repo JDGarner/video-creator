@@ -24,6 +24,8 @@ export const ShortConfigSchema = z.object({
     fontScale: z.number().positive(),
     highlight: z.enum(["accent", "underline", "block"]),
     box: z.enum(["surface", "none"]),
+    mode: z.enum(["words", "sentences"]),
+    sentenceFontScale: z.number().positive(),
   }),
   publish: z.object({
     madeForKids: z.boolean(),
@@ -34,12 +36,12 @@ export const ShortConfigSchema = z.object({
 
 export type ShortConfig = z.infer<typeof ShortConfigSchema>;
 
-type Overrides = { [K in keyof ShortConfig]?: ShortConfig[K] extends object ? Partial<ShortConfig[K]> : ShortConfig[K] };
+export type ConfigOverrides = { [K in keyof ShortConfig]?: ShortConfig[K] extends object ? Partial<ShortConfig[K]> : ShortConfig[K] };
 
 /** Merge one level deep: a video.json may set `captions.top` without repeating the other caption fields. */
 export function mergeConfig(defaults: unknown, overrides: unknown): ShortConfig {
   const base = ShortConfigSchema.parse(defaults);
-  const over = (overrides ?? {}) as Overrides;
+  const over = (overrides ?? {}) as ConfigOverrides;
   return ShortConfigSchema.parse({
     ...base,
     ...over,

@@ -4,7 +4,7 @@ import { useColor, useTheme, useVariant } from "../theme/ThemeProvider";
 import { highlightColors } from "../theme/tokens";
 import { fontFamily } from "../theme/fonts";
 import { withAlpha } from "../lib/color";
-import { activeToken, captionPages, pageAt, type AlignedWord } from "../lib/captions";
+import { activeToken, pageAt, pagesFor, type AlignedWord, type CaptionMode } from "../lib/captions";
 import { fade } from "../motion/timeline";
 
 type Props = {
@@ -24,10 +24,14 @@ type Props = {
   highlight?: "accent" | "underline" | "block";
   /** surface: the page sits on a surface card with the theme's card border. none: straight on the paper. */
   box?: "surface" | "none";
+  /** words: a few words at a time, Shorts style. sentences: the whole sentence, the spoken word highlighted. */
+  mode?: CaptionMode;
+  /** Multiplier on the type size in sentences mode, which needs to fit several lines. */
+  sentenceFontScale?: number;
 };
 
-/** Shorts-style captions: one to three words at a time, timed to the frame from an alignment. */
-export const Captions: React.FC<Props> = ({ words, combineMs = 800, holdMs = 400, top = 0.72, maxWidth = 0.86, size = "h2", fontScale = 1.3, highlight = "block", box = "none" }) => {
+/** Captions timed to the frame from an alignment: a few words at a time, or whole sentences. */
+export const Captions: React.FC<Props> = ({ words, combineMs = 800, holdMs = 400, top = 0.72, maxWidth = 0.86, size = "h2", fontScale = 1.3, highlight = "block", box = "none", mode = "words", sentenceFontScale = 1 }) => {
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
   const { theme, scale } = useTheme();
@@ -36,7 +40,7 @@ export const Captions: React.FC<Props> = ({ words, combineMs = 800, holdMs = 400
   const accent = useColor("accent");
   const [blockFill, blockInk] = highlightColors(theme, useVariant());
 
-  const pages = useMemo(() => captionPages(words, combineMs), [words, combineMs]);
+  const pages = useMemo(() => pagesFor(words, mode, combineMs), [words, mode, combineMs]);
   const tMs = (frame / fps) * 1000;
   const hit = pageAt(pages, tMs, holdMs);
   if (!hit) return null;
@@ -74,8 +78,8 @@ export const Captions: React.FC<Props> = ({ words, combineMs = 800, holdMs = 400
           style={{
             fontFamily: fontFamily(spec),
             fontWeight: spec.weights[spec.weights.length - 1],
-            fontSize: theme.type[size] * fontScale * scale,
-            lineHeight: 1.15,
+            fontSize: theme.type[size] * (mode === "sentences" ? sentenceFontScale : fontScale) * scale,
+            lineHeight: mode === "sentences" ? 1.3 : 1.15,
             letterSpacing: "-0.005em",
             color: ink,
             fontVariantNumeric: "lining-nums",

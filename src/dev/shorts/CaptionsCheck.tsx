@@ -6,7 +6,7 @@ import { ThemeProvider, useColor } from "../../theme/ThemeProvider";
 import { getTheme } from "../../theme/themes";
 import type { AlignedWord } from "../../lib/captions";
 
-export type CaptionsCheckProps = { words: AlignedWord[]; highlight: "accent" | "underline" | "block"; box: "surface" | "none" };
+export type CaptionsCheckProps = { words: AlignedWord[]; highlight: "accent" | "underline" | "block"; box: "surface" | "none"; mode: "words" | "sentences" };
 
 export const ALIGNMENT = "shorts/australia-megafauna-extinction/alignment.json";
 
@@ -29,11 +29,11 @@ const Guides: React.FC = () => {
   );
 };
 
-export const CaptionsCheck: React.FC<CaptionsCheckProps> = ({ words, highlight, box }) => (
+export const CaptionsCheck: React.FC<CaptionsCheckProps> = ({ words, highlight, box, mode }) => (
   <ThemeProvider theme={getTheme("fieldguide")} scale={1}>
     <Paper variant="light">
       <Guides />
-      <Captions words={words} highlight={highlight} box={box} />
+      <Captions words={words} highlight={highlight} box={box} mode={mode} />
     </Paper>
   </ThemeProvider>
 );

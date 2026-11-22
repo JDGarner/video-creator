@@ -8,7 +8,7 @@
  */
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { mergeConfig, type ShortConfig } from "../../src/lib/config";
+import { mergeConfig, type ConfigOverrides, type ShortConfig } from "../../src/lib/config";
 import { resolveCue } from "../../src/lib/cues";
 import type { Narration } from "../../src/lib/narration";
 import { parsePublish } from "../../src/lib/publish";
@@ -25,7 +25,17 @@ const MAX_ASSET_PX = 2160;
 const RASTER = /\.(jpe?g|png|webp)$/i;
 const TODO = /\bTODO\b/;
 
-export type Flags = { beats?: string; only?: string; seed?: number; scene?: number; force: boolean };
+export type Flags = { beats?: string; only?: string; seed?: number; scene?: number; fullSentences?: boolean; force: boolean };
+
+/** Config the render command layers over the video's config.json; a variant to compare, not a setting. */
+function overridesFor(flags: Flags): ConfigOverrides | undefined {
+  return flags.fullSentences ? { captions: { mode: "sentences" } } : undefined;
+}
+
+/** Suffix on the output file for a flagged variant, so it sits next to the default render. */
+function variantSuffix(flags: Flags): string {
+  return flags.fullSentences ? "-sentences" : "";
+}
 
 export type ShortOptions = {
   /** Repository root; stories/, voice/, public/, out/, config/ and src/ are resolved under it. */
@@ -219,6 +229,11 @@ export class Short {
     return [fileSha(this.voiceFile("alignment.json")), fileSha(this.voiceFile("manifest.json")), JSON.stringify(frameConfig), existsSync(scenes) ? fileSha(scenes) : "no-scenes", treeSha(this.publicFile("assets")), treeSha(path.join(this.root, "src"))];
   }
 
+  /** What the default render, or a flagged variant of it, depends on. */
+  private renderHash(overrides?: ConfigOverrides): string {
+    return sha([...this.frameInputs(), JSON.stringify(overrides ?? {})]);
+  }
+
   private readyToRender(): void {
     const alignment = this.voiceFile("alignment.json");
     const wav = this.voiceFile("narration.wav");
@@ -248,24 +263,28 @@ export class Short {
     this.log(`\n== render ${this.id}`);
     this.readyToRender();
     const composition = `short-${this.id}`;
+    const overrides = overridesFor(flags);
+    const props = overrides ? { overrides } : undefined;
+    const suffix = variantSuffix(flags);
     if (flags.scene !== undefined) {
       // a clip of one scene for checking a change; not hashed, never the file bundle ships
       const frames = this.sceneFrames();
       const range = frames[flags.scene - 1];
       if (!range) fail(`--scene ${flags.scene}: this short has ${frames.length} scenes`);
-      const clip = path.join(this.outDir, `scene-${flags.scene}.mp4`);
-      this.tools.render(composition, clip, [range[0], range[1] - 1], this.root);
+      const clip = path.join(this.outDir, `scene-${flags.scene}${suffix}.mp4`);
+      this.tools.render(composition, clip, [range[0], range[1] - 1], this.root, props);
       this.log(`${this.rel(clip)}  ${((range[1] - range[0]) / this.config.fps).toFixed(1)} s (scene ${flags.scene} of ${frames.length})`);
       return;
     }
-    const out = path.join(this.outDir, `${this.id}.mp4`);
-    const hash = sha(this.frameInputs());
-    if (!flags.force && this.hashes.render === hash && existsSync(out)) {
+    const out = path.join(this.outDir, `${this.id}${suffix}.mp4`);
+    const stage = `render${suffix}`;
+    const hash = this.renderHash(overrides);
+    if (!flags.force && this.hashes[stage] === hash && existsSync(out)) {
       this.log(`unchanged, skipped (${this.rel(out)})`);
       return;
     }
-    this.tools.render(composition, out, undefined, this.root);
-    this.remember("render", hash);
+    this.tools.render(composition, out, undefined, this.root, props);
+    this.remember(stage, hash);
     this.log(`${this.rel(out)}  ${this.tools.media.probe(out).durationSec.toFixed(1)} s`);
   }
 
@@ -305,12 +324,13 @@ export class Short {
       if (!inShort) fail(msg);
       this.log(`${msg}; bundle skipped`);
     };
+    if (flags.fullSentences) return skipOrFail("bundle packages the default render; to ship sentence captions set captions.mode in video.json and drop the flag");
     const publish = parsePublish(readFileSync(this.story, "utf8"));
     if (!publish) return skipOrFail(`no "## Publish" section in ${this.rel(this.story)}; see docs/examples/short.md`);
     const mp4 = path.join(this.outDir, `${this.id}.mp4`);
     const alignment = this.voiceFile("alignment.json");
     if (!existsSync(mp4)) fail("no rendered mp4; run render first");
-    if (this.hashes.render !== sha(this.frameInputs())) fail("the mp4 is out of date; run render first");
+    if (this.hashes.render !== this.renderHash()) fail("the mp4 is out of date; run render first");
     const scenesJson = this.publicFile("scenes.json");
     if (existsSync(scenesJson)) {
       const placeholders = Object.entries(JSON.parse(readFileSync(scenesJson, "utf8")).assets as Record<string, string | null>)

@@ -66,7 +66,7 @@ pnpm render <video>
 pnpm bundle <video>
 pnpm stills <video>     # one PNG per scene
 pnpm asset <video> phylopic:<taxon> | <commons url> | --search "words"   # fetch images with licence bookkeeping
-#   flags: --beats 1,2   --only 3   --seed N   --scene N   --force
+#   flags: --beats 1,2   --only 3   --seed N   --scene N   --full-sentences   --force
 pnpm docs:scenes        # regenerate docs/SCENES.md from the scene schemas
 
 pnpm typecheck

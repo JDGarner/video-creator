@@ -40,6 +40,7 @@ Every stage skips itself when its outputs exist and its inputs are unchanged (se
 | `--only 3` | narrate | regenerate only these beats, reuse the existing WAVs for the rest, restitch |
 | `--seed N` | narrate | take number: beat n is seeded with `N + n`. Without it, beats keep the seed they were last made with, and `--only` beats get their previous seed + 1, i.e. another take |
 | `--scene N` | render | render only scene N (counting from 1) to `out/shorts/<video>/scene-N.mp4`, for checking a layout change; not hashed and not what bundle ships |
+| `--full-sentences` | render | render with whole-sentence captions instead of a few words, to `out/shorts/<video>/<video>-sentences.mp4` next to the default; its own hash, works with `--scene`; bundle skips it. To ship that style set `captions.mode: sentences` in `video.json` and drop the flag |
 | `--force` | all | ignore recorded hashes and run anyway, e.g. after upgrading Chatterbox |
 
 Typical editing loop once the script is final: listen, then `pnpm short <video> --only 3 --seed 1`
@@ -129,6 +130,8 @@ merged result is validated (`src/lib/config.ts`) and published as `config.json` 
 | `captions.fontScale` | 1.5 | multiplier on the theme's `h2` size |
 | `captions.highlight` | `block` | `block` puts the spoken word in ink on a filled accent block; `accent` colours it; `underline` rules under it |
 | `captions.box` | `none` | `none` sets captions straight on the paper; `surface` puts them on a surface card with the theme's card border |
+| `captions.mode` | `words` | `words` shows a few words at a time, Shorts style; `sentences` shows the whole sentence with the spoken word highlighted |
+| `captions.sentenceFontScale` | 1.0 | multiplier on `h2` in `sentences` mode, smaller than `fontScale` because a sentence runs to several lines |
 | `publish.madeForKids` | `false` | the audience answer YouTube requires on every upload |
 | `publish.syntheticMedia` | `true` | YouTube's altered or synthetic content disclosure; a cloned voice narrating counts, by their own example |
 | `publish.maxSec` | 180 | bundle refuses a longer MP4; YouTube's Shorts limit |

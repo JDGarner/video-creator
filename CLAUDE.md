@@ -21,7 +21,7 @@ pnpm typecheck
 pnpm test           # lib helpers, scene layout bands, pipeline stages against a fixture short
 pnpm lint:theme
 pnpm short <video>      # check -> narrate -> align -> render -> bundle, skipping unchanged stages
-pnpm check|narrate|align|render|bundle|stills <video> [--beats 1,2] [--only 3] [--seed N] [--scene N] [--force]
+pnpm check|narrate|align|render|bundle|stills <video> [--beats 1,2] [--only 3] [--seed N] [--scene N] [--full-sentences] [--force]
 pnpm asset <video> phylopic:<taxon> | <commons url> [--as f] | --search "words"   # images + licence bookkeeping
 pnpm docs:scenes        # regenerate docs/SCENES.md after changing src/scenes/schema.ts
 ```

@@ -20,7 +20,9 @@
     "maxWidth": 0.86,
     "fontScale": 1.5,
     "highlight": "block",
-    "box": "none"
+    "box": "none",
+    "mode": "words",
+    "sentenceFontScale": 1
   },
   "publish": {
     "madeForKids": false,

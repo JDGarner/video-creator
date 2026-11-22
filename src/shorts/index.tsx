@@ -1,7 +1,7 @@
 import React from "react";
 import { Composition, staticFile, type CalculateMetadataFunction } from "remotion";
 import defaults from "../../config/defaults.json";
-import { mergeConfig, type ShortConfig } from "../lib/config";
+import { mergeConfig, type ConfigOverrides, type ShortConfig } from "../lib/config";
 import { loadNarration, type Narration } from "../lib/narration";
 import type { Scene } from "../scenes/schema";
 import { DataShort } from "./DataShort";
@@ -10,7 +10,8 @@ import dataVideos from "./videos.json";
 /** scenes.json as published by `pnpm check`: the storyboard's scenes plus where each asset ended up. */
 export type SceneData = { id: string; title: string; scenes: Scene[]; assets: Record<string, string | null> };
 
-export type ShortProps = { narration: Narration | null; config: ShortConfig; data: SceneData | null };
+/** `overrides` come from the render command (`--full-sentences`) and win over the video's config.json. */
+export type ShortProps = { narration: Narration | null; config: ShortConfig; data: SceneData | null; overrides?: ConfigOverrides };
 
 /** Every short the pipeline can render, by folder name under stories/shorts/. `pnpm check` writes the list. */
 export const VIDEOS: string[] = dataVideos;
@@ -25,7 +26,7 @@ async function fetchJson<T>(rel: string): Promise<T | null> {
 const metadataFor =
   (id: string): CalculateMetadataFunction<ShortProps> =>
   async ({ props }) => {
-    const config = mergeConfig(defaults, (await fetchJson(`shorts/${id}/config.json`)) ?? {});
+    const config = mergeConfig(mergeConfig(defaults, (await fetchJson(`shorts/${id}/config.json`)) ?? {}), props.overrides ?? {});
     const narration = await loadNarration("shorts", id);
     const data = await fetchJson<SceneData>(`shorts/${id}/scenes.json`);
     return {
