@@ -112,7 +112,8 @@ export const MontageScene = z.object({
 export const LandmassScene = z.object({
   type: z.literal("landmass"),
   ...base,
-  region: z.string().describe('A country as Natural Earth names it, e.g. "Australia"; drawn flat in ink, centred'),
+  region: z.string().describe('A country as Natural Earth names it, e.g. "Australia", drawn centred'),
+  style: z.enum(["ink", "atlas"]).default("ink").describe("ink: a flat silhouette in the theme ink. atlas: the hypsometric relief map cut to the coastline"),
   loss: z
     .object({
       fraction: z.number().min(0).max(1).describe("Share of the land area that turns to the alert colour"),

@@ -78,5 +78,6 @@ punctuation. Images are file names listed in the video's `assets.yaml`.
 
 | field | type | default | meaning |
 |---|---|---|---|
-| `region` | string | required | A country as Natural Earth names it, e.g. "Australia"; drawn flat in ink, centred |
+| `region` | string | required | A country as Natural Earth names it, e.g. "Australia", drawn centred |
+| `style` | `ink` \| `atlas` | `"ink"` | ink: a flat silhouette in the theme ink. atlas: the hypsometric relief map cut to the coastline |
 | `loss` | { fraction: number, at: number or string, keep?: `east` \| `west` \| `north` \| `south`, sweepSec?: number } |  | From the cue, this share of the area sweeps to the alert colour, leaving a strip along one edge |

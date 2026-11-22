@@ -16,6 +16,7 @@
         "align": "center"
       },
       "region": "Australia",
+      "style": "atlas",
       "loss": {
         "fraction": 0.875,
         "at": "percent",

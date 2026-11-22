@@ -87,6 +87,7 @@ scene ends when the next begins. Field reference: `docs/SCENES.md`. Images are l
 ```yaml
 - type: landmass
   region: Australia
+  style: atlas
   loss: { fraction: 0.875, at: percent, keep: east }
   headline: { text: 85 to 90 percent of megafauna lost, at: percent }
   caption: { text: Animals over 44 kg, at: percent + 0.6 }
