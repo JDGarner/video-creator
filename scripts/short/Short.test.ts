@@ -211,6 +211,19 @@ describe("Short", () => {
     expect(() => short.bundle({ force: false, fullSentences: true }, false)).toThrow(/default render/);
   });
 
+  it("renders to a chosen path with --out and leaves the hashes alone", async () => {
+    const short = await runShort();
+    const target = path.join(root, "elsewhere", "deep", "cut.mp4");
+    short.render({ force: false, out: target });
+    expect(calls.render[1]!.out).toBe(target);
+    expect(existsSync(target)).toBe(true);
+    short.render({ force: false, out: target, scene: 2, fullSentences: true });
+    expect(calls.render[2]).toMatchObject({ out: target, frames: [105, 209], props: { overrides: { captions: { mode: "sentences" } } } });
+    short.render(flags);
+    expect(calls.render).toHaveLength(3);
+    expect(() => short.bundle({ force: false, out: target }, false)).toThrow(/drop --out/);
+  });
+
   it("bundles the mp4, captions and metadata", async () => {
     const short = await runShort();
     short.bundle(flags, false);

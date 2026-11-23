@@ -25,7 +25,7 @@ const MAX_ASSET_PX = 2160;
 const RASTER = /\.(jpe?g|png|webp)$/i;
 const TODO = /\bTODO\b/;
 
-export type Flags = { beats?: string; only?: string; seed?: number; scene?: number; fullSentences?: boolean; force: boolean };
+export type Flags = { beats?: string; only?: string; seed?: number; scene?: number; fullSentences?: boolean; out?: string; force: boolean };
 
 /** Config the render command layers over the video's config.json; a variant to compare, not a setting. */
 function overridesFor(flags: Flags): ConfigOverrides | undefined {
@@ -80,7 +80,7 @@ export class Short {
   // ---- paths and files
 
   private rel(p: string): string {
-    return path.relative(this.root, p);
+    return p.startsWith(this.root + path.sep) ? path.relative(this.root, p) : p;
   }
 
   private findStory(): string {
@@ -266,14 +266,22 @@ export class Short {
     const overrides = overridesFor(flags);
     const props = overrides ? { overrides } : undefined;
     const suffix = variantSuffix(flags);
+    // --out renders to a path of your choosing: not hashed, not what bundle ships
+    const custom = flags.out === undefined ? null : path.resolve(flags.out);
+    if (custom) mkdirSync(path.dirname(custom), { recursive: true });
     if (flags.scene !== undefined) {
       // a clip of one scene for checking a change; not hashed, never the file bundle ships
       const frames = this.sceneFrames();
       const range = frames[flags.scene - 1];
       if (!range) fail(`--scene ${flags.scene}: this short has ${frames.length} scenes`);
-      const clip = path.join(this.outDir, `scene-${flags.scene}${suffix}.mp4`);
+      const clip = custom ?? path.join(this.outDir, `scene-${flags.scene}${suffix}.mp4`);
       this.tools.render(composition, clip, [range[0], range[1] - 1], this.root, props);
       this.log(`${this.rel(clip)}  ${((range[1] - range[0]) / this.config.fps).toFixed(1)} s (scene ${flags.scene} of ${frames.length})`);
+      return;
+    }
+    if (custom) {
+      this.tools.render(composition, custom, undefined, this.root, props);
+      this.log(`${this.rel(custom)}  ${this.tools.media.probe(custom).durationSec.toFixed(1)} s`);
       return;
     }
     const out = path.join(this.outDir, `${this.id}${suffix}.mp4`);
@@ -325,6 +333,7 @@ export class Short {
       this.log(`${msg}; bundle skipped`);
     };
     if (flags.fullSentences) return skipOrFail("bundle packages the default render; to ship sentence captions set captions.mode in video.json and drop the flag");
+    if (flags.out !== undefined) return skipOrFail(`bundle packages out/${KIND}/${this.id}/${this.id}.mp4; drop --out`);
     const publish = parsePublish(readFileSync(this.story, "utf8"));
     if (!publish) return skipOrFail(`no "## Publish" section in ${this.rel(this.story)}; see docs/examples/short.md`);
     const mp4 = path.join(this.outDir, `${this.id}.mp4`);
