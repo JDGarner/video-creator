@@ -9,6 +9,8 @@ import { Label } from "./Label";
 export type Treatment = "photo" | "illustration" | "plain" | "silhouette";
 export type Move = "none" | "zoom-in" | "zoom-out" | "pan-left" | "pan-right";
 
+const POSITION = { center: "center", bottom: "center bottom", "bottom-left": "left bottom", "bottom-right": "right bottom" } as const;
+
 type Props = {
   src: string | null;
   /** Shown in the placeholder when src is null. */
@@ -19,7 +21,7 @@ type Props = {
   /** Frames over which the move plays, usually the scene length. */
   moveFrames?: number;
   /** Where a contained image sits in its box. */
-  align?: "center" | "bottom";
+  align?: "center" | "bottom" | "bottom-left" | "bottom-right";
   style?: React.CSSProperties;
 };
 
@@ -41,7 +43,7 @@ export const Still: React.FC<Props> = ({ src, name, fit = "cover", treatment = "
 
   if (!src) return <Placeholder name={name} style={style} />;
   if (treatment === "silhouette") {
-    const mask = `url("${src}") no-repeat ${align === "bottom" ? "center bottom" : "center"} / contain`;
+    const mask = `url("${src}") no-repeat ${POSITION[align]} / contain`;
     return <div style={{ position: "absolute", inset: 0, backgroundColor: ink, WebkitMask: mask, mask, transform, transformOrigin: "center", ...style }} />;
   }
   return (
@@ -52,7 +54,7 @@ export const Still: React.FC<Props> = ({ src, name, fit = "cover", treatment = "
           width: "100%",
           height: "100%",
           objectFit: fit,
-          objectPosition: align === "bottom" ? "center bottom" : "center",
+          objectPosition: POSITION[align],
           transform,
           transformOrigin: "center",
           filter: treatment === "photo" ? "grayscale(0.45) sepia(0.18) contrast(0.96)" : "none",

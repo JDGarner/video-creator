@@ -5,7 +5,7 @@ import { Label } from "../primitives/Label";
 import { Paper } from "../primitives/Paper";
 import { ThemeProvider, useColor, useTheme, VariantProvider } from "../theme/ThemeProvider";
 import { getTheme } from "../theme/themes";
-import { resolveCue } from "../lib/cues";
+import { coveredScenes, resolveCue } from "../lib/cues";
 import { narrationFile, type Narration } from "../lib/narration";
 import { fade } from "../motion/timeline";
 import { SceneProvider } from "../scenes/context";
@@ -18,7 +18,8 @@ const FADE_SEC = 0.5;
 type Placed = { scene: Scene; origin: number; start: number; end: number; sequenceEnd: number };
 
 /** Lay scenes on the timeline: each starts at its cue and ends when the next starts; crossfades straddle the cue. */
-function place(scenes: Scene[], narration: Narration | null, fps: number, total: number): Placed[] {
+function place(all: Scene[], narration: Narration | null, fps: number, total: number): Placed[] {
+  const scenes = narration ? coveredScenes(all, narration) : all;
   const fadeF = Math.round(FADE_SEC * fps);
   const starts = scenes.map((s, i) => {
     if (i === 0 || s.from === undefined) return 0;

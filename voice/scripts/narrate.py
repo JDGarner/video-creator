@@ -1,8 +1,16 @@
-"""Synthesise a story's narration in the cloned voice, one WAV per beat, then stitch.
+"""Synthesise a story's narration, one WAV per beat, then stitch.
 
-Driven by `pnpm narrate <video>` (scripts/short.ts); see docs/PIPELINE.md. Direct use:
+Two engines write the same files: Chatterbox (local, free, the cloned voice; every draft) and
+ElevenLabs (paid, a premade voice; the final cut). Driven by `pnpm narrate <video>`
+(scripts/short.ts); see docs/PIPELINE.md. Direct use:
   uv run scripts/narrate.py --story <story.md> --out <dir> [--beats 1,2|1-9] [--only 3] [--seed N]
                             [--gap-ms 500] [--model turbo|original] [--device cpu] [--max-wpm 150] [--force]
+                            [--engine chatterbox|elevenlabs --voice-id ID --tts-model eleven_multilingual_v2
+                             --stability 0.5 --similarity 0.75 --yes]
+
+ElevenLabs needs ELEVENLABS_API_KEY in the environment or in the repo's .env, bills per character,
+and asks before sending anything unless --yes is given. Its seed is passed to the API, which makes
+a retake best-effort rather than exact.
 
 Reads the `## Narration` section: numbered items are beats, otherwise each paragraph is one.
 Writes beat-N.wav, narration.wav (-16 LUFS) and manifest.json into --out. A beat is reused when
@@ -21,8 +29,11 @@ import json
 import re
 import subprocess
 import sys
+import os
 import tempfile
 import time
+import urllib.error
+import urllib.request
 from pathlib import Path
 
 import numpy as np
@@ -122,6 +133,52 @@ def beat_hash(sent_text: str, seed: int, model: str, reference_sha: str) -> str:
     return hashlib.sha256(f"{sent_text}\n{seed}\n{model}\n{reference_sha}".encode()).hexdigest()[:16]
 
 
+def load_env(path: Path) -> None:
+    """KEY=value lines into os.environ, without overriding what is already set."""
+    if not path.exists():
+        return
+    for line in path.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, v = line.split("=", 1)
+        os.environ.setdefault(k.strip(), v.strip().strip("'\""))
+
+
+class ElevenLabs:
+    """One premade voice over the text-to-speech endpoint, PCM at the pipeline's sample rate."""
+
+    def __init__(self, voice_id: str, model: str, stability: float, similarity: float, key: str):
+        self.voice_id, self.model, self.stability, self.similarity, self.key = voice_id, model, stability, similarity, key
+
+    def synthesise(self, text: str, seed: int, previous: str | None, following: str | None) -> np.ndarray:
+        body = {"text": text, "model_id": self.model, "voice_settings": {"stability": self.stability, "similarity_boost": self.similarity}, "seed": seed}
+        # neighbouring beats steer the prosody so the stitched read does not restart its tone every beat
+        if previous:
+            body["previous_text"] = previous
+        if following:
+            body["next_text"] = following
+        req = urllib.request.Request(
+            f"https://api.elevenlabs.io/v1/text-to-speech/{self.voice_id}?output_format=pcm_{SR}",
+            data=json.dumps(body).encode(),
+            headers={"xi-api-key": self.key, "Content-Type": "application/json"},
+            method="POST",
+        )
+        for attempt in range(2):
+            try:
+                with urllib.request.urlopen(req, timeout=180) as r:
+                    raw = r.read()
+                break
+            except urllib.error.HTTPError as e:
+                detail = e.read().decode(errors="replace")[:400]
+                if e.code in (429, 500, 502, 503) and attempt == 0:
+                    time.sleep(3)
+                    continue
+                sys.exit(f"ElevenLabs HTTP {e.code}: {detail}")
+        audio = np.frombuffer(raw, dtype="<i2").astype(np.float32) / 32768.0
+        return trim(audio)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--story", required=True, type=Path)
@@ -134,9 +191,24 @@ def main() -> None:
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--max-wpm", type=float, default=150)
     ap.add_argument("--force", action="store_true")
+    ap.add_argument("--engine", choices=["chatterbox", "elevenlabs"], default="chatterbox")
+    ap.add_argument("--voice-id", help="ElevenLabs voice id")
+    ap.add_argument("--tts-model", default="eleven_multilingual_v2", help="ElevenLabs model id")
+    ap.add_argument("--stability", type=float, default=0.5)
+    ap.add_argument("--similarity", type=float, default=0.75)
+    ap.add_argument("--yes", action="store_true", help="send to ElevenLabs without asking")
     args = ap.parse_args()
 
-    if not REFERENCE.exists():
+    eleven: ElevenLabs | None = None
+    if args.engine == "elevenlabs":
+        if not args.voice_id:
+            sys.exit("--engine elevenlabs needs --voice-id")
+        load_env(ROOT.parent / ".env")
+        key = os.environ.get("ELEVENLABS_API_KEY")
+        if not key:
+            sys.exit("ELEVENLABS_API_KEY is not set; put it in the repo's .env")
+        eleven = ElevenLabs(args.voice_id, args.tts_model, args.stability, args.similarity, key)
+    elif not REFERENCE.exists():
         sys.exit("no reference/reference.wav; run prepare_ref.py --pick first")
     story = args.story.resolve()
     out = args.out.resolve()
@@ -146,7 +218,9 @@ def main() -> None:
     selected = parse_selection(args.beats, len(beats))
     only = set(parse_selection(args.only, len(beats))) if args.only else set()
     lexicon = json.loads(LEXICON.read_text()) if LEXICON.exists() else {}
-    reference_sha = hashlib.sha256(REFERENCE.read_bytes()).hexdigest()[:12]
+    reference_sha = hashlib.sha256(REFERENCE.read_bytes()).hexdigest()[:12] if eleven is None else "none"
+    # the engine, voice and model are part of every ElevenLabs hash, so a draft WAV is never mistaken for a final one
+    engine_tag = args.model if eleven is None else f"elevenlabs:{args.voice_id}:{args.tts_model}"
 
     manifest_path = out / "manifest.json"
     old: dict[int, dict] = {}
@@ -165,7 +239,7 @@ def main() -> None:
             seed = base_seed + n
         else:
             seed = prev["seed"] if prev and "seed" in prev else n
-        h = beat_hash(sent, seed, args.model, reference_sha)
+        h = beat_hash(sent, seed, engine_tag, reference_sha)
         wav = out / f"beat-{n}.wav"
         reusable = prev is not None and prev.get("hash") == h and wav.exists() and not args.force and n not in only
         if n in only and not wav.exists() and prev is None:
@@ -175,16 +249,25 @@ def main() -> None:
     to_make = [p for p in plan if p[4]]
     old_manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
     same_shape = [(b["n"], b.get("hash"), b.get("seed")) for b in old_manifest.get("beats", [])] == [(n, h, seed) for n, _, seed, h, _ in plan]
-    if not to_make and same_shape and old_manifest.get("gap_ms") == args.gap_ms and (out / "narration.wav").exists():
+    if not to_make and same_shape and old_manifest.get("gap_ms") == args.gap_ms and old_manifest.get("script_beats") == len(beats) and (out / "narration.wav").exists():
         print(f"all {len(plan)} beats unchanged, narration.wav kept ({old_manifest.get('duration', 0):.1f} s)")
         return
-    model = load_model(args.model, args.device) if to_make else None
+    if to_make and eleven is not None:
+        chars = sum(len(sent) for _, sent, *_ in to_make)
+        print(f"ElevenLabs: {len(to_make)} beat(s), {chars} characters, voice {args.voice_id}, model {args.tts_model}")
+        if not args.yes:
+            if not sys.stdin.isatty():
+                sys.exit("not a terminal; pass --yes to send to ElevenLabs")
+            if input("send and bill these characters? [y/N] ").strip().lower() not in ("y", "yes"):
+                sys.exit("stopped before sending")
+    model = load_model(args.model, args.device) if to_make and eleven is None else None
+    sent_by_n = {n: sent for n, sent, *_ in plan}
     clips: dict[int, np.ndarray] = {}
     for n, sent, seed, h, regenerate in plan:
         path = out / f"beat-{n}.wav"
         if regenerate:
             t0 = time.perf_counter()
-            audio = synthesise(model, sent, seed)
+            audio = eleven.synthesise(sent, seed, sent_by_n.get(n - 1), sent_by_n.get(n + 1)) if eleven else synthesise(model, sent, seed)
             sf.write(path, audio, SR, subtype="PCM_16")
             words = len(beats[n - 1].split())
             wpm = words / (len(audio) / SR) * 60
@@ -215,12 +298,15 @@ def main() -> None:
 
     manifest = {
         "story": str(story),
-        "model": args.model,
-        "device": args.device,
-        "reference": REFERENCE.name,
+        "engine": args.engine,
+        "model": args.model if eleven is None else args.tts_model,
+        "voice": args.voice_id if eleven else None,
+        "device": args.device if eleven is None else None,
+        "reference": REFERENCE.name if eleven is None else None,
         "reference_sha256": reference_sha,
         "gap_ms": args.gap_ms,
         "sample_rate": SR,
+        "script_beats": len(beats),
         "duration": round(len(joined) / SR, 3),
         "beats": manifest_beats,
     }

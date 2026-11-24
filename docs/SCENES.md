@@ -36,9 +36,10 @@ punctuation. Images are file names listed in the video's `assets.yaml`.
 |---|---|---|---|
 | `headline` | string or { text: string, at?: number or string, until?: number or string, align?: `left` \| `center` } | required | A string, or { text, at, until, align } to time it inside the scene |
 | `image` | string | required | Image file name listed in assets.yaml |
+| `picture` | string |  | Illustration or photograph on a square plate above the text, cropped to fill; a labelled placeholder until the file is in assets/ |
 | `tone` | `surface` \| `bg` \| `land` \| `water` \| `structure` \| `structureAlt` \| `accent` | `"surface"` | Flat background colour |
 | `reference` | string |  | Scale reference silhouette drawn in the same spot on every card, e.g. human.svg |
-| `height` | number |  | Subject height in metres; sizes the image against a 1.75 m reference |
+| `height` | number |  | Subject height in metres; sizes the image against a 1.75 m reference and draws a metre scale beside it |
 | `treatment` | `photo` \| `illustration` \| `plain` \| `silhouette` | `"illustration"` | photo: desaturated, paper-tinted, grained. illustration: grain and vignette only. plain: untouched. silhouette: a black shape recoloured in the theme ink |
 
 ## `timeline`

@@ -59,11 +59,14 @@ function fakeTools(calls: Calls): Tools {
       const out = args[args.indexOf("--out") + 1]!;
       // same args, same bytes: the fake stands in for narrate.py's own per-beat reuse
       writeFileSync(path.join(out, "narration.wav"), `wav:${args.join(" ")}`);
-      writeFileSync(path.join(out, "manifest.json"), JSON.stringify({ video: ID, duration: 6, beats: BEATS }));
+      const picked = args.includes("--beats") ? args[args.indexOf("--beats") + 1]!.split(",").map(Number) : BEATS.map((b) => b.n);
+      const beats = BEATS.filter((b) => picked.includes(b.n));
+      writeFileSync(path.join(out, "manifest.json"), JSON.stringify({ video: ID, duration: beats.at(-1)!.end, beats, script_beats: BEATS.length }));
     },
     async align(dir) {
       calls.align++;
-      const words = BEATS.flatMap((b) => {
+      const manifest = JSON.parse(readFileSync(path.join(dir, "manifest.json"), "utf8")) as { beats: typeof BEATS };
+      const words = manifest.beats.flatMap((b) => {
         const ws = b.text.split(" ");
         const each = (b.end - b.start) / ws.length;
         return ws.map((text, i) => ({ text, start: b.start + i * each, end: b.start + (i + 1) * each, beat: b.n }));
@@ -197,6 +200,23 @@ describe("Short", () => {
     ]);
   });
 
+  it("renders only the scenes a --beats narration covers", async () => {
+    const short = make();
+    short.check();
+    short.narrate({ force: false, beats: "1" });
+    await short.align(flags);
+    // scene 2 starts at "beat 2", which this narration does not have: left out, not an error
+    expect(() => short.check()).not.toThrow();
+    expect(short.sceneFrames()).toEqual([[0, Math.ceil(4 * FPS)]]);
+    short.render({ force: false, scene: 1 });
+    expect(calls.render[0]!.frames).toEqual([0, Math.ceil(4 * FPS) - 1]);
+    expect(() => short.render({ force: false, scene: 2 })).toThrow(/has 1 scenes/);
+    // the full narration brings scene 2 back
+    short.narrate(flags);
+    await short.align(flags);
+    expect(short.sceneFrames()).toHaveLength(2);
+  });
+
   it("renders a sentence-caption variant beside the default with --full-sentences", async () => {
     const short = await runShort();
     short.render({ force: false, fullSentences: true });
@@ -222,6 +242,34 @@ describe("Short", () => {
     short.render(flags);
     expect(calls.render).toHaveLength(3);
     expect(() => short.bundle({ force: false, out: target }, false)).toThrow(/drop --out/);
+  });
+
+  it("keeps an ElevenLabs take beside the Chatterbox draft with --elevenlabs", async () => {
+    await runShort();
+    const final = new Short(ID, { root, tools: fakeTools(calls), log: quiet, engine: "elevenlabs" });
+    const f = { force: false, elevenlabs: true, yes: true };
+    final.check();
+    final.narrate(f);
+    await final.align(f);
+    final.render(f);
+    const args = calls.narrate[1]!;
+    expect(args.slice(args.indexOf("--engine"), args.indexOf("--engine") + 2)).toEqual(["--engine", "elevenlabs"]);
+    expect(args.slice(args.indexOf("--voice-id"), args.indexOf("--voice-id") + 2)).toEqual(["--voice-id", "KeU8nqWFDbaoi0QVUjD3"]);
+    expect(args).toContain("--yes");
+    expect(args[args.indexOf("--out") + 1]).toBe(path.join(root, "voice", "out", "shorts", `${ID}-elevenlabs`));
+    expect(calls.render[1]!.out).toBe(out(`${ID}-elevenlabs.mp4`));
+    final.bundle(f, false);
+    expect(existsSync(out(`publish-elevenlabs/${ID}.mp4`))).toBe(true);
+    // the draft kept its own narration, hashes and mp4, and is still current
+    expect(readFileSync(path.join(root, "voice", "out", "shorts", ID, "narration.wav"), "utf8")).not.toContain("elevenlabs");
+    const hashes = JSON.parse(readFileSync(out(".hashes.json"), "utf8"));
+    expect(hashes.render).toBeDefined();
+    expect(hashes["render-elevenlabs"]).toBeDefined();
+    await runShort();
+    expect(calls.align).toBe(2);
+    expect(calls.render).toHaveLength(2);
+    expect(() => make().narrate(flags)).not.toThrow();
+    expect(calls.narrate[2]).not.toContain("--engine");
   });
 
   it("bundles the mp4, captions and metadata", async () => {

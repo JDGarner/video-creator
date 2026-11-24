@@ -9,7 +9,7 @@
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { mergeConfig, type ConfigOverrides, type ShortConfig } from "../../src/lib/config";
-import { resolveCue } from "../../src/lib/cues";
+import { coveredScenes, resolveCue } from "../../src/lib/cues";
 import type { Narration } from "../../src/lib/narration";
 import { parsePublish } from "../../src/lib/publish";
 import { checkStory, parseAssets, parseStory, type Asset, type Finding } from "../../src/lib/story";
@@ -25,7 +25,10 @@ const MAX_ASSET_PX = 2160;
 const RASTER = /\.(jpe?g|png|webp)$/i;
 const TODO = /\bTODO\b/;
 
-export type Flags = { beats?: string; only?: string; seed?: number; scene?: number; fullSentences?: boolean; out?: string; force: boolean };
+export type Flags = { beats?: string; only?: string; seed?: number; scene?: number; fullSentences?: boolean; out?: string; elevenlabs?: boolean; yes?: boolean; force: boolean };
+
+/** Which narrator spoke: Chatterbox for every draft, ElevenLabs for the final cut. Each take has its own voice dir, hashes, mp4 and bundle. */
+export type Engine = "chatterbox" | "elevenlabs";
 
 /** Config the render command layers over the video's config.json; a variant to compare, not a setting. */
 function overridesFor(flags: Flags): ConfigOverrides | undefined {
@@ -42,6 +45,7 @@ export type ShortOptions = {
   root?: string;
   tools?: Tools;
   log?: (line: string) => void;
+  engine?: Engine;
 };
 
 export class Short {
@@ -52,6 +56,9 @@ export class Short {
   readonly publicDir: string;
   readonly outDir: string;
   readonly config: ShortConfig;
+  readonly engine: Engine;
+  /** "" for the Chatterbox draft, "-elevenlabs" for the final take: on the voice dir, hash keys, mp4 and publish folder. */
+  private readonly take: string;
   private readonly tools: Tools;
   private readonly log: (line: string) => void;
   private hashes: Record<string, string>;
@@ -66,7 +73,9 @@ export class Short {
     this.storyDir = path.join(this.root, "stories", KIND, id);
     if (!existsSync(this.storyDir)) fail(`no such short: ${this.rel(this.storyDir)}`);
     this.story = this.findStory();
-    this.voiceOut = path.join(this.root, "voice", "out", KIND, id);
+    this.engine = opts.engine ?? "chatterbox";
+    this.take = this.engine === "elevenlabs" ? "-elevenlabs" : "";
+    this.voiceOut = path.join(this.root, "voice", "out", KIND, `${id}${this.take}`);
     this.publicDir = path.join(this.root, "public", KIND, id);
     this.outDir = path.join(this.root, "out", KIND, id);
     for (const d of [this.voiceOut, this.publicDir, this.outDir]) mkdirSync(d, { recursive: true });
@@ -122,7 +131,7 @@ export class Short {
     const a = this.voiceFile("alignment.json");
     if (!existsSync(m) || !existsSync(a)) return null;
     const manifest = JSON.parse(readFileSync(m, "utf8"));
-    return { duration: manifest.duration, beats: manifest.beats, words: JSON.parse(readFileSync(a, "utf8")).words };
+    return { duration: manifest.duration, beats: manifest.beats, words: JSON.parse(readFileSync(a, "utf8")).words, scriptBeats: manifest.script_beats };
   }
 
   private assets(): Asset[] {
@@ -200,6 +209,11 @@ export class Short {
     if (flags.only) args.push("--only", flags.only);
     if (flags.seed !== undefined) args.push("--seed", String(flags.seed));
     if (flags.force) args.push("--force");
+    if (this.engine === "elevenlabs") {
+      const e = n.elevenlabs;
+      args.push("--engine", "elevenlabs", "--voice-id", e.voiceId, "--tts-model", e.model, "--stability", String(e.stability), "--similarity", String(e.similarity));
+      if (flags.yes) args.push("--yes");
+    }
     // per-beat reuse is decided inside narrate.py from the manifest hashes
     this.tools.narrate(args, path.join(this.root, "voice"));
     this.publish("narration.wav", "manifest.json");
@@ -210,7 +224,7 @@ export class Short {
     const wav = this.voiceFile("narration.wav");
     if (!existsSync(wav)) fail("no narration.wav; run narrate first");
     const hash = fileSha(wav);
-    if (!flags.force && this.hashes.align === hash && existsSync(this.voiceFile("alignment.json"))) {
+    if (!flags.force && this.hashes[`align${this.take}`] === hash && existsSync(this.voiceFile("alignment.json"))) {
       this.log("unchanged, skipped");
       return;
     }
@@ -218,7 +232,7 @@ export class Short {
     this.log(`heard ${r.heard} words, script ${r.script}, matched ${r.matched}`);
     if (r.interpolated.length) this.log(`interpolated (listen for these): ${r.interpolated.join(", ")}`);
     if (r.doubleMiss) this.log("WARNING: two adjacent words were not heard; check that stretch of audio");
-    this.remember("align", hash);
+    this.remember(`align${this.take}`, hash);
     this.publish("alignment.json");
   }
 
@@ -240,19 +254,20 @@ export class Short {
     if (!existsSync(wav)) fail("no narration.wav; run narrate first");
     if (!existsSync(alignment)) fail("no alignment.json; run align first");
     // by content, not mtime: a copied or touched file must not pass, a byte-identical restitch must
-    if (this.hashes.align !== fileSha(wav)) fail("alignment.json does not match narration.wav; run align first");
+    if (this.hashes[`align${this.take}`] !== fileSha(wav)) fail("alignment.json does not match narration.wav; run align first");
     this.publish("narration.wav", "manifest.json", "alignment.json");
     if (!existsSync(this.publicFile("scenes.json"))) fail("no scenes.json; run check first");
     // cues could not be checked before the narration existed
     report(checkStory(readFileSync(this.story, "utf8"), { narration: this.narration()! }).filter((f) => f.level === "error"), this.log);
   }
 
-  /** Frame range [start, end) of each scene, from its cue against the real narration. */
+  /** Frame range [start, end) of each scene the narration covers, from its cue against the real narration. */
   sceneFrames(): [number, number][] {
-    const scenes = this.scenes();
-    if (!scenes) fail("this short has no ## Scenes section");
+    const all = this.scenes();
+    if (!all) fail("this short has no ## Scenes section");
     const narration = this.narration();
     if (!narration) fail("no narration yet; run narrate and align first");
+    const scenes = coveredScenes(all, narration);
     const { fps } = this.config;
     const total = Math.ceil((narration.duration + this.config.tailSec) * fps);
     const starts = scenes.map((s, i) => (i === 0 || s.from === undefined ? 0 : Math.round(resolveCue(s.from, narration) * fps)));
@@ -265,7 +280,7 @@ export class Short {
     const composition = `short-${this.id}`;
     const overrides = overridesFor(flags);
     const props = overrides ? { overrides } : undefined;
-    const suffix = variantSuffix(flags);
+    const suffix = this.take + variantSuffix(flags);
     // --out renders to a path of your choosing: not hashed, not what bundle ships
     const custom = flags.out === undefined ? null : path.resolve(flags.out);
     if (custom) mkdirSync(path.dirname(custom), { recursive: true });
@@ -273,7 +288,7 @@ export class Short {
       // a clip of one scene for checking a change; not hashed, never the file bundle ships
       const frames = this.sceneFrames();
       const range = frames[flags.scene - 1];
-      if (!range) fail(`--scene ${flags.scene}: this short has ${frames.length} scenes`);
+      if (!range) fail(`--scene ${flags.scene}: this render has ${frames.length} scenes`);
       const clip = custom ?? path.join(this.outDir, `scene-${flags.scene}${suffix}.mp4`);
       this.tools.render(composition, clip, [range[0], range[1] - 1], this.root, props);
       this.log(`${this.rel(clip)}  ${((range[1] - range[0]) / this.config.fps).toFixed(1)} s (scene ${flags.scene} of ${frames.length})`);
@@ -302,9 +317,10 @@ export class Short {
     this.readyToRender();
     const scenes = this.scenes();
     if (!scenes) fail("stills need a ## Scenes section");
-    const dir = path.join(this.outDir, "stills");
+    const shown = coveredScenes(scenes, this.narration()!);
+    const dir = path.join(this.outDir, `stills${this.take}`);
     const hash = sha(this.frameInputs());
-    if (!flags.force && this.hashes.stills === hash && existsSync(dir)) {
+    if (!flags.force && this.hashes[`stills${this.take}`] === hash && existsSync(dir)) {
       this.log(`unchanged, skipped (${this.rel(dir)})`);
       return;
     }
@@ -318,11 +334,11 @@ export class Short {
     rmSync(dir, { recursive: true, force: true });
     mkdirSync(dir, { recursive: true });
     for (const [i, frame] of frames.entries()) {
-      const output = path.join(dir, `scene-${String(i + 1).padStart(2, "0")}-${scenes[i]!.type}.png`);
+      const output = path.join(dir, `scene-${String(i + 1).padStart(2, "0")}-${shown[i]!.type}.png`);
       await renderStill({ composition, serveUrl, output, frame });
       this.log(`${this.rel(output)}  ${(frame / fps).toFixed(1)} s`);
     }
-    this.remember("stills", hash);
+    this.remember(`stills${this.take}`, hash);
   }
 
   /** Everything the manual upload needs, in out/shorts/<video>/publish/. In `short`, missing prerequisites skip rather than fail. */
@@ -333,13 +349,13 @@ export class Short {
       this.log(`${msg}; bundle skipped`);
     };
     if (flags.fullSentences) return skipOrFail("bundle packages the default render; to ship sentence captions set captions.mode in video.json and drop the flag");
-    if (flags.out !== undefined) return skipOrFail(`bundle packages out/${KIND}/${this.id}/${this.id}.mp4; drop --out`);
+    if (flags.out !== undefined) return skipOrFail(`bundle packages out/${KIND}/${this.id}/${this.id}${this.take}.mp4; drop --out`);
     const publish = parsePublish(readFileSync(this.story, "utf8"));
     if (!publish) return skipOrFail(`no "## Publish" section in ${this.rel(this.story)}; see docs/examples/short.md`);
-    const mp4 = path.join(this.outDir, `${this.id}.mp4`);
+    const mp4 = path.join(this.outDir, `${this.id}${this.take}.mp4`);
     const alignment = this.voiceFile("alignment.json");
     if (!existsSync(mp4)) fail("no rendered mp4; run render first");
-    if (this.hashes.render !== this.renderHash()) fail("the mp4 is out of date; run render first");
+    if (this.hashes[`render${this.take}`] !== this.renderHash()) fail("the mp4 is out of date; run render first");
     const scenesJson = this.publicFile("scenes.json");
     if (existsSync(scenesJson)) {
       const placeholders = Object.entries(JSON.parse(readFileSync(scenesJson, "utf8")).assets as Record<string, string | null>)
@@ -350,15 +366,15 @@ export class Short {
     const assets = this.assets();
     const todo = this.todoAssets(assets);
     if (todo.length) fail(`assets.yaml still has TODO sources or licences: ${todo.join(", ")}`);
-    const dir = path.join(this.outDir, "publish");
+    const dir = path.join(this.outDir, `publish${this.take}`);
     const hash = sha([fileSha(mp4), fileSha(alignment), fileSha(this.story), JSON.stringify(this.config), JSON.stringify(assets)]);
-    if (!flags.force && this.hashes.bundle === hash && existsSync(path.join(dir, "metadata.json"))) {
+    if (!flags.force && this.hashes[`bundle${this.take}`] === hash && existsSync(path.join(dir, "metadata.json"))) {
       this.log(`unchanged, skipped (${this.rel(dir)})`);
       return;
     }
     const words = JSON.parse(readFileSync(alignment, "utf8")).words;
     const { metadata, files, cues } = writeBundle({ id: this.id, dir, mp4, words, publish, assets, config: this.config, media: this.tools.media });
-    this.remember("bundle", hash);
+    this.remember(`bundle${this.take}`, hash);
     this.log(`${this.rel(dir)}/  ${files.join(", ")}`);
     this.log(`${metadata.durationSec.toFixed(1)} s, ${metadata.lufs.toFixed(1)} LUFS, ${words.length} words -> ${cues} subtitle cues`);
   }

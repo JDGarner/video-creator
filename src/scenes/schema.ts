@@ -49,10 +49,11 @@ export const CardScene = z.object({
   type: z.literal("card"),
   ...base,
   image: Image,
+  picture: Image.optional().describe("Illustration or photograph on a square plate above the text, cropped to fill; a labelled placeholder until the file is in assets/"),
   headline: Text,
   tone: Tone.default("surface").describe("Flat background colour"),
   reference: Image.optional().describe("Scale reference silhouette drawn in the same spot on every card, e.g. human.svg"),
-  height: z.number().positive().optional().describe("Subject height in metres; sizes the image against a 1.75 m reference"),
+  height: z.number().positive().optional().describe("Subject height in metres; sizes the image against a 1.75 m reference and draws a metre scale beside it"),
   treatment: Treatment.default("illustration"),
 });
 
@@ -140,6 +141,7 @@ export function sceneImages(scenes: Scene[]): string[] {
     if ("images" in s) s.images.forEach((i) => out.add(i));
     if (s.type === "still" && s.inset) out.add(s.inset.image);
     if (s.type === "card" && s.reference) out.add(s.reference);
+    if (s.type === "card" && s.picture) out.add(s.picture);
     if (s.type === "timeline" && s.silhouettes) s.silhouettes.images.forEach((i) => out.add(i));
     if (s.type === "panels") s.panels.forEach((p) => out.add(p.image));
     if (s.type === "silhouettes" && s.background) out.add(s.background);

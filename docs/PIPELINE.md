@@ -22,7 +22,7 @@ Run from the repo root. `<video>` is the folder name under `stories/shorts/`.
 | command | does |
 |---|---|
 | `pnpm check <video>` | lint the storyboard and `assets.yaml`, publish `scenes.json` and the assets, register the short |
-| `pnpm narrate <video>` | script beats -> one WAV per beat -> `narration.wav` + `manifest.json` |
+| `pnpm narrate <video>` | script beats -> one WAV per beat -> `narration.wav` + `manifest.json`. Chatterbox (free, local) for drafts; the final cut uses ElevenLabs with `--elevenlabs` |
 | `pnpm align <video>` | `narration.wav` -> word timestamps in `alignment.json` |
 | `pnpm render <video>` | composition + narration + captions -> `out/shorts/<video>/<video>.mp4` |
 | `pnpm bundle <video>` | MP4 + `## Publish` section -> `out/shorts/<video>/publish/` with everything the upload form needs |
@@ -36,12 +36,14 @@ Every stage skips itself when its outputs exist and its inputs are unchanged (se
 
 | flag | stages | meaning |
 |---|---|---|
-| `--beats 1,2` or `--beats 1-4` | narrate | which beats to include in the narration; default all |
+| `--beats 1,2` or `--beats 1-4` | narrate | which beats to include in the narration; default all. Scenes whose start cue falls past the narrated beats are left out of check, render and stills, so `--beats 1` gives a one-scene clip, handy for a cheap ElevenLabs test |
 | `--only 3` | narrate | regenerate only these beats, reuse the existing WAVs for the rest, restitch |
 | `--seed N` | narrate | take number: beat n is seeded with `N + n`. Without it, beats keep the seed they were last made with, and `--only` beats get their previous seed + 1, i.e. another take |
 | `--scene N` | render | render only scene N (counting from 1) to `out/shorts/<video>/scene-N.mp4`, for checking a layout change; not hashed and not what bundle ships |
 | `--full-sentences` | render | render with whole-sentence captions instead of a few words, to `out/shorts/<video>/<video>-sentences.mp4` next to the default; its own hash, works with `--scene`; bundle skips it. To ship that style set `captions.mode: sentences` in `video.json` and drop the flag |
 | `--out path.mp4` | render | write the render to this path instead of `out/shorts/<video>/`; relative to where you run it, folders created. Not hashed, so it always renders; combines with `--scene` and `--full-sentences`; bundle skips it |
+| `--elevenlabs` | all | the final-cut take: narrate with ElevenLabs (premade voice and model from `narration.elevenlabs`, key from `.env`) instead of Chatterbox. The take lives beside the draft: `voice/out/shorts/<video>-elevenlabs/`, its own hash keys, `out/shorts/<video>/<video>-elevenlabs.mp4` and `publish-elevenlabs/`. Narrate asks before sending anything, since ElevenLabs bills per character. Never run it unless you mean to pay |
+| `--yes` | narrate | with `--elevenlabs`, send without asking; required when there is no terminal to ask on |
 | `--force` | all | ignore recorded hashes and run anyway, e.g. after upgrading Chatterbox |
 
 Typical editing loop once the script is final: listen, then `pnpm short <video> --only 3 --seed 1`
@@ -63,16 +65,18 @@ to re-take beat 3 while keeping every other take. The chosen seed is recorded in
 
 | path | contents | git |
 |---|---|---|
-| `voice/out/shorts/<video>/` | `beat-N.wav`, `narration.wav`, `manifest.json`, `alignment.json`, `whisper.json` | ignored |
+| `voice/out/shorts/<video>/` | `beat-N.wav`, `narration.wav`, `manifest.json`, `alignment.json`, `whisper.json`. The `--elevenlabs` take has the same files in `<video>-elevenlabs/` | ignored |
 | `public/shorts/<video>/` | copies of `narration.wav`, `manifest.json`, `alignment.json`, the merged `config.json`, `scenes.json` (scenes plus where each asset landed) and `assets/` (rasters scaled to at most 2160 px wide); the composition reads only these | JSON tracked, WAV and assets ignored |
 | `src/shorts/videos.json` | the shorts whose storyboards have a `## Scenes` section; `check` adds to it, the registry renders each with the generic composition | tracked |
-| `out/shorts/<video>/` | `<video>.mp4`, `.hashes.json`, `stills/` | ignored |
-| `out/shorts/<video>/publish/` | `<video>.mp4`, `captions.srt` (sentence-length cues from the alignment), `metadata.json` (title, description with hashtags, tags, the made-for-kids and synthetic-media answers, duration, loudness), `thumbnail.png` if the storyboard names a time | ignored |
+| `out/shorts/<video>/` | `<video>.mp4`, `.hashes.json`, `stills/`; `scene-N.mp4` from `--scene`; `<video>-sentences.mp4` from `--full-sentences`. The `--elevenlabs` take adds `-elevenlabs` to each of these and to its hash keys (`align-elevenlabs`, `render-elevenlabs`, ...) so the two takes never overwrite each other | ignored |
+| `out/shorts/<video>/publish/` (`publish-elevenlabs/` for that take) | `<video>.mp4`, `captions.srt` (sentence-length cues from the alignment), `metadata.json` (title, description with hashtags, tags, the made-for-kids and synthetic-media answers, duration, loudness), `thumbnail.png` if the storyboard names a time | ignored |
 
 Nothing writes into `stories/`. Keep a render you like by copying it there yourself.
 
-`manifest.json` has per beat `{ n, text, file, start, end, seed, hash }` in seconds, plus the
-reference voice's hash. `alignment.json` has `{ words: [{ text, start, end, beat }] }`: word text
+`manifest.json` has per beat `{ n, text, file, start, end, seed, hash }` in seconds, plus `engine`
+(`chatterbox` or `elevenlabs`), the model and voice, the reference voice's hash for Chatterbox, and
+`script_beats`, the number of beats the script has. Fewer beats than that marks a `--beats` narration,
+and every stage then shows only the scenes it reaches. `alignment.json` has `{ words: [{ text, start, end, beat }] }`: word text
 from the script, timings from whisper, every script word present exactly once.
 
 ## Assets
@@ -98,7 +102,7 @@ it ran. A stage runs when the hash differs, an output is missing, or `--force` i
 
 | stage | hashed inputs |
 |---|---|
-| narrate, per beat | beat text, seed, `lexicon.json`, `reference.wav`, model name, gap |
+| narrate, per beat | beat text, seed, `lexicon.json`, gap, and either `reference.wav` + Chatterbox model or the ElevenLabs voice and model |
 | align | `narration.wav` |
 | render, stills | `alignment.json`, `manifest.json`, merged config without `publish`, `scenes.json`, published assets, everything under `src/` |
 | bundle | the MP4, `alignment.json`, storyboard, merged config |
@@ -124,6 +128,9 @@ merged result is validated (`src/lib/config.ts`) and published as `config.json` 
 | `narration.gapMs` | 500 | pause inserted between beats |
 | `narration.seed` | 0 | base take; beat n uses `seed + n` |
 | `narration.maxWpm` | 150 | narrate warns above this pace |
+| `narration.elevenlabs.voiceId` | a premade voice | ElevenLabs voice used by `--elevenlabs`; not a clone of my voice |
+| `narration.elevenlabs.model` | `eleven_multilingual_v2` | ElevenLabs model id; steadier than `eleven_v3` for narration |
+| `narration.elevenlabs.stability`, `.similarity` | 0.5, 0.75 | ElevenLabs voice settings; the API key is `ELEVENLABS_API_KEY` in `.env`, never in config |
 | `captions.combineMs` | 800 | words are grouped into a page until it spans this long |
 | `captions.holdMs` | 400 | a page lingers this long after its last word if no page follows |
 | `captions.top` | 0.78 | vertical centre of captions, fraction of height |
@@ -142,7 +149,8 @@ merged result is validated (`src/lib/config.ts`) and published as `config.json` 
 Each stage checks before doing work and stops with a plain message:
 
 - check: a `## Narration` numbered out of order, a duplicate heading, a markdown link in a beat, a `## Publish` field or asset still marked TODO, an invalid scene (the message names the scene and field), a scene after the first with no `from`, a scene image not listed in `assets.yaml`. Digits, dashes and symbols in a beat are warnings: the voice reads them unpredictably and whisper writes them back as digits, so prefer words
-- check with a narration present, and render always: a cue naming a word that is never spoken or a beat that does not exist, or scenes that do not start in order
+- check with a narration present, and render always: a cue naming a word that is never spoken or a beat that does not exist, or scenes that do not start in order. With a `--beats` narration only the scenes it reaches are checked and rendered; the rest are listed in a warning, not an error
+- narrate with `--elevenlabs`: no `ELEVENLABS_API_KEY` in `.env`, or no terminal to confirm on and no `--yes`; the API's own refusals (plan, quota, bad voice) are printed in full
 
 - no `reference.wav`: run `prepare_ref.py --pick` first
 - a beat with no text, or `--beats`/`--only` naming a beat the script does not have
@@ -178,6 +186,8 @@ is rendered by `DataShort`; check refuses a storyboard without a `## Scenes` sec
 
 ## What is deterministic
 
-Narrate is reproducible for a given seed, reference, model version and text. Align is
+Narrate with Chatterbox is reproducible for a given seed, reference, model version and text. ElevenLabs
+takes a seed but only promises best effort, so a final-cut narration is a file to keep, not something to
+regenerate and expect to match. Align is
 deterministic for a given WAV. Check, render, stills and bundle are deterministic. Only the storyboard, the choice
 of seed and the upload itself involve a human.

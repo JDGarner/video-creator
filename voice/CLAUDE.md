@@ -3,6 +3,12 @@
 Local voice cloning and narration for the videos. Python, isolated from the Node side with `uv`.
 Read `PLAN.md` for the step list, measurements and open decisions before changing anything here.
 
+Chatterbox is the draft engine: free, local, used for every test render. The final cut of a video
+is narrated with ElevenLabs (`pnpm short <video> --elevenlabs`). Both engines live in
+`scripts/narrate.py` and write the same `narration.wav` + `manifest.json`, because align, render
+and bundle read nothing else. Never call ElevenLabs unless Jamie asks for it in the current
+message: it bills per character, and the key is `ELEVENLABS_API_KEY` in the repo's `.env`.
+
 ## Hard rules
 
 - Run everything with `uv run` from this directory. Never `pip install`; dependencies live in
@@ -32,6 +38,7 @@ uv run scripts/prepare_ref.py --pick X   # copy reference/clips/X.wav to referen
 uv run scripts/clone_test.py             # every clip x two test paragraphs -> out/clone-tests/
 uv run scripts/smoke.py                  # model/device benchmark -> out/smoke/results.json
 pnpm narrate <video>                     # from the repo root; drives narrate.py with the merged config
+pnpm narrate <video> --elevenlabs        # the paid final-cut take, asks before sending; only when Jamie says so
 pnpm align <video>                       # from the repo root; narration.wav -> alignment.json via whisper.cpp
 ```
 

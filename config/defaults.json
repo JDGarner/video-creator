@@ -11,7 +11,13 @@
     "device": "cpu",
     "gapMs": 500,
     "seed": 0,
-    "maxWpm": 150
+    "maxWpm": 150,
+    "elevenlabs": {
+      "voiceId": "KeU8nqWFDbaoi0QVUjD3",
+      "model": "eleven_multilingual_v2",
+      "stability": 0.5,
+      "similarity": 0.75
+    }
   },
   "captions": {
     "combineMs": 800,

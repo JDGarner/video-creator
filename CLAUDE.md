@@ -11,6 +11,7 @@ Programmatic explainer videos with Remotion. Read `context.md` (why, visual targ
 - A theme's `light`/`dark` variant is about which colour slot is used, not about brightness. Decide darkening or lightening with `isDark(bg)`.
 - Fonts load per theme from `ThemeProvider`; a new face goes in `src/theme/fonts.ts` and a theme file, nowhere else.
 - The look is our own: never reproduce the reference channel's wordmark, name or exact palette values.
+- Never run anything that calls ElevenLabs (`--elevenlabs` on `short`, `narrate` or any stage, or `narrate.py --engine elevenlabs`) unless Jamie asks for it explicitly in the current message. It bills per character. If a change needs an ElevenLabs run to verify, ask Jamie to run it or to approve it first.
 
 ## Commands
 
@@ -21,7 +22,7 @@ pnpm typecheck
 pnpm test           # lib helpers, scene layout bands, pipeline stages against a fixture short
 pnpm lint:theme
 pnpm short <video>      # check -> narrate -> align -> render -> bundle, skipping unchanged stages
-pnpm check|narrate|align|render|bundle|stills <video> [--beats 1,2] [--only 3] [--seed N] [--scene N] [--full-sentences] [--out path.mp4] [--force]
+pnpm check|narrate|align|render|bundle|stills <video> [--beats 1,2] [--only 3] [--seed N] [--scene N] [--full-sentences] [--out path.mp4] [--elevenlabs [--yes]] [--force]
 pnpm asset <video> phylopic:<taxon> | <commons url> [--as f] | --search "words"   # images + licence bookkeeping
 pnpm docs:scenes        # regenerate docs/SCENES.md after changing src/scenes/schema.ts
 ```
@@ -47,8 +48,11 @@ Node 22 via nvm (`.nvmrc`). Remotion packages and zod are pinned exactly; Remoti
 
 ## Voice
 
-Narration is my own voice, cloned locally with Chatterbox and run on CPU. `voice/` is a separate
-`uv` Python project; never mix it with the Node toolchain. Workflow: record takes with
+Narration is my own voice, cloned locally with Chatterbox and run on CPU, for every draft and
+test render because it is free. The final cut of a video is narrated with ElevenLabs instead
+(`--elevenlabs`, see the rule above); align, render and bundle do not care which engine made
+`narration.wav`, and the two takes live side by side (see `docs/PIPELINE.md`). `voice/` is a separate `uv` Python project; never mix it with
+the Node toolchain. Workflow: record takes with
 `voice/scripts/record.sh`, cut candidates with `prepare_ref.py`, compare with `clone_test.py`, then
 `--pick` one as `voice/reference/reference.wav`, the only tracked voice file. Raw takes, clips and
 generated audio are gitignored. `scripts/short/Short.ts` drives `narrate.py` and `align.ts` and publishes

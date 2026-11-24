@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cueError, parseCue, resolveCue } from "./cues";
+import { coveredScenes, cueError, isPartial, parseCue, resolveCue } from "./cues";
 import type { Narration } from "./narration";
 
 const N: Narration = {
@@ -39,5 +39,16 @@ describe("cues", () => {
     expect(cueError("kangaroo", N)).toMatch(/not in the narration/);
     expect(cueError("every#3", N)).toMatch(/only spoken 2/);
     expect(cueError("beat two", N)).toMatch(/bad cue/);
+  });
+
+  it("drops the scenes a partial narration does not reach", () => {
+    const scenes = [{ from: undefined }, { from: "beat 2" }, { from: "every" }, { from: 20 }];
+    const partial: Narration = { ...N, beats: N.beats.slice(0, 1), words: N.words.slice(0, 2), duration: 4, scriptBeats: 2 };
+    expect(isPartial(N, 2)).toBe(false);
+    expect(isPartial(partial)).toBe(true);
+    expect(coveredScenes(scenes, N, 2)).toBe(scenes);
+    expect(coveredScenes(scenes, partial)).toEqual([{ from: undefined }]);
+    // without the script's beat count there is nothing to compare against, so every scene stays
+    expect(coveredScenes(scenes, { ...partial, scriptBeats: undefined })).toBe(scenes);
   });
 });

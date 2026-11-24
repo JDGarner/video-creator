@@ -38,7 +38,9 @@ stories/shorts/<video>/short.md ──► check ──► narrate ──► alig
    scene to look at before anything longer runs.
 2. **Narrate.** Each beat is synthesised with [Chatterbox](https://github.com/resemble-ai/chatterbox)
    from a short recording of my own voice, loudness-normalised and stitched into `narration.wav`
-   with a `manifest.json` of beat timings.
+   with a `manifest.json` of beat timings. Chatterbox is free and local, so it narrates every
+   draft; the final cut is narrated with ElevenLabs instead (`pnpm short <video> --elevenlabs`).
+   The stages after narrate read only the WAV and manifest, so they do not know which engine spoke.
 3. **Align.** whisper.cpp hears the narration back and every script word gets a start and end time
    in `alignment.json`.
 4. **Render.** One generic Remotion composition lays the scenes on the timeline from the manifest
@@ -65,8 +67,9 @@ pnpm align <video>
 pnpm render <video>
 pnpm bundle <video>
 pnpm stills <video>     # one PNG per scene
+pnpm short <video> --elevenlabs   # the paid final-cut take, kept beside the draft; asks before sending
 pnpm asset <video> phylopic:<taxon> | <commons url> | --search "words"   # fetch images with licence bookkeeping
-#   flags: --beats 1,2   --only 3   --seed N   --scene N   --full-sentences   --out path.mp4   --force
+#   flags: --beats 1,2   --only 3   --seed N   --scene N   --full-sentences   --out path.mp4   --elevenlabs [--yes]   --force
 pnpm docs:scenes        # regenerate docs/SCENES.md from the scene schemas
 
 pnpm typecheck

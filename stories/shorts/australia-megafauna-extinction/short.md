@@ -95,6 +95,7 @@ scene ends when the next begins. Field reference: `docs/SCENES.md`. Images are l
 - type: card
   from: Diprotodon
   image: diprotodon.svg
+  picture: diprotodon-art.jpg
   reference: human.svg
   height: 1.8
   treatment: silhouette
@@ -104,6 +105,7 @@ scene ends when the next begins. Field reference: `docs/SCENES.md`. Images are l
 - type: card
   from: Procoptodon
   image: procoptodon.svg
+  picture: procoptodon-art.jpg
   reference: human.svg
   height: 2.3
   treatment: silhouette
@@ -113,6 +115,7 @@ scene ends when the next begins. Field reference: `docs/SCENES.md`. Images are l
 - type: card
   from: Megalania
   image: megalania.svg
+  picture: megalania-art.png
   reference: human.svg
   height: 1.2
   treatment: silhouette
@@ -122,6 +125,7 @@ scene ends when the next begins. Field reference: `docs/SCENES.md`. Images are l
 - type: card
   from: Genyornis
   image: genyornis.svg
+  picture: genyornis-art.jpg
   reference: human.svg
   height: 2.0
   treatment: silhouette

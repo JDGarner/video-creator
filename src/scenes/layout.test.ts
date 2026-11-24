@@ -3,7 +3,7 @@ import { LAYOUT } from "./layout";
 
 describe("layout", () => {
   it("keeps every visual band above the caption band", () => {
-    for (const band of [LAYOUT.visual, LAYOUT.tall, LAYOUT.centre, LAYOUT.frame, LAYOUT.timeline.silhouettes]) {
+    for (const band of [LAYOUT.visual, LAYOUT.tall, LAYOUT.centre, LAYOUT.frame, LAYOUT.card.picture, LAYOUT.timeline.silhouettes]) {
       expect(band.top).toBeLessThan(band.bottom);
       expect(band.bottom).toBeLessThanOrEqual(LAYOUT.captionClear);
     }
@@ -13,7 +13,8 @@ describe("layout", () => {
   it("starts text where the visual it follows has ended", () => {
     expect(LAYOUT.textBelow).toBeGreaterThanOrEqual(LAYOUT.visual.bottom);
     expect(LAYOUT.frame.text).toBeGreaterThanOrEqual(LAYOUT.frame.bottom);
-    expect(LAYOUT.card.text).toBeGreaterThanOrEqual(LAYOUT.card.baseline);
+    expect(LAYOUT.card.text).toBeGreaterThanOrEqual(LAYOUT.card.picture.bottom);
+    expect(LAYOUT.card.top).toBeGreaterThan(LAYOUT.card.text);
     expect(LAYOUT.headline).toBeLessThan(LAYOUT.visual.top);
   });
 });

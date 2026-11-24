@@ -53,3 +53,18 @@ export function cueError(cue: Cue, narration: Narration): string | null {
     return e instanceof Error ? e.message : String(e);
   }
 }
+
+/** True when the narration was made with `--beats` and covers only part of the script. */
+export function isPartial(narration: Narration, scriptBeats = narration.scriptBeats): boolean {
+  return scriptBeats !== undefined && narration.beats.length < scriptBeats;
+}
+
+/**
+ * The scenes a narration can show. A full narration shows every scene. A partial one (`--beats 1`)
+ * leaves out the scenes whose start cue is not in it, so a one-beat test renders a one-scene clip
+ * instead of failing on cues to words nobody has spoken yet.
+ */
+export function coveredScenes<S extends { from?: Cue }>(scenes: S[], narration: Narration, scriptBeats?: number): S[] {
+  if (!isPartial(narration, scriptBeats)) return scenes;
+  return scenes.filter((s, i) => i === 0 || s.from === undefined || (cueError(s.from, narration) === null && resolveCue(s.from, narration) < narration.duration));
+}

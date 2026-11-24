@@ -233,6 +233,8 @@ Arnhem Land label; 72 percent collided with it in the portrait framing. Preview 
 
 ## Decisions to make along the way
 
+- **Which engine for the final cut (decided and built 2026-11-24).** Chatterbox for every draft and test render, because it is free and local. ElevenLabs for the final cut once a video is ready to publish: `pnpm short <video> --elevenlabs`, a premade voice (not a clone), `eleven_multilingual_v2`, settings in `config/defaults.json` under `narration.elevenlabs`, key in `.env`. Everything after narrate reads only `narration.wav` and `manifest.json`, so the engine is a narrate-only concern; the take gets its own voice dir, hashes, mp4 and publish folder so a draft run never overwrites a paid one. Not yet run against the real API.
+
 - **Which model.** Guess: Turbo for quality and speed, Nano as the fast-iteration fallback. Multilingual V3 only if I ever narrate in another language or need better handling of Indonesian names.
 - **MPS or CPU.** Decided by step 2's numbers, not by preference.
 - **Reference length.** Decided by step 4 listening. Longer is not automatically better with zero-shot cloning.

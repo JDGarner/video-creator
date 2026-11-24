@@ -20,8 +20,8 @@ export const LAYOUT = {
   centre: { top: 0.31, bottom: 0.69 },
   /** Framed still: the picture box and where its text starts. */
   frame: { top: 0.1, bottom: 0.62, text: 0.645 },
-  /** Fact card: the ground line the subject stands on, the scale reference's height, and its text. */
-  card: { top: 0.12, baseline: 0.58, referenceH: 0.2, text: 0.61 },
+  /** Fact card, top to bottom: the square picture plate, the text, then the scale section with the ground line the subject stands on and the scale reference's height. */
+  card: { picture: { top: 0.15, bottom: 0.43 }, text: 0.46, top: 0.55, baseline: 0.72, referenceH: 0.12 },
   /** Timeline: axis, silhouettes row above it, question mark and text. */
   timeline: { axis: 0.5, silhouettes: { top: 0.22, bottom: 0.34 }, question: 0.56, text: 0.09 },
   /** Silhouette group: two staggered rows. */

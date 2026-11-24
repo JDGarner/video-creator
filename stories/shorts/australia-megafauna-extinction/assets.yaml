@@ -46,3 +46,19 @@
   source: https://www.phylopic.org/images/30d16233-028d-4a70-9002-db349d73c0bc
   licence: CC0
   credit: Jiro Wada
+- file: megalania-art.png
+  source: https://commons.wikimedia.org/wiki/File:Megalania_(Varanus_priscus).png
+  licence: CC BY-SA 4.0
+  credit: ARC CoE CABAH, Wikimedia Commons
+- file: diprotodon-art.jpg
+  source: TODO
+  licence: TODO
+  note: illustration for the card plate, not yet chosen
+- file: procoptodon-art.jpg
+  source: TODO
+  licence: TODO
+  note: illustration for the card plate, not yet chosen
+- file: genyornis-art.jpg
+  source: TODO
+  licence: TODO
+  note: illustration for the card plate, not yet chosen

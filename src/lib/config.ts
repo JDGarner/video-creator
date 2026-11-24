@@ -15,6 +15,13 @@ export const ShortConfigSchema = z.object({
     gapMs: z.number().int().nonnegative(),
     seed: z.number().int(),
     maxWpm: z.number().positive(),
+    /** The paid engine behind `--elevenlabs`; the key lives in .env, never here. */
+    elevenlabs: z.object({
+      voiceId: z.string(),
+      model: z.string(),
+      stability: z.number().min(0).max(1),
+      similarity: z.number().min(0).max(1),
+    }),
   }),
   captions: z.object({
     combineMs: z.number().positive(),
@@ -36,16 +43,17 @@ export const ShortConfigSchema = z.object({
 
 export type ShortConfig = z.infer<typeof ShortConfigSchema>;
 
-export type ConfigOverrides = { [K in keyof ShortConfig]?: ShortConfig[K] extends object ? Partial<ShortConfig[K]> : ShortConfig[K] };
+type Shallow<T> = { [K in keyof T]?: T[K] extends object ? Partial<T[K]> : T[K] };
+export type ConfigOverrides = { [K in keyof ShortConfig]?: ShortConfig[K] extends object ? Shallow<ShortConfig[K]> : ShortConfig[K] };
 
-/** Merge one level deep: a video.json may set `captions.top` without repeating the other caption fields. */
+/** Merge field by field: a video.json may set `captions.top` or `narration.elevenlabs.voiceId` without repeating the rest. */
 export function mergeConfig(defaults: unknown, overrides: unknown): ShortConfig {
   const base = ShortConfigSchema.parse(defaults);
   const over = (overrides ?? {}) as ConfigOverrides;
   return ShortConfigSchema.parse({
     ...base,
     ...over,
-    narration: { ...base.narration, ...(over.narration ?? {}) },
+    narration: { ...base.narration, ...(over.narration ?? {}), elevenlabs: { ...base.narration.elevenlabs, ...(over.narration?.elevenlabs ?? {}) } },
     captions: { ...base.captions, ...(over.captions ?? {}) },
     publish: { ...base.publish, ...(over.publish ?? {}) },
   });

@@ -2,7 +2,7 @@ import YAML from "yaml";
 import { z } from "zod";
 import { parsePublish } from "./publish";
 import { ScenesSchema, sceneCues, sceneImages, type Scene } from "../scenes/schema";
-import { cueError, resolveCue } from "./cues";
+import { coveredScenes, cueError, resolveCue } from "./cues";
 import type { Narration } from "./narration";
 
 /** Parsed storyboard: `stories/shorts/<video>/short.md`. */
@@ -111,11 +111,15 @@ export function checkStory(markdown: string, opts: { narration?: Narration; asse
     scenes.slice(1).forEach((s, i) => s.from === undefined && err(`scene ${i + 2} (${s.type}) has no \`from\``));
     if (opts.narration) {
       const n = opts.narration;
-      const starts = scenes.map((s) => (s.from === undefined ? 0 : cueError(s.from, n) ? NaN : resolveCue(s.from, n)));
+      // a --beats narration shows only the scenes it reaches; their cues are checked, the rest are not
+      const covered = new Set(coveredScenes(scenes, n, beats.length));
+      if (covered.size < scenes.length) warn(`narration has ${n.beats.length} of ${beats.length} beats; ${scenes.length - covered.size} scene(s) past it are left out of this render`);
+      const starts = scenes.map((s) => (s.from === undefined ? 0 : !covered.has(s) || cueError(s.from, n) ? NaN : resolveCue(s.from, n)));
       starts.forEach((t, i) => {
         if (i > 0 && !Number.isNaN(t) && !Number.isNaN(starts[i - 1]!) && t <= starts[i - 1]!) err(`scene ${i + 1} starts at ${t.toFixed(2)} s, not after scene ${i} (${starts[i - 1]!.toFixed(2)} s)`);
       });
       for (const [i, s] of scenes.entries()) {
+        if (!covered.has(s)) continue;
         for (const { where, cue } of sceneCues(s, i)) {
           const e = cueError(cue, n);
           if (e) err(`${where}: ${e}`);

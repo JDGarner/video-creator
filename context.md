@@ -59,7 +59,9 @@ The sections above are the original brief and still describe the intent. What ha
 - **Shorts came first.** The vertical 9:16 pipeline is built and ships; long-form is the later goal.
 - **Content is YAML in a markdown storyboard**, not a standalone JSON document: `## Narration` is the
   script, `## Scenes` the visuals, `## Publish` the upload metadata. Zod still validates the scenes.
-- **Narration is my own cloned voice** (Chatterbox, local), aligned with whisper.cpp; no third-party TTS.
+- **Narration is cloned locally for drafts, bought for the final cut.** Chatterbox clones my voice and
+  runs free for every draft; the final cut uses an ElevenLabs premade voice behind `--elevenlabs`
+  (decided 2026-11-24). Both are aligned with whisper.cpp.
 - **Maps use raster relief.** The chosen atlas look is Natural Earth hypsometric tints over a shaded sea
   (`docs/design/`), not flat vector land. Globes were explored and parked.
 - **The light paper is cream with a plum accent and a navy dark variant**, decided in the `fieldguide`
