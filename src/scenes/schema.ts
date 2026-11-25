@@ -29,7 +29,7 @@ const base = {
   notes: z.string().optional().describe("Free text for humans, ignored"),
 };
 
-const Treatment = z.enum(["photo", "illustration", "plain", "silhouette"]).describe("photo: desaturated, paper-tinted, grained. illustration: grain and vignette only. plain: untouched. silhouette: a black shape recoloured in the theme ink");
+const Treatment = z.enum(["photo", "illustration", "plain", "silhouette", "print"]).describe("photo: desaturated, paper-tinted, grained. illustration: grain and vignette only. plain: untouched. silhouette: a black shape recoloured in the theme ink. print: the white ground knocked out, so the drawing sits straight on the paper");
 
 export const StillScene = z.object({
   type: z.literal("still"),
@@ -49,7 +49,8 @@ export const CardScene = z.object({
   type: z.literal("card"),
   ...base,
   image: Image,
-  picture: Image.optional().describe("Illustration or photograph on a square plate above the text, cropped to fill; a labelled placeholder until the file is in assets/"),
+  picture: Image.optional().describe("Illustration or photograph fitted inside the plate above the text; a labelled placeholder until the file is in assets/"),
+  pictureTreatment: Treatment.default("print"),
   headline: Text,
   tone: Tone.default("surface").describe("Flat background colour"),
   reference: Image.optional().describe("Scale reference silhouette drawn in the same spot on every card, e.g. human.svg"),
@@ -79,6 +80,15 @@ export const TimelineScene = z.object({
     .object({ images: z.array(Image), dim: z.boolean().default(false), at: Cue.optional() })
     .optional()
     .describe("A row of silhouettes above the axis, in colour or dimmed to outlines"),
+  pictures: z
+    .array(Image)
+    .min(2)
+    .max(4)
+    .optional()
+    .describe("Pictures in a two-column grid filling the frame, revealed one after another from the scene start; the axis then appears over them on a surface panel, and they dim when the question mark shows"),
+  text: z.enum(["normal", "large"]).default("normal").describe("large makes every label on the axis about 1.6 times bigger, for a timeline with few ticks"),
+  labels: z.enum(["above", "inside"]).default("above").describe("Where a band's label sits: above its left end, or centred inside the band, which is then tall enough for two lines and wraps"),
+  chain: z.boolean().default(false).describe("Open the bands as one continuous run in the order listed, each starting where the previous finished; the run starts at the first band's cue and later cues are ignored"),
   question: Cue.optional().describe("Show a large question mark from this cue"),
 });
 
@@ -143,6 +153,7 @@ export function sceneImages(scenes: Scene[]): string[] {
     if (s.type === "card" && s.reference) out.add(s.reference);
     if (s.type === "card" && s.picture) out.add(s.picture);
     if (s.type === "timeline" && s.silhouettes) s.silhouettes.images.forEach((i) => out.add(i));
+    if (s.type === "timeline" && s.pictures) s.pictures.forEach((i) => out.add(i));
     if (s.type === "panels") s.panels.forEach((p) => out.add(p.image));
     if (s.type === "silhouettes" && s.background) out.add(s.background);
   }

@@ -3,7 +3,7 @@ import { LAYOUT } from "./layout";
 
 describe("layout", () => {
   it("keeps every visual band above the caption band", () => {
-    for (const band of [LAYOUT.visual, LAYOUT.tall, LAYOUT.centre, LAYOUT.frame, LAYOUT.card.picture, LAYOUT.timeline.silhouettes]) {
+    for (const band of [LAYOUT.visual, LAYOUT.tall, LAYOUT.centre, LAYOUT.frame, LAYOUT.card.picture, LAYOUT.timeline.grid, LAYOUT.timeline.silhouettes]) {
       expect(band.top).toBeLessThan(band.bottom);
       expect(band.bottom).toBeLessThanOrEqual(LAYOUT.captionClear);
     }

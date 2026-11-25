@@ -4,87 +4,825 @@
   "words": [
     {
       "text": "Around",
-      "start": 0.07,
-      "end": 0.5,
+      "start": 0.14,
+      "end": 0.44,
       "beat": 1
     },
     {
       "text": "eighty",
-      "start": 0.5,
-      "end": 0.771,
+      "start": 0.44,
+      "end": 0.685,
       "beat": 1
     },
     {
       "text": "five",
-      "start": 0.771,
-      "end": 0.952,
+      "start": 0.685,
+      "end": 0.848,
       "beat": 1
     },
     {
       "text": "to",
-      "start": 0.952,
-      "end": 1.042,
+      "start": 0.848,
+      "end": 0.93,
       "beat": 1
     },
     {
       "text": "ninety",
-      "start": 1.042,
-      "end": 1.314,
+      "start": 0.93,
+      "end": 1.174,
       "beat": 1
     },
     {
       "text": "percent",
-      "start": 1.314,
-      "end": 1.63,
+      "start": 1.174,
+      "end": 1.46,
       "beat": 1
     },
     {
       "text": "of",
-      "start": 1.66,
-      "end": 1.8,
+      "start": 1.46,
+      "end": 1.6,
       "beat": 1
     },
     {
       "text": "Australia's",
-      "start": 1.81,
-      "end": 2.73,
+      "start": 1.6,
+      "end": 2.41,
       "beat": 1
     },
     {
       "text": "megafauna",
-      "start": 2.73,
-      "end": 3.52,
+      "start": 2.41,
+      "end": 3.05,
       "beat": 1
     },
     {
       "text": "went",
-      "start": 3.52,
-      "end": 3.86,
+      "start": 3.06,
+      "end": 3.35,
       "beat": 1
     },
     {
       "text": "extinct",
-      "start": 3.86,
-      "end": 4.33,
+      "start": 3.35,
+      "end": 3.87,
       "beat": 1
     },
     {
       "text": "before",
-      "start": 4.59,
-      "end": 4.89,
+      "start": 3.87,
+      "end": 4.14,
       "beat": 1
     },
     {
       "text": "Europeans",
-      "start": 4.89,
-      "end": 5.5,
+      "start": 4.41,
+      "end": 4.98,
       "beat": 1
     },
     {
       "text": "arrived.",
-      "start": 5.51,
-      "end": 6,
+      "start": 4.98,
+      "end": 5.71,
       "beat": 1
+    },
+    {
+      "text": "These",
+      "start": 6.48,
+      "end": 6.56,
+      "beat": 2
+    },
+    {
+      "text": "include",
+      "start": 6.56,
+      "end": 6.96,
+      "beat": 2
+    },
+    {
+      "text": "some",
+      "start": 6.96,
+      "end": 7.25,
+      "beat": 2
+    },
+    {
+      "text": "truly",
+      "start": 7.32,
+      "end": 7.71,
+      "beat": 2
+    },
+    {
+      "text": "crazy",
+      "start": 7.71,
+      "end": 8.13,
+      "beat": 2
+    },
+    {
+      "text": "animals,",
+      "start": 8.13,
+      "end": 8.66,
+      "beat": 2
+    },
+    {
+      "text": "such",
+      "start": 8.93,
+      "end": 9.04,
+      "beat": 2
+    },
+    {
+      "text": "as",
+      "start": 9.04,
+      "end": 9.2,
+      "beat": 2
+    },
+    {
+      "text": "Diprotodon,",
+      "start": 9.2,
+      "end": 10.19,
+      "beat": 2
+    },
+    {
+      "text": "a",
+      "start": 10.27,
+      "end": 10.32,
+      "beat": 2
+    },
+    {
+      "text": "three",
+      "start": 10.34,
+      "end": 10.765,
+      "beat": 2
+    },
+    {
+      "text": "tonne",
+      "start": 10.765,
+      "end": 11.02,
+      "beat": 2
+    },
+    {
+      "text": "wombat",
+      "start": 11.02,
+      "end": 11.52,
+      "beat": 2
+    },
+    {
+      "text": "relative.",
+      "start": 11.52,
+      "end": 12.35,
+      "beat": 2
+    },
+    {
+      "text": "Procoptodon,",
+      "start": 12.6,
+      "end": 13.37,
+      "beat": 2
+    },
+    {
+      "text": "a",
+      "start": 13.65,
+      "end": 13.7,
+      "beat": 2
+    },
+    {
+      "text": "giant",
+      "start": 13.7,
+      "end": 14.08,
+      "beat": 2
+    },
+    {
+      "text": "Kangaroo.",
+      "start": 14.08,
+      "end": 14.82,
+      "beat": 2
+    },
+    {
+      "text": "Megalania,",
+      "start": 14.82,
+      "end": 15.66,
+      "beat": 2
+    },
+    {
+      "text": "an",
+      "start": 15.66,
+      "end": 15.81,
+      "beat": 2
+    },
+    {
+      "text": "enormous",
+      "start": 15.81,
+      "end": 16.42,
+      "beat": 2
+    },
+    {
+      "text": "monitor",
+      "start": 16.42,
+      "end": 16.96,
+      "beat": 2
+    },
+    {
+      "text": "lizard.",
+      "start": 16.96,
+      "end": 17.57,
+      "beat": 2
+    },
+    {
+      "text": "And",
+      "start": 17.57,
+      "end": 17.62,
+      "beat": 2
+    },
+    {
+      "text": "Genyornis,",
+      "start": 17.99,
+      "end": 18.63,
+      "beat": 2
+    },
+    {
+      "text": "a",
+      "start": 18.63,
+      "end": 18.7,
+      "beat": 2
+    },
+    {
+      "text": "two",
+      "start": 18.7,
+      "end": 18.831,
+      "beat": 2
+    },
+    {
+      "text": "hundred",
+      "start": 18.831,
+      "end": 19.137,
+      "beat": 2
+    },
+    {
+      "text": "kilogram",
+      "start": 19.137,
+      "end": 19.53,
+      "beat": 2
+    },
+    {
+      "text": "flightless",
+      "start": 19.53,
+      "end": 20.3,
+      "beat": 2
+    },
+    {
+      "text": "bird.",
+      "start": 20.3,
+      "end": 20.93,
+      "beat": 2
+    },
+    {
+      "text": "Most",
+      "start": 21.76,
+      "end": 22,
+      "beat": 3
+    },
+    {
+      "text": "disappeared",
+      "start": 22,
+      "end": 22.66,
+      "beat": 3
+    },
+    {
+      "text": "roughly",
+      "start": 22.74,
+      "end": 23.13,
+      "beat": 3
+    },
+    {
+      "text": "fifty",
+      "start": 23.3,
+      "end": 23.696,
+      "beat": 3
+    },
+    {
+      "text": "thousand",
+      "start": 23.696,
+      "end": 24.331,
+      "beat": 3
+    },
+    {
+      "text": "to",
+      "start": 24.331,
+      "end": 24.489,
+      "beat": 3
+    },
+    {
+      "text": "forty",
+      "start": 24.489,
+      "end": 24.886,
+      "beat": 3
+    },
+    {
+      "text": "thousand",
+      "start": 24.886,
+      "end": 25.52,
+      "beat": 3
+    },
+    {
+      "text": "years",
+      "start": 25.53,
+      "end": 25.72,
+      "beat": 3
+    },
+    {
+      "text": "ago,",
+      "start": 26.06,
+      "end": 26.11,
+      "beat": 3
+    },
+    {
+      "text": "after",
+      "start": 26.12,
+      "end": 26.38,
+      "beat": 3
+    },
+    {
+      "text": "humans",
+      "start": 26.47,
+      "end": 26.76,
+      "beat": 3
+    },
+    {
+      "text": "had",
+      "start": 26.81,
+      "end": 26.99,
+      "beat": 3
+    },
+    {
+      "text": "arrived,",
+      "start": 26.99,
+      "end": 27.58,
+      "beat": 3
+    },
+    {
+      "text": "though",
+      "start": 27.84,
+      "end": 27.99,
+      "beat": 3
+    },
+    {
+      "text": "how",
+      "start": 27.99,
+      "end": 28.19,
+      "beat": 3
+    },
+    {
+      "text": "long",
+      "start": 28.19,
+      "end": 28.56,
+      "beat": 3
+    },
+    {
+      "text": "after",
+      "start": 28.56,
+      "end": 29.04,
+      "beat": 3
+    },
+    {
+      "text": "is",
+      "start": 29.04,
+      "end": 29.2,
+      "beat": 3
+    },
+    {
+      "text": "debated.",
+      "start": 29.2,
+      "end": 29.82,
+      "beat": 3
+    },
+    {
+      "text": "So",
+      "start": 29.82,
+      "end": 30.14,
+      "beat": 3
+    },
+    {
+      "text": "what",
+      "start": 30.37,
+      "end": 30.46,
+      "beat": 3
+    },
+    {
+      "text": "caused",
+      "start": 30.46,
+      "end": 30.92,
+      "beat": 3
+    },
+    {
+      "text": "it?",
+      "start": 31.03,
+      "end": 31.33,
+      "beat": 3
+    },
+    {
+      "text": "There",
+      "start": 32.1,
+      "end": 32.15,
+      "beat": 4
+    },
+    {
+      "text": "are",
+      "start": 32.15,
+      "end": 32.15,
+      "beat": 4
+    },
+    {
+      "text": "three",
+      "start": 32.15,
+      "end": 32.35,
+      "beat": 4
+    },
+    {
+      "text": "main",
+      "start": 32.47,
+      "end": 32.69,
+      "beat": 4
+    },
+    {
+      "text": "explanations.",
+      "start": 32.69,
+      "end": 33.79,
+      "beat": 4
+    },
+    {
+      "text": "Human",
+      "start": 34.03,
+      "end": 34.19,
+      "beat": 4
+    },
+    {
+      "text": "hunting,",
+      "start": 34.19,
+      "end": 34.75,
+      "beat": 4
+    },
+    {
+      "text": "changes",
+      "start": 35.04,
+      "end": 35.36,
+      "beat": 4
+    },
+    {
+      "text": "to",
+      "start": 35.36,
+      "end": 35.47,
+      "beat": 4
+    },
+    {
+      "text": "the",
+      "start": 35.54,
+      "end": 35.6,
+      "beat": 4
+    },
+    {
+      "text": "landscape",
+      "start": 35.6,
+      "end": 36.26,
+      "beat": 4
+    },
+    {
+      "text": "caused",
+      "start": 36.38,
+      "end": 36.76,
+      "beat": 4
+    },
+    {
+      "text": "by",
+      "start": 36.76,
+      "end": 36.83,
+      "beat": 4
+    },
+    {
+      "text": "fire,",
+      "start": 36.96,
+      "end": 37.24,
+      "beat": 4
+    },
+    {
+      "text": "and",
+      "start": 37.49,
+      "end": 37.6,
+      "beat": 4
+    },
+    {
+      "text": "climate",
+      "start": 37.6,
+      "end": 38.14,
+      "beat": 4
+    },
+    {
+      "text": "change.",
+      "start": 38.14,
+      "end": 38.63,
+      "beat": 4
+    },
+    {
+      "text": "Burnt",
+      "start": 39.32,
+      "end": 39.37,
+      "beat": 5
+    },
+    {
+      "text": "eggshell",
+      "start": 39.44,
+      "end": 39.82,
+      "beat": 5
+    },
+    {
+      "text": "fragments",
+      "start": 39.82,
+      "end": 40.52,
+      "beat": 5
+    },
+    {
+      "text": "suggest",
+      "start": 40.52,
+      "end": 41.06,
+      "beat": 5
+    },
+    {
+      "text": "humans",
+      "start": 41.06,
+      "end": 41.59,
+      "beat": 5
+    },
+    {
+      "text": "collected",
+      "start": 41.6,
+      "end": 42.08,
+      "beat": 5
+    },
+    {
+      "text": "and",
+      "start": 42.08,
+      "end": 42.24,
+      "beat": 5
+    },
+    {
+      "text": "cooked",
+      "start": 42.24,
+      "end": 42.49,
+      "beat": 5
+    },
+    {
+      "text": "the",
+      "start": 42.62,
+      "end": 42.76,
+      "beat": 5
+    },
+    {
+      "text": "eggs",
+      "start": 42.76,
+      "end": 42.98,
+      "beat": 5
+    },
+    {
+      "text": "of",
+      "start": 43,
+      "end": 43.1,
+      "beat": 5
+    },
+    {
+      "text": "giant",
+      "start": 43.21,
+      "end": 43.39,
+      "beat": 5
+    },
+    {
+      "text": "flightless",
+      "start": 43.39,
+      "end": 43.96,
+      "beat": 5
+    },
+    {
+      "text": "birds,",
+      "start": 43.97,
+      "end": 44.37,
+      "beat": 5
+    },
+    {
+      "text": "potentially",
+      "start": 44.37,
+      "end": 45.01,
+      "beat": 5
+    },
+    {
+      "text": "reducing",
+      "start": 45.07,
+      "end": 45.49,
+      "beat": 5
+    },
+    {
+      "text": "their",
+      "start": 45.49,
+      "end": 45.78,
+      "beat": 5
+    },
+    {
+      "text": "breeding",
+      "start": 45.78,
+      "end": 46.19,
+      "beat": 5
+    },
+    {
+      "text": "success.",
+      "start": 46.28,
+      "end": 46.96,
+      "beat": 5
+    },
+    {
+      "text": "Climate",
+      "start": 47.89,
+      "end": 47.94,
+      "beat": 6
+    },
+    {
+      "text": "change",
+      "start": 47.94,
+      "end": 47.98,
+      "beat": 6
+    },
+    {
+      "text": "may",
+      "start": 47.98,
+      "end": 48.15,
+      "beat": 6
+    },
+    {
+      "text": "also",
+      "start": 48.15,
+      "end": 48.45,
+      "beat": 6
+    },
+    {
+      "text": "have",
+      "start": 48.45,
+      "end": 48.75,
+      "beat": 6
+    },
+    {
+      "text": "contributed,",
+      "start": 48.75,
+      "end": 49.72,
+      "beat": 6
+    },
+    {
+      "text": "but",
+      "start": 49.72,
+      "end": 49.9,
+      "beat": 6
+    },
+    {
+      "text": "many",
+      "start": 50.24,
+      "end": 50.29,
+      "beat": 6
+    },
+    {
+      "text": "of",
+      "start": 50.29,
+      "end": 50.39,
+      "beat": 6
+    },
+    {
+      "text": "these",
+      "start": 50.39,
+      "end": 50.8,
+      "beat": 6
+    },
+    {
+      "text": "animals",
+      "start": 50.8,
+      "end": 51.28,
+      "beat": 6
+    },
+    {
+      "text": "had",
+      "start": 51.28,
+      "end": 51.49,
+      "beat": 6
+    },
+    {
+      "text": "survived",
+      "start": 51.52,
+      "end": 52.04,
+      "beat": 6
+    },
+    {
+      "text": "earlier",
+      "start": 52.11,
+      "end": 52.48,
+      "beat": 6
+    },
+    {
+      "text": "climate",
+      "start": 52.48,
+      "end": 52.92,
+      "beat": 6
+    },
+    {
+      "text": "fluctuations.",
+      "start": 53.06,
+      "end": 54.01,
+      "beat": 6
+    },
+    {
+      "text": "Today,",
+      "start": 54.51,
+      "end": 54.62,
+      "beat": 7
+    },
+    {
+      "text": "many",
+      "start": 54.62,
+      "end": 54.9,
+      "beat": 7
+    },
+    {
+      "text": "researchers",
+      "start": 54.91,
+      "end": 55.73,
+      "beat": 7
+    },
+    {
+      "text": "consider",
+      "start": 55.73,
+      "end": 56.22,
+      "beat": 7
+    },
+    {
+      "text": "human",
+      "start": 56.33,
+      "end": 56.69,
+      "beat": 7
+    },
+    {
+      "text": "activity",
+      "start": 56.69,
+      "end": 57.06,
+      "beat": 7
+    },
+    {
+      "text": "a",
+      "start": 57.33,
+      "end": 57.38,
+      "beat": 7
+    },
+    {
+      "text": "major",
+      "start": 57.38,
+      "end": 57.71,
+      "beat": 7
+    },
+    {
+      "text": "driver,",
+      "start": 57.72,
+      "end": 58.24,
+      "beat": 7
+    },
+    {
+      "text": "although",
+      "start": 58.49,
+      "end": 58.73,
+      "beat": 7
+    },
+    {
+      "text": "the",
+      "start": 58.74,
+      "end": 58.91,
+      "beat": 7
+    },
+    {
+      "text": "exact",
+      "start": 58.91,
+      "end": 59.18,
+      "beat": 7
+    },
+    {
+      "text": "causes",
+      "start": 59.28,
+      "end": 59.57,
+      "beat": 7
+    },
+    {
+      "text": "are",
+      "start": 59.57,
+      "end": 59.75,
+      "beat": 7
+    },
+    {
+      "text": "still",
+      "start": 59.75,
+      "end": 60.08,
+      "beat": 7
+    },
+    {
+      "text": "debated.",
+      "start": 60.08,
+      "end": 60.64,
+      "beat": 7
     }
   ]
 }

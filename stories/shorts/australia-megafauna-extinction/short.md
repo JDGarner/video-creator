@@ -11,7 +11,7 @@ Australia lost nearly all of its giant animals around 45,000 years ago, shortly 
 ## Narration
 
 1. Around eighty five to ninety percent of Australia's megafauna went extinct before Europeans arrived.
-2. These include Diprotodon, a three tonne wombat relative. Procoptodon, a giant kangaroo standing over two metres tall. Megalania, an enormous monitor lizard. And Genyornis, a two hundred kilogram flightless bird.
+2. These include some truly crazy animals, such as Diprotodon, a three tonne wombat relative. Procoptodon, a giant Kangaroo. Megalania, an enormous monitor lizard. And Genyornis, a two hundred kilogram flightless bird.
 3. Most disappeared roughly fifty thousand to forty thousand years ago, after humans had arrived, though how long after is debated. So what caused it?
 4. There are three main explanations. Human hunting, changes to the landscape caused by fire, and climate change.
 5. Burnt eggshell fragments suggest humans collected and cooked the eggs of giant flightless birds, potentially reducing their breeding success.
@@ -105,7 +105,7 @@ scene ends when the next begins. Field reference: `docs/SCENES.md`. Images are l
 - type: card
   from: Procoptodon
   image: procoptodon.svg
-  picture: procoptodon-art.jpg
+  picture: procoptodon-art.png
   reference: human.svg
   height: 2.3
   treatment: silhouette
@@ -125,7 +125,7 @@ scene ends when the next begins. Field reference: `docs/SCENES.md`. Images are l
 - type: card
   from: Genyornis
   image: genyornis.svg
-  picture: genyornis-art.jpg
+  picture: genyornis-art.png
   reference: human.svg
   height: 2.0
   treatment: silhouette
@@ -135,13 +135,16 @@ scene ends when the next begins. Field reference: `docs/SCENES.md`. Images are l
 - type: timeline
   from: beat 3
   transition: fade
-  range: [70000, 30000]
-  tick: 10000
+  range: [65000, 40000]
+  tick: 5000
   unit: years ago
+  text: large
+  labels: inside
+  chain: true
+  pictures: [diprotodon-art.jpg, procoptodon-art.png, megalania-art.png, genyornis-art.png]
   bands:
-    - { from: 65000, to: 50000, label: Humans arrive, tone: structure, at: beat 3 + 0.3, note: exact date debated }
+    - { from: 65000, to: 50000, label: Humans arrive, tone: structure, at: beat 3 + 0.3 }
     - { from: 50000, to: 40000, label: Most megafauna gone, tone: accent, at: fifty }
-  silhouettes: { images: [diprotodon.svg, procoptodon.svg, megalania.svg, genyornis.svg], dim: true, at: So }
   question: caused
 
 - type: panels

@@ -11,7 +11,18 @@ How things move, so every scene feels like the same hand. `Reveal`, `DrawPath` a
 - Hold for `theme.motion.holdBeforeRevealMs` before the key reveal: the big number, the accent word.
 - Camera moves (map pan, zoom): heavy spring or sine ease, at least two seconds, never linear.
 - Numbers count up over 0.6 to 1.2 s with ease-out and land on the exact value on the last frame.
-- Lines draw on with `DrawPath`, 0.8 to 2 s depending on length.
+- Lines draw on with `DrawPath`, 0.8 to 2 s depending on length. An axis draws in about a second
+  and a half and its ticks pop as the head passes; nothing hangs off an axis until it is complete.
+- Spans and bars rise to full height out of their axis in under half a second while wiping open from
+  their start value over a little more than a second; the label follows once the bar is at full
+  height. Adjacent spans that tell one story open as a single run at one head speed, not as two bars
+  that happen to touch. Never fade a bar in.
+- A panel that carries a chart unfolds from the line it belongs to, growing up and down from the axis
+  in under a second, and the axis draws only once the panel is open.
+- A stamp (the question mark) lands from about a third larger with a snappy spring, so it hits rather
+  than appears. Stamps are for the one punctuation moment in a scene, not for every reveal.
+- Pictures that sit for more than a few seconds drift by one to three percent so the frame breathes;
+  neighbours drift in opposite directions.
 - One-step changes are allowed when the narration says so (the landmass loss), otherwise ease.
 - No linear easing except constant-velocity travel along a path, and ease the ends even then.
 - Every value derives from `useCurrentFrame()`. No CSS transitions or animations.

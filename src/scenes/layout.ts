@@ -22,8 +22,8 @@ export const LAYOUT = {
   frame: { top: 0.1, bottom: 0.62, text: 0.645 },
   /** Fact card, top to bottom: the square picture plate, the text, then the scale section with the ground line the subject stands on and the scale reference's height. */
   card: { picture: { top: 0.15, bottom: 0.43 }, text: 0.46, top: 0.55, baseline: 0.72, referenceH: 0.12 },
-  /** Timeline: axis, silhouettes row above it, question mark and text. */
-  timeline: { axis: 0.5, silhouettes: { top: 0.22, bottom: 0.34 }, question: 0.56, text: 0.09 },
+  /** Timeline: axis, silhouettes row above it, question mark and text; with a picture grid the axis moves up to the grid's centre. */
+  timeline: { axis: 0.5, silhouettes: { top: 0.22, bottom: 0.34 }, grid: { top: 0.08, bottom: 0.72 }, gridAxis: 0.4, question: 0.56, text: 0.09 },
   /** Silhouette group: two staggered rows. */
   silhouettes: { rows: [{ top: 0.42, height: 0.1 }, { top: 0.53, height: 0.13 }] },
   /** Nothing below this line: the caption band (config captions.top, 0.78 by default) starts here. */

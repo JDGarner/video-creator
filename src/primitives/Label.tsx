@@ -9,6 +9,8 @@ type Props = {
   color?: ColorKey;
   weight?: number;
   align?: "left" | "center" | "right";
+  /** Multiplies the size, for a scene that asks for larger labels. */
+  fontScale?: number;
   style?: Pick<React.CSSProperties, "marginTop" | "marginBottom" | "maxWidth">;
 };
 
@@ -19,6 +21,7 @@ export const Label: React.FC<Props> = ({
   color = "muted",
   weight,
   align = "left",
+  fontScale = 1,
   style,
 }) => {
   const { theme, scale } = useTheme();
@@ -29,7 +32,7 @@ export const Label: React.FC<Props> = ({
       style={{
         fontFamily: fontFamily(spec),
         fontWeight: weight ?? spec.weights[0],
-        fontSize: theme.type[size] * scale,
+        fontSize: theme.type[size] * scale * fontScale,
         lineHeight: 1.4,
         letterSpacing: theme.type.labelTracking,
         textTransform: theme.type.labelCase === "upper" ? "uppercase" : "none",

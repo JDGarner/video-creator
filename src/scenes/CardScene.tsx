@@ -47,7 +47,7 @@ const Ruler: React.FC<{ left: number; baseline: number; metres: number; pxPerM: 
 };
 
 /**
- * A fact card, top to bottom: an optional picture on a square plate, the headline and caption, and
+ * A fact card, top to bottom: an optional picture fitted in a plate, the headline and caption, and
  * a scale section where the subject stands on a ground line with a metre ruler at its right and a
  * fixed human reference beyond that, unlabelled.
  */
@@ -80,8 +80,8 @@ export const CardScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ scene 
     <>
       <AbsoluteFill style={{ backgroundColor: withAlpha(tone, 0.9) }} />
       {scene.picture ? (
-        <Reveal at={start} from="fade" style={{ position: "absolute", left: (width - plate) / 2, top: height * LAYOUT.card.picture.top, width: plate, height: plate }}>
-          <Still src={pic.src} name={pic.name} fit="cover" treatment="illustration" />
+        <Reveal at={start} from="fade" style={{ position: "absolute", left: width * LAYOUT.margin, width: width * (1 - 2 * LAYOUT.margin), top: height * LAYOUT.card.picture.top, height: plate }}>
+          <Still src={pic.src} name={pic.name} fit="contain" treatment={scene.pictureTreatment} />
         </Reveal>
       ) : null}
       <SceneText headline={scene.headline} caption={scene.caption} top={LAYOUT.card.text} />

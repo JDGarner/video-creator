@@ -51,14 +51,14 @@
   licence: CC BY-SA 4.0
   credit: ARC CoE CABAH, Wikimedia Commons
 - file: diprotodon-art.jpg
-  source: TODO
-  licence: TODO
-  note: illustration for the card plate, not yet chosen
-- file: procoptodon-art.jpg
-  source: TODO
-  licence: TODO
-  note: illustration for the card plate, not yet chosen
-- file: genyornis-art.jpg
-  source: TODO
-  licence: TODO
-  note: illustration for the card plate, not yet chosen
+  source: https://commons.wikimedia.org/wiki/File:Diprotodon_optatum_(2).jpg
+  licence: CC BY 3.0
+  credit: Dmitry Bogdanov, Wikimedia Commons
+- file: procoptodon-art.png
+  source: own
+  licence: own
+  note: generated with my own AI image model, no third-party rights
+- file: genyornis-art.png
+  source: https://commons.wikimedia.org/wiki/File:Genyornis_(Genyornis_newtoni).png
+  licence: CC BY-SA 4.0
+  credit: Nellie Pease/CABAH, Wikimedia Commons
