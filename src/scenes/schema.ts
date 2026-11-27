@@ -26,10 +26,11 @@ const base = {
   variant: z.enum(["light", "dark"]).optional().describe("Paper variant under the scene; the video's config.variant when absent"),
   headline: Text.optional().describe("Display serif, upper part of the frame"),
   caption: Text.optional().describe("Mono label under the headline"),
+  sound: z.boolean().default(true).describe("Play this scene's built-in sound cues and the sound of its transition; false keeps it silent"),
   notes: z.string().optional().describe("Free text for humans, ignored"),
 };
 
-const Treatment = z.enum(["photo", "illustration", "plain", "silhouette", "print"]).describe("photo: desaturated, paper-tinted, grained. illustration: grain and vignette only. plain: untouched. silhouette: a black shape recoloured in the theme ink. print: the white ground knocked out, so the drawing sits straight on the paper");
+const Treatment = z.enum(["photo", "illustration", "plain", "silhouette", "print"]).describe("photo: desaturated, paper-tinted, grained. illustration: grain and vignette only. plain: untouched. silhouette: a black shape recoloured in the theme ink. print: the white ground knocked out, anything within a few percent of white with it, so the drawing sits straight on the paper");
 
 export const StillScene = z.object({
   type: z.literal("still"),
@@ -48,13 +49,14 @@ export const StillScene = z.object({
 export const CardScene = z.object({
   type: z.literal("card"),
   ...base,
-  image: Image,
-  picture: Image.optional().describe("Illustration or photograph fitted inside the plate above the text; a labelled placeholder until the file is in assets/"),
+  image: Image.describe("Silhouette of the subject; it stands on the ground line when there is no picture"),
+  picture: Image.optional().describe("Illustration or photograph that stands on the ground line as the subject instead of the silhouette, in a box of its own proportions, so trim its empty margin with pnpm trim; a labelled placeholder until the file is in assets/"),
   pictureTreatment: Treatment.default("print"),
   headline: Text,
   tone: Tone.default("surface").describe("Flat background colour"),
-  reference: Image.optional().describe("Scale reference silhouette drawn in the same spot on every card, e.g. human.svg"),
-  height: z.number().positive().optional().describe("Subject height in metres; sizes the image against a 1.75 m reference and draws a metre scale beside it"),
+  reference: Image.optional().describe("Scale reference silhouette, e.g. human.svg, standing left of the subject at the same size on every card"),
+  height: z.number().positive().optional().describe("Subject height in metres; sizes the subject against the 1.75 m reference and draws a metre scale up between them. Without it the subject fills the band and nothing is compared"),
+  length: z.number().positive().optional().describe("Subject length in metres, nose to tail, for an animal whose size is its length: sizes the subject by it and draws the metre scale along under it in place of the ground line. Wins over height when both are set"),
   treatment: Treatment.default("illustration"),
 });
 
@@ -81,11 +83,16 @@ export const TimelineScene = z.object({
     .optional()
     .describe("A row of silhouettes above the axis, in colour or dimmed to outlines"),
   pictures: z
-    .array(Image)
+    .array(z.union([Image, z.object({
+          image: Image,
+          size: z.number().positive().default(1).describe("Scale of the picture inside its grid cell, 1 fills it"),
+          dx: z.number().default(0).describe("Nudge right, as a fraction of the cell width (negative is left)"),
+          dy: z.number().default(0).describe("Nudge down, as a fraction of the cell height (negative is up)"),
+        })]))
     .min(2)
     .max(4)
     .optional()
-    .describe("Pictures in a two-column grid filling the frame, revealed one after another from the scene start; the axis then appears over them on a surface panel, and they dim when the question mark shows"),
+    .describe("Pictures in a two-column grid filling the frame, a file name or { image, size }, revealed one after another from the scene start; the axis then unfolds on a surface panel under them, above the captions, and they dim when the question mark shows"),
   text: z.enum(["normal", "large"]).default("normal").describe("large makes every label on the axis about 1.6 times bigger, for a timeline with few ticks"),
   labels: z.enum(["above", "inside"]).default("above").describe("Where a band's label sits: above its left end, or centred inside the band, which is then tall enough for two lines and wraps"),
   chain: z.boolean().default(false).describe("Open the bands as one continuous run in the order listed, each starting where the previous finished; the run starts at the first band's cue and later cues are ignored"),
@@ -153,7 +160,7 @@ export function sceneImages(scenes: Scene[]): string[] {
     if (s.type === "card" && s.reference) out.add(s.reference);
     if (s.type === "card" && s.picture) out.add(s.picture);
     if (s.type === "timeline" && s.silhouettes) s.silhouettes.images.forEach((i) => out.add(i));
-    if (s.type === "timeline" && s.pictures) s.pictures.forEach((i) => out.add(i));
+    if (s.type === "timeline" && s.pictures) s.pictures.forEach((i) => out.add(typeof i === "string" ? i : i.image));
     if (s.type === "panels") s.panels.forEach((p) => out.add(p.image));
     if (s.type === "silhouettes" && s.background) out.add(s.background);
   }

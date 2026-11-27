@@ -20,10 +20,11 @@ export const LAYOUT = {
   centre: { top: 0.31, bottom: 0.69 },
   /** Framed still: the picture box and where its text starts. */
   frame: { top: 0.1, bottom: 0.62, text: 0.645 },
-  /** Fact card, top to bottom: the square picture plate, the text, then the scale section with the ground line the subject stands on and the scale reference's height. */
-  card: { picture: { top: 0.15, bottom: 0.43 }, text: 0.46, top: 0.55, baseline: 0.72, referenceH: 0.12 },
+  /** Fact card: the text block up top (and the height it is allowed), then the ground line the human reference (left) and the subject (right) stand on, the reference's height, which sets the scale of every card, and the side margin a height row may run to (a length row keeps to the ground line's span, its scale standing in for the line). */
+  card: { text: 0.22, textH: 0.14, baseline: 0.7, referenceH: 0.21, rowMargin: 0.04 },
   /** Timeline: axis, silhouettes row above it, question mark and text; with a picture grid the axis moves up to the grid's centre. */
-  timeline: { axis: 0.5, silhouettes: { top: 0.22, bottom: 0.34 }, grid: { top: 0.08, bottom: 0.72 }, gridAxis: 0.4, question: 0.56, text: 0.09 },
+  /** Timeline: the axis line (no grid), the silhouette row, the band the picture grid and its axis panel share (the panel sits at its foot, the pictures fill what is left above), the question mark's top with and without a grid, and the text block. */
+  timeline: { axis: 0.5, silhouettes: { top: 0.22, bottom: 0.34 }, grid: { top: 0.08, bottom: 0.72 }, question: 0.56, gridQuestion: 0.24, text: 0.09 },
   /** Silhouette group: two staggered rows. */
   silhouettes: { rows: [{ top: 0.42, height: 0.1 }, { top: 0.53, height: 0.13 }] },
   /** Nothing below this line: the caption band (config captions.top, 0.78 by default) starts here. */

@@ -9,6 +9,8 @@ export const ShortConfigSchema = z.object({
   variant: z.enum(["light", "dark"]),
   tailSec: z.number().nonnegative(),
   wordmark: z.boolean(),
+  /** Play the sound cues scenes and transitions carry; off gives narration alone. */
+  sound: z.boolean(),
   narration: z.object({
     model: z.enum(["turbo", "original"]),
     device: z.enum(["cpu", "mps"]),

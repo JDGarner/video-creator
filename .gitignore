@@ -13,3 +13,6 @@ voice/reference/clips/
 voice/.whisper/
 public/shorts/**/*.wav
 public/shorts/*/assets/
+
+# originals kept beside trimmed assets by pnpm trim
+stories/shorts/*/assets/*.orig.*

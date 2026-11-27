@@ -240,7 +240,7 @@ export class Short {
   private frameInputs(): string[] {
     const { publish: _publish, ...frameConfig } = this.config;
     const scenes = this.publicFile("scenes.json");
-    return [fileSha(this.voiceFile("alignment.json")), fileSha(this.voiceFile("manifest.json")), JSON.stringify(frameConfig), existsSync(scenes) ? fileSha(scenes) : "no-scenes", treeSha(this.publicFile("assets")), treeSha(path.join(this.root, "src"))];
+    return [fileSha(this.voiceFile("alignment.json")), fileSha(this.voiceFile("manifest.json")), JSON.stringify(frameConfig), existsSync(scenes) ? fileSha(scenes) : "no-scenes", treeSha(this.publicFile("assets")), treeSha(path.join(this.root, "src")), treeSha(path.join(this.root, "public", "sfx"))];
   }
 
   /** What the default render, or a flagged variant of it, depends on. */

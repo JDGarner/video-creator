@@ -1,0 +1,22 @@
+{
+  "flick": {
+    "sec": 0.35,
+    "gain": 0.1106
+  },
+  "whoosh": {
+    "sec": 0.5,
+    "gain": 0.1564
+  },
+  "woodblock": {
+    "sec": 0.4,
+    "gain": 0.1561
+  },
+  "thump": {
+    "sec": 0.6,
+    "gain": 0.3039
+  },
+  "sweep": {
+    "sec": 0.8,
+    "gain": 0.1655
+  }
+}

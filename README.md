@@ -13,7 +13,7 @@ and will reuse the same themes, primitives and voice; nothing for them is in the
 | doc | what it covers |
 |---|---|
 | [`context.md`](context.md) | why the project exists, the visual target, decisions already made |
-| [`docs/MOTION.md`](docs/MOTION.md) | how things move: enter, exit, stagger, camera, count-ups |
+| [`docs/MOTION.md`](docs/MOTION.md) | how things move and sound: enter, exit, stagger, camera, count-ups, the sound palette |
 | [`docs/PIPELINE.md`](docs/PIPELINE.md) | the shorts pipeline: commands, flags, inputs, outputs, config fields, skipping, failure rules |
 | [`docs/SCENES.md`](docs/SCENES.md) | the scene types a storyboard can use and every field, generated from the schemas |
 | [`docs/examples/`](docs/examples/) | a complete example storyboard (`short.md`), `assets.yaml` and `video.json` |
@@ -33,7 +33,8 @@ stories/shorts/<video>/short.md ──► check ──► narrate ──► alig
 1. **Storyboard.** You write `stories/shorts/<video>/short.md`. The `## Narration` numbered list is
    the script, one item per beat. The `## Scenes` YAML list says what is on screen and when, cued to
    spoken words and beats, using the scene types in `docs/SCENES.md`. Images are listed in
-   `assets.yaml` with their source and licence. The rest of the file is prose for humans.
+   `assets.yaml` with their source and licence (`pnpm asset` fetches and records them, `pnpm trim`
+   cuts the empty margin off a picture that has to stand at scale). The rest of the file is prose for humans.
    `pnpm check` lints all of it and publishes the scene data; `pnpm stills` renders one frame per
    scene to look at before anything longer runs.
 2. **Narrate.** Each beat is synthesised with [Chatterbox](https://github.com/resemble-ai/chatterbox)
@@ -44,7 +45,8 @@ stories/shorts/<video>/short.md ──► check ──► narrate ──► alig
 3. **Align.** whisper.cpp hears the narration back and every script word gets a start and end time
    in `alignment.json`.
 4. **Render.** One generic Remotion composition lays the scenes on the timeline from the manifest
-   and alignment, animates each scene type, draws Shorts-style captions, and renders the MP4.
+   and alignment, animates each scene type, draws Shorts-style captions, lays a few synthesised
+   sound cues (page flicks, a tap, a stamp) on the same frames, and renders the MP4.
    Images not yet sourced render as labelled placeholders, so a rough cut comes first.
 5. **Bundle.** The storyboard's `## Publish` section becomes a folder with the MP4, a subtitle
    file, a reference frame for the thumbnail and a `metadata.json` with the title, description,
@@ -71,6 +73,8 @@ pnpm short <video> --elevenlabs   # the paid final-cut take, kept beside the dra
 pnpm asset <video> phylopic:<taxon> | <commons url> | --search "words"   # fetch images with licence bookkeeping
 #   flags: --beats 1,2   --only 3   --seed N   --scene N   --full-sentences   --out path.mp4   --elevenlabs [--yes]   --force
 pnpm docs:scenes        # regenerate docs/SCENES.md from the scene schemas
+pnpm sfx                # resynthesise the sound palette into public/sfx/
+pnpm trim <video> <file>... [--fuzz 8]   # trim the empty margin off an asset (ImageMagick), original kept beside it
 
 pnpm typecheck
 pnpm test               # vitest, pure helpers in src/lib
@@ -85,7 +89,7 @@ voice (record, cut candidates, compare clones, pick one) is described in `voice/
 | path | what |
 |---|---|
 | `src/theme/` | tokens, themes (`atlas`, `midnight`, the `fieldguide` family), fonts, provider |
-| `src/primitives/` | style-aware building blocks: `Paper`, `Grain`, `Display`, `Label`, `Captions`, `Still`, `DrawPath`, `Reveal` |
+| `src/primitives/` | style-aware building blocks: `Paper`, `Grain`, `Display`, `Label`, `Captions`, `Still`, `DrawPath`, `Reveal`, `Sfx` |
 | `src/motion/` | easings, springs, timeline helpers |
 | `src/viz/` | globe and regional map renderers (d3-geo, Natural Earth) |
 | `src/lib/` | pure helpers with tests: config, storyboard parsing and lint, cues, numbers, narration, captions, publish metadata and SRT, geo, colour |
@@ -94,9 +98,10 @@ voice (record, cut candidates, compare clones, pick one) is described in `voice/
 | `src/dev/` | visual checks and spikes, nothing here ships: theme sheets, map spikes, captions check |
 | `stories/shorts/<video>/` | storyboard, `assets.yaml`, `assets/`, `video.json`, and any preview you choose to keep |
 | `config/defaults.json` | pipeline defaults, every field documented in `docs/PIPELINE.md` |
+| `public/sfx/` | the five synthesised sound cues and their catalogue, shared by every short (`pnpm sfx`) |
 | `public/shorts/<video>/` | published narration, manifest, alignment, config, scenes and assets read by the composition |
 | `voice/` | Chatterbox narration, whisper alignment, the reference voice |
-| `scripts/` | `short.ts` (pipeline CLI) over `short/` (`Short.ts` stages, `hash.ts`, `media.ts` ffmpeg, `bundle.ts` publish folder, `tools.ts` what tests fake), `asset.ts` (image fetcher), `scene-docs.ts` (SCENES.md generator) and `check-hex.mjs` (theme lint) |
+| `scripts/` | `short.ts` (pipeline CLI) over `short/` (`Short.ts` stages, `hash.ts`, `media.ts` ffmpeg, `bundle.ts` publish folder, `tools.ts` what tests fake), `asset.ts` (image fetcher), `trim.ts` (margin trimmer over ImageMagick), `sfx.ts` (sound palette), `scene-docs.ts` (SCENES.md generator) and `check-hex.mjs` (theme lint) |
 
 ## Hard rules
 

@@ -15,3 +15,9 @@ export function useSpringAt(startFrame: number, name: SpringName, opts?: { durat
   if (frame < startFrame) return 0;
   return spring({ frame: frame - startFrame, fps, config: SPRINGS[name], durationInFrames: opts?.durationInFrames });
 }
+
+/** The frame, counted from the spring's start, at which it first reaches rest (97%): when a thing that springs in has landed. */
+export function landingFrame(name: SpringName, fps: number): number {
+  for (let f = 0; f < fps * 4; f++) if (spring({ frame: f, fps, config: SPRINGS[name] }) >= 0.97) return f;
+  return fps;
+}

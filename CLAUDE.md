@@ -11,6 +11,7 @@ Programmatic explainer videos with Remotion. Read `context.md` (why, visual targ
 - A theme's `light`/`dark` variant is about which colour slot is used, not about brightness. Decide darkening or lightening with `isDark(bg)`.
 - Fonts load per theme from `ThemeProvider`; a new face goes in `src/theme/fonts.ts` and a theme file, nowhere else.
 - The look is our own: never reproduce the reference channel's wordmark, name or exact palette values.
+- Sound is five synthesised cues in `public/sfx/` (`pnpm sfx`, recipes in `scripts/sfx.ts`), played through the `Sfx` primitive on frames that come from the narration, at the catalogue's gain. No library files, no volumes set by ear, no music bed, no cue louder than the stamp. The rules are the Sound section of `docs/MOTION.md`.
 - Never run anything that calls ElevenLabs (`--elevenlabs` on `short`, `narrate` or any stage, or `narrate.py --engine elevenlabs`) unless Jamie asks for it explicitly in the current message. It bills per character. If a change needs an ElevenLabs run to verify, ask Jamie to run it or to approve it first.
 
 ## Commands
@@ -25,6 +26,8 @@ pnpm short <video>      # check -> narrate -> align -> render -> bundle, skippin
 pnpm check|narrate|align|render|bundle|stills <video> [--beats 1,2] [--only 3] [--seed N] [--scene N] [--full-sentences] [--out path.mp4] [--elevenlabs [--yes]] [--force]
 pnpm asset <video> phylopic:<taxon> | <commons url> [--as f] | --search "words"   # images + licence bookkeeping
 pnpm docs:scenes        # regenerate docs/SCENES.md after changing src/scenes/schema.ts
+pnpm sfx                # resynthesise the sound palette into public/sfx/ after changing scripts/sfx.ts
+pnpm trim <video> <file>... [--fuzz 8]   # cut the empty margin off an asset with ImageMagick, original kept as name.orig.ext
 ```
 
 The shorts pipeline is described in `docs/PIPELINE.md`; read it before changing `scripts/short/`, `src/shorts/`, `src/scenes/` or anything under `voice/`. Shorts are data: a storyboard's `## Scenes` YAML is rendered by the scene types in `src/scenes/` (documented in `docs/SCENES.md`). Adding a scene type = schema + component + registry case + `pnpm docs:scenes`. There are no hand-written compositions: a short that needs something new gets a scene type.

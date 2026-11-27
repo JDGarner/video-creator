@@ -6,6 +6,7 @@
   "variant": "light",
   "tailSec": 1,
   "wordmark": true,
+  "sound": true,
   "narration": {
     "model": "turbo",
     "device": "cpu",

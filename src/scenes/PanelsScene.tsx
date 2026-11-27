@@ -3,6 +3,7 @@ import { useVideoConfig } from "remotion";
 import type { z } from "zod";
 import { Label } from "../primitives/Label";
 import { Reveal } from "../primitives/Reveal";
+import { Sfx } from "../primitives/Sfx";
 import { Still } from "../primitives/Still";
 import { useColor, useTheme } from "../theme/ThemeProvider";
 import { withAlpha } from "../lib/color";
@@ -33,7 +34,7 @@ const Panel: React.FC<{ panel: z.output<typeof Schema>["panels"][number]; at: nu
   );
 };
 
-/** Two to four upright panels side by side, each revealed on its own cue. */
+/** Two to four upright panels side by side, each revealed on its own cue with a page flick; a panel that arrives with the scene leaves the flick to the transition. */
 export const PanelsScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ scene }) => {
   const { width, height, fps } = useVideoConfig();
   const { theme, scale } = useTheme();
@@ -47,9 +48,15 @@ export const PanelsScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ scen
   const h = bandHeight(height, LAYOUT.tall);
   return (
     <>
-      {scene.panels.map((p, i) => (
-        <Panel key={p.label} panel={p} at={p.at === undefined ? start + Math.round(i * 0.6 * fps) : local(p.at)} left={x0 + i * (w + gap)} width={w} top={top} height={h} />
-      ))}
+      {scene.panels.map((p, i) => {
+        const at = p.at === undefined ? start + Math.round(i * 0.6 * fps) : local(p.at);
+        return (
+          <React.Fragment key={p.label}>
+            <Panel panel={p} at={at} left={x0 + i * (w + gap)} width={w} top={top} height={h} />
+            {at > start ? <Sfx name="flick" at={at} /> : null}
+          </React.Fragment>
+        );
+      })}
       <SceneText headline={scene.headline} caption={scene.caption} top={LAYOUT.headlineTight} />
     </>
   );

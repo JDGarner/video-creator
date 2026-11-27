@@ -117,7 +117,7 @@ scene ends when the next begins. Field reference: `docs/SCENES.md`. Images are l
   image: megalania.svg
   picture: megalania-art.png
   reference: human.svg
-  height: 1.2
+  length: 5
   treatment: silhouette
   headline: MEGALANIA
   caption: Monitor lizard · 5 m and more, nose to tail
@@ -141,7 +141,11 @@ scene ends when the next begins. Field reference: `docs/SCENES.md`. Images are l
   text: large
   labels: inside
   chain: true
-  pictures: [diprotodon-art.jpg, procoptodon-art.png, megalania-art.png, genyornis-art.png]
+  pictures:
+    - { image: diprotodon-art.jpg, dx: 0.03, dy: 0.13 }
+    - { image: procoptodon-art.png, size: 0.8 }
+    - { image: megalania-art.png, size: 1.1, dx: 0.06, dy: 0.03 }
+    - { image: genyornis-art.png, size: 0.8 }
   bands:
     - { from: 65000, to: 50000, label: Humans arrive, tone: structure, at: beat 3 + 0.3 }
     - { from: 50000, to: 40000, label: Most megafauna gone, tone: accent, at: fifty }

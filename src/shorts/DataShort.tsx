@@ -9,6 +9,8 @@ import { coveredScenes, resolveCue } from "../lib/cues";
 import { narrationFile, type Narration } from "../lib/narration";
 import { fade } from "../motion/timeline";
 import { SceneProvider } from "../scenes/context";
+import { Sfx, SoundProvider } from "../primitives/Sfx";
+import { transitionSound } from "../lib/sfx";
 import { SceneView } from "../scenes";
 import type { Scene } from "../scenes/schema";
 import type { ShortProps } from "./index";
@@ -63,24 +65,28 @@ const Body: React.FC<ShortProps> = ({ narration, config, data }) => {
       {narration ? <Audio src={narrationFile("shorts", data.id)} /> : null}
       {placed.map((p, i) => {
         const opacity = p.scene.transition === "fade" && i > 0 ? fade(frame, p.origin, fadeF) : 1;
+        const enterSound = transitionSound(p.scene.transition, i);
         return (
-          <Sequence key={i} from={p.origin} durationInFrames={Math.max(1, p.sequenceEnd)} layout="none">
-            <AbsoluteFill style={{ opacity }}>
-              <Paper variant={p.scene.variant ?? config.variant}>
-                <SceneProvider
-                  value={{
-                    video: data.id,
-                    assets: data.assets,
-                    start: p.start,
-                    end: p.end,
-                    local: (cue, fallback) => (cue === undefined ? (fallback ?? p.start) : narration ? Math.round(resolveCue(cue, narration) * fps) - p.origin : (fallback ?? p.start)),
-                  }}
-                >
-                  <SceneView scene={p.scene} />
-                </SceneProvider>
-              </Paper>
-            </AbsoluteFill>
-          </Sequence>
+          <SoundProvider key={i} value={config.sound && p.scene.sound}>
+            {enterSound ? <Sfx name={enterSound} at={p.origin} /> : null}
+            <Sequence from={p.origin} durationInFrames={Math.max(1, p.sequenceEnd)} layout="none">
+              <AbsoluteFill style={{ opacity }}>
+                <Paper variant={p.scene.variant ?? config.variant}>
+                  <SceneProvider
+                    value={{
+                      video: data.id,
+                      assets: data.assets,
+                      start: p.start,
+                      end: p.end,
+                      local: (cue, fallback) => (cue === undefined ? (fallback ?? p.start) : narration ? Math.round(resolveCue(cue, narration) * fps) - p.origin : (fallback ?? p.start)),
+                    }}
+                  >
+                    <SceneView scene={p.scene} />
+                  </SceneProvider>
+                </Paper>
+              </AbsoluteFill>
+            </Sequence>
+          </SoundProvider>
         );
       })}
       <VariantProvider value={config.variant}>

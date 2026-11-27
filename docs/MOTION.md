@@ -17,6 +17,10 @@ How things move, so every scene feels like the same hand. `Reveal`, `DrawPath` a
   their start value over a little more than a second; the label follows once the bar is at full
   height. Adjacent spans that tell one story open as a single run at one head speed, not as two bars
   that happen to touch. Never fade a bar in.
+- A scale draws once the subject has landed, in under a second: up from the ground line for a
+  height, or along as the ground line itself for a length, so there is never a second line under
+  the one being drawn. Its ticks pop as the head passes and the measure is named only when the
+  line reaches it.
 - A panel that carries a chart unfolds from the line it belongs to, growing up and down from the axis
   in under a second, and the axis draws only once the panel is open.
 - A stamp (the question mark) lands from about a third larger with a snappy spring, so it hits rather
@@ -26,3 +30,27 @@ How things move, so every scene feels like the same hand. `Reveal`, `DrawPath` a
 - One-step changes are allowed when the narration says so (the landmass loss), otherwise ease.
 - No linear easing except constant-velocity travel along a path, and ease the ends even then.
 - Every value derives from `useCurrentFrame()`. No CSS transitions or animations.
+
+## Sound
+
+The video sounds like one printed thing being handled: paper, a pencil, a woodblock. Five cues,
+synthesised by `pnpm sfx` into `public/sfx/` and played through the `Sfx` primitive, are the whole
+palette; a short that wants a sixth sound adds it to the recipe table in `scripts/sfx.ts`, not a
+file from a library.
+
+- Cues sit on frames that come from the narration manifest and alignment like every visual: a
+  scene start, a band cue, the frame a spring lands. Never a number of seconds in the storyboard.
+- Levels are set once, in the catalogue, from a measured target: `soft` cues about 20 dB under the
+  voice at its loudest, the one `accent` cue about 10 dB under. Nothing competes with a spoken word.
+  Narration masters to -16 LUFS; the mix must still measure within half a LU of it.
+- A cut enters with a page flick, a crossfade with a soft whoosh. The first scene enters in silence.
+- A thing that springs in and lands on something taps as it lands (the card silhouette on its
+  ground line), on the spring's landing frame, not its start.
+- The stamp is the one accent cue, a thump on the frame it lands. One accent per scene at most.
+- A sweep (the landmass loss) carries a dry brush for exactly as long as it moves.
+- Panels that arrive on their own cue flick like a page; one that arrives with the scene leaves
+  the flick to the transition, so nothing doubles.
+- The closing scene gets its transition sound and nothing else; the last line lands on the voice.
+- No music bed in a short. The pace is tight and a bed blurs the caption highlights.
+- `config.sound: false` silences every cue; a scene's `sound: false` silences its own and its
+  transition. Both exist so a cut can be checked with narration alone.

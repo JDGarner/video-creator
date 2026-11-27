@@ -17,6 +17,8 @@
     "stills": "tsx scripts/short.ts stills",
     "asset": "tsx scripts/asset.ts",
     "docs:scenes": "tsx scripts/scene-docs.ts",
+    "sfx": "tsx scripts/sfx.ts",
+    "trim": "tsx scripts/trim.ts",
     "short": "tsx scripts/short.ts short"
   },
   "packageManager": "pnpm@11.9.0",

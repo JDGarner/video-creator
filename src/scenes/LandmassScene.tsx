@@ -4,6 +4,7 @@ import { geoArea, geoBounds, geoEqualEarth, geoPath, type GeoProjection } from "
 import type { Feature, Geometry, Position } from "geojson";
 import type { z } from "zod";
 import { Reveal } from "../primitives/Reveal";
+import { Sfx } from "../primitives/Sfx";
 import { useColor, useTheme, useVariant } from "../theme/ThemeProvider";
 import { alertColor } from "../theme/tokens";
 import { MAP_PALETTE } from "../theme/themes/map";
@@ -136,6 +137,7 @@ export const LandmassScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ sc
           {lost ? <path d={drawn.d} fill={atlas ? withAlpha(alert, 0.3) : alert} clipPath={`url(#${lossClip})`} /> : null}
         </svg>
       </Reveal>
+      {lossAt !== null && sweep > 0 ? <Sfx name="sweep" at={lossAt} fitSec={scene.loss!.sweepSec} /> : null}
       <SceneText headline={scene.headline} caption={scene.caption} top={LAYOUT.headline} />
     </>
   );

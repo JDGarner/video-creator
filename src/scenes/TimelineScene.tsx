@@ -5,11 +5,12 @@ import { Display } from "../primitives/Display";
 import { DrawPath } from "../primitives/DrawPath";
 import { Label } from "../primitives/Label";
 import { Reveal } from "../primitives/Reveal";
+import { Sfx } from "../primitives/Sfx";
 import { Still } from "../primitives/Still";
 import { useColor, useTheme } from "../theme/ThemeProvider";
 import { withAlpha } from "../lib/color";
 import { fade, progress } from "../motion/timeline";
-import { useSpringAt } from "../motion/springs";
+import { landingFrame, useSpringAt } from "../motion/springs";
 import { useAsset, useScene } from "./context";
 import { SceneText } from "./Text";
 import { bandHeight, LAYOUT } from "./layout";
@@ -42,11 +43,17 @@ const Silhouette: React.FC<{ file: string; dim: boolean; dimAt: number }> = ({ f
   );
 };
 
-const Picture: React.FC<{ file: string; at: number; frames: number; move: "zoom-in" | "zoom-out"; style: React.CSSProperties }> = ({ file, at, frames, move, style }) => {
-  const a = useAsset(file);
+type GridPicture = { image: string; size: number; dx: number; dy: number };
+
+const Picture: React.FC<{ picture: GridPicture; at: number; frames: number; move: "zoom-in" | "zoom-out"; style: React.CSSProperties }> = ({ picture, at, frames, move, style }) => {
+  const a = useAsset(picture.image);
+  // the cell stays where the grid put it; the picture grows or shrinks about its centre inside it, then takes its nudge
+  const pad = (1 - picture.size) / 2;
   return (
     <Reveal at={at} from="scale" style={{ position: "absolute", ...style }}>
-      <Still src={a.src} name={a.name} fit="contain" treatment="print" move={move} moveFrames={frames} moveScale={0.03} />
+      <div style={{ position: "absolute", left: `${(pad + picture.dx) * 100}%`, top: `${(pad + picture.dy) * 100}%`, width: `${picture.size * 100}%`, height: `${picture.size * 100}%` }}>
+        <Still src={a.src} name={a.name} fit="contain" treatment="print" move={move} moveFrames={frames} moveScale={0.03} />
+      </div>
     </Reveal>
   );
 };
@@ -57,7 +64,7 @@ const Picture: React.FC<{ file: string; at: number; frames: number; move: "zoom-
  * from their start once it is complete, each on its own cue or chained into one continuous run; the
  * question mark stamps down. With `pictures`, a grid of
  * them fills the frame first, each drifting slowly, then a surface panel unfolds from the axis line
- * over the grid's centre and the axis draws on it.
+ * under the grid and the axis draws on it.
  */
 export const TimelineScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ scene }) => {
   const frame = useCurrentFrame();
@@ -72,17 +79,20 @@ export const TimelineScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ sc
   const s = (i: number) => theme.space[i]! * scale;
   const hair = theme.stroke.hair * scale;
   const k = scene.text === "large" ? 1.6 : 1;
-  const grid = scene.pictures;
+  const grid: GridPicture[] | undefined = scene.pictures?.map((p) => (typeof p === "string" ? { image: p, size: 1, dx: 0, dy: 0 } : p));
 
   const x0 = width * 0.08;
   const x1 = width * 0.92;
   const [v0, v1] = scene.range;
   const x = (v: number) => x0 + ((v - v0) / (v1 - v0)) * (x1 - x0);
-  const axisY = height * (grid ? LAYOUT.timeline.gridAxis : LAYOUT.timeline.axis);
   const labelH = theme.type.label * k * 1.4 * scale;
   const inside = scene.labels === "inside";
   const bandH = inside ? 2 * labelH + s(2) : height * 0.04 * k;
   const captionH = theme.type.caption * k * 1.4 * scale;
+  // under the axis: a gap, the tick numbers, then the unit if there is one, then the panel's padding
+  const underAxis = (scene.unit ? s(3) + captionH + s(1) + captionH : s(3) + captionH) + s(3);
+  // with a grid the panel stands at the foot of the grid band, under the pictures and clear of the captions
+  const axisY = grid ? height * LAYOUT.timeline.grid.bottom - underAxis : height * LAYOUT.timeline.axis;
   const ticks: number[] = [];
   const dir = v1 > v0 ? 1 : -1;
   for (let v = v0; dir * v <= dir * v1 + 1e-9; v += dir * scene.tick) ticks.push(v);
@@ -115,7 +125,7 @@ export const TimelineScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ sc
   const rowCount = rows.length ? Math.max(...rows) + 1 : 0;
   const unitTop = axisY + s(3) + captionH + s(1);
   const panelTop = axisY - rowCount * (bandH + s(1)) - (inside ? 0 : labelH) - s(3);
-  const panelBottom = (scene.unit ? unitTop + captionH : axisY + s(3) + captionH) + s(3);
+  const panelBottom = axisY + underAxis;
   // a chained run opens every band in order at one head speed, so two adjacent bands read as one bar growing
   const bandW = scene.bands.map((b) => Math.abs(x(b.to) - x(b.from)));
   const runW = bandW.reduce((a, b) => a + b, 0);
@@ -129,7 +139,7 @@ export const TimelineScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ sc
   const questionIn = questionAt === undefined ? 0 : fade(frame, questionAt, 10);
   const stamp = useSpringAt(questionAt ?? 0, "snappy");
 
-  const gridBox = { left: width * 0.04, width: width * 0.92, top: height * LAYOUT.timeline.grid.top, height: bandHeight(height, LAYOUT.timeline.grid) };
+  const gridBox = { left: width * 0.04, width: width * 0.92, top: height * LAYOUT.timeline.grid.top, height: panelTop - s(3) - height * LAYOUT.timeline.grid.top };
   const gridRows = grid ? Math.ceil(grid.length / 2) : 0;
   const cellW = (gridBox.width - s(3)) / 2;
   const cellH = gridRows ? (gridBox.height - s(3) * (gridRows - 1)) / gridRows : 0;
@@ -138,8 +148,8 @@ export const TimelineScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ sc
     <>
       {grid ? (
         <div style={{ position: "absolute", inset: 0, opacity: 1 - 0.75 * questionIn }}>
-          {grid.map((f, i) => (
-            <Picture key={f} file={f} at={start + i * PICTURE_STAGGER} frames={end} move={i % 2 ? "zoom-out" : "zoom-in"} style={{ left: gridBox.left + (i % 2) * (cellW + s(3)), top: gridBox.top + Math.floor(i / 2) * (cellH + s(3)), width: cellW, height: cellH }} />
+          {grid.map((p, i) => (
+            <Picture key={p.image} picture={p} at={start + i * PICTURE_STAGGER} frames={end} move={i % 2 ? "zoom-out" : "zoom-in"} style={{ left: gridBox.left + (i % 2) * (cellW + s(3)), top: gridBox.top + Math.floor(i / 2) * (cellH + s(3)), width: cellW, height: cellH }} />
           ))}
         </div>
       ) : null}
@@ -230,8 +240,9 @@ export const TimelineScene: React.FC<{ scene: z.output<typeof Schema> }> = ({ sc
           </React.Fragment>
         );
       })}
+      {questionAt !== undefined ? <Sfx name="thump" at={questionAt + landingFrame("snappy", fps)} /> : null}
       {questionAt !== undefined ? (
-        <div style={{ position: "absolute", left: 0, right: 0, top: height * LAYOUT.timeline.question, textAlign: "center", opacity: fade(frame, questionAt, 4), transform: `scale(${STAMP_FROM - (STAMP_FROM - 1) * stamp})`, transformOrigin: "center" }}>
+        <div style={{ position: "absolute", left: 0, right: 0, top: height * (grid ? LAYOUT.timeline.gridQuestion : LAYOUT.timeline.question), textAlign: "center", opacity: fade(frame, questionAt, 4), transform: `scale(${STAMP_FROM - (STAMP_FROM - 1) * stamp})`, transformOrigin: "center" }}>
           <Display size="hero" align="center" color="accent">
             ?
           </Display>

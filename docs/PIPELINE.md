@@ -27,6 +27,7 @@ Run from the repo root. `<video>` is the folder name under `stories/shorts/`.
 | `pnpm render <video>` | composition + narration + captions -> `out/shorts/<video>/<video>.mp4` |
 | `pnpm bundle <video>` | MP4 + `## Publish` section -> `out/shorts/<video>/publish/` with everything the upload form needs |
 | `pnpm stills <video>` | one PNG per scene in `out/shorts/<video>/stills/`, for checking layouts without a render |
+| `pnpm sfx` | synthesise the sound palette into `public/sfx/` and write `sfx.json` with each cue's length and gain; run after editing the recipes in `scripts/sfx.ts`. Nothing downloaded, nothing to credit |
 | `pnpm asset <video> ...` | fetch an image into `assets/` and write its `assets.yaml` entry from the source's API, see Assets |
 | `pnpm short <video>` | check, narrate, align, render, bundle in order; bundle is skipped with a note when there is no `## Publish` section or assets are still placeholders |
 
@@ -56,6 +57,7 @@ to re-take beat 3 while keeping every other take. The chosen seed is recorded in
 | `stories/shorts/<video>/short.md` | storyboard. `## Narration`: the script, one numbered item per beat. `## Scenes`: a YAML list of what is on screen, cued to words and beats (types in `docs/SCENES.md`). `## Publish`: the YouTube metadata. Format in `docs/examples/short.md`. If `short.md` is absent, the folder's single `.md` file is used | you |
 | `stories/shorts/<video>/assets.yaml` | every image the scenes use, with source and licence; credits go into the description | you |
 | `stories/shorts/<video>/assets/` | the image files themselves. A listed file that is not there yet renders as a labelled placeholder so the cut can be watched first | you |
+| `stories/shorts/<video>/assets/*.orig.*` | the untouched copy `pnpm trim` keeps beside a trimmed asset, and starts from on a retrim; gitignored | `pnpm trim` |
 | `stories/shorts/<video>/video.json` | per-video overrides of `config/defaults.json`; optional, may be `{}` | you |
 | `config/defaults.json` | shared settings, every field documented below | you, rarely |
 | `voice/reference/reference.wav` | the cloned voice; see `voice/CLAUDE.md` to change it | `prepare_ref.py --pick` |
@@ -66,6 +68,7 @@ to re-take beat 3 while keeping every other take. The chosen seed is recorded in
 | path | contents | git |
 |---|---|---|
 | `voice/out/shorts/<video>/` | `beat-N.wav`, `narration.wav`, `manifest.json`, `alignment.json`, `whisper.json`. The `--elevenlabs` take has the same files in `<video>-elevenlabs/` | ignored |
+| `public/sfx/` | the sound palette, five WAVs and `sfx.json`, shared by every short and read by the `Sfx` primitive; part of the render hash | `pnpm sfx`, tracked |
 | `public/shorts/<video>/` | copies of `narration.wav`, `manifest.json`, `alignment.json`, the merged `config.json`, `scenes.json` (scenes plus where each asset landed) and `assets/` (rasters scaled to at most 2160 px wide); the composition reads only these | JSON tracked, WAV and assets ignored |
 | `src/shorts/videos.json` | the shorts whose storyboards have a `## Scenes` section; `check` adds to it, the registry renders each with the generic composition | tracked |
 | `out/shorts/<video>/` | `<video>.mp4`, `.hashes.json`, `stills/`; `scene-N.mp4` from `--scene`; `<video>-sentences.mp4` from `--full-sentences`. The `--elevenlabs` take adds `-elevenlabs` to each of these and to its hash keys (`align-elevenlabs`, `render-elevenlabs`, ...) so the two takes never overwrite each other | ignored |
@@ -90,10 +93,23 @@ licence and credit from the API, so `assets.yaml` cannot drift from what is in `
 | `pnpm asset <video> <Commons file URL>` | a Wikimedia Commons file at up to 1280 px, licence and artist from the page; `--as name.jpg` renames |
 | `pnpm asset <video> --search "words"` | up to eight Commons candidates with licence, size and a 640 px thumbnail under `out/shorts/<video>/candidates/` to look at |
 | `... <Commons file URL> --from ~/Downloads/x.jpg` | record a file you downloaded yourself; Commons throttles anonymous downloads of some originals |
+| `pnpm trim <video> <file>... [--fuzz 8]` | cut the empty margin off an asset with ImageMagick (`brew install imagemagick`), so a picture that stands as a scale subject is as tall as its drawing. Anything within `--fuzz` percent of the corner colour counts as margin. The untouched file stays beside it as `name.orig.ext`, gitignored, and later runs trim from that. Run `pnpm check` afterwards to republish |
 
 Silhouettes are black on transparent, so scenes draw them with the `silhouette` treatment, which
 uses the image as a mask filled with the theme ink. PhyloPic lacks some extinct taxa; a close
 relative with a `note` in `assets.yaml` is the usual answer.
+
+A picture that stands as a scale subject (a card with a `height`) is sized by its box, so empty
+margin around the drawing makes it read shorter than its stated height and leaves it floating above
+the ground line. `pnpm trim` cuts that margin with ImageMagick. The default fuzz of 8 percent clears
+JPEG noise; raise it to 15 or so when a stray near-white speck stops the trim short, which the
+before-and-after sizes it prints make obvious. Trim replaces the file in place under the same name,
+so nothing in the storyboard or `assets.yaml` changes, and keeps the untouched file beside it as
+`name.orig.ext`. Later runs start from that copy, so a different fuzz can be tried, and a mark that
+needs painting out is fixed there so a retrim does not bring it back. The `.orig` files are
+gitignored: the trimmed file is what the repo carries. The `print` treatment then knocks the white
+ground out at render time, treating anything within 8 percent of white as white, so a halo or a
+faint leftover from a background removal disappears without touching the file.
 
 ## Skipping
 
@@ -123,6 +139,7 @@ merged result is validated (`src/lib/config.ts`) and published as `config.json` 
 | `theme` | `fieldguide` | theme name from `src/theme/themes` |
 | `variant` | `light` | paper variant for the whole short; a scene's own `variant` overrides it |
 | `tailSec` | 1 | silence after the last word before the video ends |
+| `sound` | `true` | play the sound cues scenes and transitions carry (`docs/MOTION.md`, Sound); `false` renders narration alone. A scene's own `sound: false` silences just that scene |
 | `narration.model` | `turbo` | `turbo` or `original` Chatterbox |
 | `narration.device` | `cpu` | measured faster than Metal on this machine; see `voice/PLAN.md` |
 | `narration.gapMs` | 500 | pause inserted between beats |
